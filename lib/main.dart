@@ -1,4 +1,9 @@
+import 'package:CatViP/bloc/authentication/login_bloc.dart';
+import 'package:CatViP/bloc/authentication/login_state.dart';
+import 'package:CatViP/pages/authentication/login_view.dart';
+import 'package:CatViP/repository/auth_repo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,14 +15,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    const title = 'CatViP';
+    return BlocProvider(
+        create: (context) => AuthBloc(LoginInitState(), AuthRepository()),
+        child: MaterialApp(
+          title: title,
+          home: LoginView(),
+        )
     );
+
+    // return MaterialApp(
+    //   routes: {
+    //     '/': (context) => UI_classname(),
+    //     '/user' : (context) => profile_classname(),
+    //   },
+    // );
   }
 }
