@@ -18,11 +18,15 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
     on<LoginButtonPressed>((event, emit) async {
       var pref = await SharedPreferences.getInstance();
       emit(LoginLoadingState());
-      try {
-        var data = await repo.login(event.username, event.password);
-        print(data.toString());
+      
+      var isValidLogin = await repo.login(event.username, event.password);
+
+      if (isValidLogin)
+      {
         emit(UserLoginSuccessState());
-      } catch (e) {
+      }
+      else
+      {
         emit(LoginErrorState(message: "Invalid username or password"));
       }
     });

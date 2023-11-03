@@ -1,44 +1,33 @@
 import 'dart:convert';
+import 'package:CatViP/repository/APIConstant.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository{
+  Future<bool> login(String username, String password) async {
+    try {
+      var url = Uri.parse(APIConstant.LoginURL);
 
-  // async for Future<>
-  login(String username, String password) async {
-    print("test");
-    var result;
-    try{
-       result = await http.post(
-        "https://10.131.76.30:7015/api/auth/login" as Uri,
-        headers: {
-          // "Cache-Control":      "no-cache",
-          // "Postman-Token":      "<calculated when request is sent>",
-          // "Content-Type":       "application/json",
-          // "Content-Length":     "<calculated when request is sent>",
-          // "Host" :              "<calculated when request is sent>",
-          // "User-Agent" :        "PostmanRuntime/7.34.0",
-          // "Accept":             "*/*",
-          // "Accept-Encoding":    "gzip, deflate, br",
-          // "Connection":         "keep-alive"
-        },
-        body: {
-          "username": "stephen",
-          "password": "abc12345",
-          "isMobileLogin": true
-        },
+      // to serialize the data Map to JSON
+      var body = json.encode({
+        'username': username,
+        'password': password,
+        'isMobileLogin' : true
+      });
+
+      var response = await http.post(url,
+          headers: {"Content-Type": "application/json"},
+          body: body
       );
-    } catch (e){
-      print(e);
-    }
 
-    print("after result");
-    print(result.statusCode);
-    if (result.statusCode == 200) {
-      var data = json.decode(result.body);
-      print(data);
-      return data;
-    } else{
-      return "Invalid username or password";
+      if (response.statusCode == 200) {
+        // create a service to store the token in shared preference
+        return true;
+      }
+      
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
     }
   }
 }
