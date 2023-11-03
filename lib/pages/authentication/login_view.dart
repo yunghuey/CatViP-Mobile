@@ -4,6 +4,7 @@ import 'package:CatViP/bloc/authentication/login_state.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class LoginView extends StatefulWidget {
 
@@ -31,9 +32,15 @@ class _LoginViewState extends State<LoginView> {
     final msg = BlocBuilder<AuthBloc, AuthState>(
       builder: (context,state){
         if(state is LoginErrorState){
-          return Text(state.message);
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(state.message, style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),),
+          );
         } else if (state is LoginLoadingState){
-          return Center(child: CircularProgressIndicator());
+          return const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(child: CircularProgressIndicator()),
+          );
         } else{
           return Container();
         }
@@ -59,8 +66,9 @@ class _LoginViewState extends State<LoginView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _logoImage(),
-                    _loginText(),
+                    _logoText(),
                     _usernameField(),
+                    const SizedBox(height: 10.0),
                     _passwordField(),
                     msg,
                     _loginButton(),
@@ -73,8 +81,15 @@ class _LoginViewState extends State<LoginView> {
       );
   }
 
-  Widget _loginText(){
-    return const Text('Login', style: TextStyle(fontSize: 35),);
+  Widget _logoText(){
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text('CatViP', style: TextStyle(
+          fontSize: 28,
+          color: HexColor("#3c1e08"),
+        ),
+      ),
+    );
   }
 
   Widget _logoImage(){
@@ -87,9 +102,18 @@ class _LoginViewState extends State<LoginView> {
       return TextFormField(
         autofocus: true,
         controller: usernameController,
-        decoration: const InputDecoration(
-          icon: Icon(Icons.person),
+        decoration:  InputDecoration(
+          icon: Icon(Icons.person, color: HexColor("#3c1e08"),),
           hintText: 'Username',
+          focusColor: HexColor("#3c1e08"),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: HexColor("#3c1e08"), width: 1.0,),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: HexColor("#a4a4a4"), width: 1.0,),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
   }
@@ -98,24 +122,53 @@ class _LoginViewState extends State<LoginView> {
       return TextFormField(
         obscureText: true,
         controller: pwdController,
-        decoration: const InputDecoration(
-          icon: Icon(Icons.lock),
+        decoration: InputDecoration(
+          icon: Icon(Icons.lock, color: HexColor("#3c1e08"),),
           hintText: 'Password',
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: HexColor("#3c1e08"), width: 1.0,),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: HexColor("#a4a4a4"), width: 1.0,),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
   }
 
   Widget _loginButton() {
-    return ElevatedButton(
-        onPressed: () {
-            print(usernameController.text);
-            print(pwdController.text);
-            authBloc.add(LoginButtonPressed(
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SizedBox(
+        width: 200.0,
+        height: 45.0,
+        child: ElevatedButton(
+            onPressed: () {
+                print(usernameController.text);
+                print(pwdController.text);
+                if (usernameController.text != "" && pwdController.text != "" ){
+                  authBloc.add(LoginButtonPressed(
                     username: usernameController.text,
                     password: pwdController.text,
-            ));
-        },
-        child: const Text('Sign In')
+                  ));
+                } else {
+                  authBloc.add(EmptyField());
+                }
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text('SIGN IN', style: TextStyle(fontSize: 15),),
+            ),
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder( borderRadius: BorderRadius.circular(12.0),)
+              ),
+              backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+
+            ),
+        ),
+      ),
     );
   }
 }
