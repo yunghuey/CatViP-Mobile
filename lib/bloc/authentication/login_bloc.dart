@@ -15,12 +15,15 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
       emit(LoginInitState());
     });
 
+    on<EmptyField>((event,emit) {
+      emit(LoginErrorState(message: "Please fill up the form"));
+    });
+
     on<LoginButtonPressed>((event, emit) async {
-      var pref = await SharedPreferences.getInstance();
       emit(LoginLoadingState());
       
-      var isValidLogin = await repo.login(event.username, event.password);
-
+      bool isValidLogin = await repo.login(event.username, event.password);
+      // print(isValidLogin);
       if (isValidLogin)
       {
         emit(UserLoginSuccessState());
@@ -31,25 +34,4 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
       }
     });
   }}
-
-
-    //
-
-  // @override
-  // // async* for Stream
-  // Stream<AuthState> mapEventToState(AuthEvents event)  async*{
-  //   print("inside LOgin_bloc");
-  //     var pref = await SharedPreferences.getInstance();
-  //     if (event is StartEvent){
-  //       yield LoginInitState();
-  //     } else if (event is LoginButtonPressed){
-  //       yield LoginLoadingState();
-  //       var data = await repo.login(event.username,event.password);
-  //       // // pref.setString(data);
-  //       print(data.toString());
-  //       yield UserLoginSuccessState();
-  //     } else {
-  //       yield LoginErrorState(message: 'Invalid username or password.');
-  //     }
-  // }
 

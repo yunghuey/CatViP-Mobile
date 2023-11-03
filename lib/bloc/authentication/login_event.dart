@@ -16,3 +16,5 @@ class LoginButtonPressed extends AuthEvents{
   // constructor
   LoginButtonPressed({required this.username, required this.password});
 }
+
+class EmptyField extends AuthEvents{}
