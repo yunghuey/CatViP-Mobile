@@ -23,7 +23,21 @@ class MyApp extends StatelessWidget {
           title: title,
           theme: ThemeData(
             scaffoldBackgroundColor: HexColor("#ecd9c9"),
-            fontFamily: 'Times New Roman'
+            fontFamily: 'Times New Roman',
+            textTheme: TextTheme(
+              bodyMedium: TextStyle(
+                color: HexColor("#3c1e08"),
+              ),
+              bodyLarge: TextStyle(
+                color: HexColor("#3c1e08"),
+                fontSize: 26,
+              )
+            ),
+            appBarTheme: AppBarTheme(
+
+              iconTheme: IconThemeData(color: HexColor('#3c1e08')),
+              color: HexColor('#3c1e08'),
+            )
           ),
           home: LoginView(),
         )
