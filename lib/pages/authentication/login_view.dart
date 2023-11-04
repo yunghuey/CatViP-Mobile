@@ -1,6 +1,7 @@
 import 'package:CatViP/bloc/authentication/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/login_event.dart';
 import 'package:CatViP/bloc/authentication/login_state.dart';
+import 'package:CatViP/pages/authentication/signup_view.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,7 +61,7 @@ class _LoginViewState extends State<LoginView> {
         child: Center(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(14.0),
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
                   //  it will adjust the space on up and down
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -70,25 +71,50 @@ class _LoginViewState extends State<LoginView> {
                     _usernameField(),
                     const SizedBox(height: 10.0),
                     _passwordField(),
+                    _forgotPassword(),
                     msg,
                     _loginButton(),
+                    _signUpText(),
                   ],
                 ),
               ),
             ),
-          ),
+        ),
       ),
       );
+  }
+
+  Widget _signUpText(){
+    return Container(
+        child: TextButton(
+          onPressed: (){
+            Navigator.push(context,MaterialPageRoute(builder: (context) => SignUpView(),));
+            print("sign up");
+          },
+          child: Text('Don\'t have an account? Sign up here', style: Theme.of(context).textTheme.bodyMedium,),
+        )
+    );
+  }
+
+  Widget _forgotPassword(){
+    return Container(
+      margin: EdgeInsets.only(top:10.0),
+      child:  Align(
+        alignment: Alignment.topRight,
+        child: TextButton(
+          onPressed: (){
+            print("forgot password");
+          } ,
+          child: Text('Forgot password', style: Theme.of(context).textTheme.bodyMedium,),
+        )
+      ),
+    );
   }
 
   Widget _logoText(){
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Text('CatViP', style: TextStyle(
-          fontSize: 28,
-          color: HexColor("#3c1e08"),
-        ),
-      ),
+      child: Text('CatViP', style: Theme.of(context).textTheme.bodyLarge),
     );
   }
 
@@ -100,19 +126,18 @@ class _LoginViewState extends State<LoginView> {
 
   Widget _usernameField(){
       return TextFormField(
-        autofocus: true,
         controller: usernameController,
         decoration:  InputDecoration(
-          icon: Icon(Icons.person, color: HexColor("#3c1e08"),),
+          prefixIcon: Icon(Icons.person, color: HexColor("#3c1e08"),),
           hintText: 'Username',
           focusColor: HexColor("#3c1e08"),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: HexColor("#3c1e08"), width: 1.0,),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: HexColor("#a4a4a4"), width: 1.0,),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
           ),
         ),
       );
@@ -123,15 +148,15 @@ class _LoginViewState extends State<LoginView> {
         obscureText: true,
         controller: pwdController,
         decoration: InputDecoration(
-          icon: Icon(Icons.lock, color: HexColor("#3c1e08"),),
+          prefixIcon: Icon(Icons.lock, color: HexColor("#3c1e08"),),
           hintText: 'Password',
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: HexColor("#3c1e08"), width: 1.0,),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: HexColor("#a4a4a4"), width: 1.0,),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
           ),
         ),
       );
@@ -139,10 +164,10 @@ class _LoginViewState extends State<LoginView> {
 
   Widget _loginButton() {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(17.0),
       child: SizedBox(
-        width: 200.0,
-        height: 45.0,
+        width: 400.0,
+        height: 55.0,
         child: ElevatedButton(
             onPressed: () {
                 print(usernameController.text);
@@ -156,16 +181,16 @@ class _LoginViewState extends State<LoginView> {
                   authBloc.add(EmptyField());
                 }
             },
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text('SIGN IN', style: TextStyle(fontSize: 15),),
-            ),
             style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder( borderRadius: BorderRadius.circular(12.0),)
+                RoundedRectangleBorder( borderRadius: BorderRadius.circular(24.0),)
               ),
               backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
 
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text('SIGN IN', style: TextStyle(fontSize: 16),),
             ),
         ),
       ),
