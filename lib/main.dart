@@ -1,6 +1,8 @@
 import 'package:CatViP/bloc/authentication/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/login_state.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
+import 'package:CatViP/pages/splashscreen.dart';
+import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
         create: (context) => AuthBloc(LoginInitState(), AuthRepository()),
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: title,
           theme: ThemeData(
             scaffoldBackgroundColor: HexColor("#ecd9c9"),
@@ -39,7 +42,8 @@ class MyApp extends StatelessWidget {
               color: HexColor('#3c1e08'),
             )
           ),
-          home: LoginView(),
+          home: Splash(),
+        //    need to change into splash screen
         )
     );
 

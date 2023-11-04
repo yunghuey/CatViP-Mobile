@@ -38,9 +38,9 @@ class _LoginViewState extends State<LoginView> {
             child: Text(state.message, style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),),
           );
         } else if (state is LoginLoadingState){
-          return const Padding(
+          return Padding(
             padding: EdgeInsets.all(8.0),
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: CircularProgressIndicator(color: HexColor("#3c1e08"),)),
           );
         } else{
           return Container();
