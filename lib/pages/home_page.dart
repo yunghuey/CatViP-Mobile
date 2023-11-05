@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,8 +12,29 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    retrieveSharedPreference();
     return Scaffold(
-      appBar: AppBar(title: Text('hello'),),
+      appBar: AppBar(
+        title: Text('CatViP'),
+        backgroundColor: HexColor("#ecd9c9"),
+        bottomOpacity: 0.0,
+        elevation: 0.0,
+        automaticallyImplyLeading: false,
+      ),
+      body: Text("hello"),
     );
   }
+
+  Future<void> retrieveSharedPreference() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedValue = prefs.getString('token'); // Replace 'yourKey' with the key you used when saving the value
+
+    if (savedValue != null) {
+      // Use the retrieved value as needed
+      print('Retrieved value: $savedValue');
+    } else {
+      print('Value not found in SharedPreferences');
+    }
+  }
+
 }
