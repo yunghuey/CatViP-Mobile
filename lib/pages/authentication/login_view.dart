@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 
+import '../post/new_post.dart';
+
 class LoginView extends StatefulWidget {
 
   @override
@@ -88,7 +90,8 @@ class _LoginViewState extends State<LoginView> {
     return Container(
         child: TextButton(
           onPressed: (){
-            Navigator.push(context,MaterialPageRoute(builder: (context) => SignUpView(),));
+            //Navigator.push(context,MaterialPageRoute(builder: (context) => SignUpView(),));
+            Navigator.push(context,MaterialPageRoute(builder: (context) => const NewPost(),));
             print("sign up");
           },
           child: Text('Don\'t have an account? Sign up here', style: Theme.of(context).textTheme.bodyMedium,),
