@@ -19,3 +19,7 @@ class LoginErrorState extends AuthState {
   LoginErrorState({required this.message});
 
 }
+
+class RefreshTokenSuccess extends AuthState{}
+
+class RefreshTokenFail extends AuthState{}

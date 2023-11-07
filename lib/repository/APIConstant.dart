@@ -3,4 +3,9 @@ class APIConstant {
 
   // auth module
   static String get LoginURL => "${APIConstant.URL}Auth/login";
+  static String get RefreshURL => "${APIConstant.URL}auth/refresh";
+
+  // post module
+
+  // expert module
 }

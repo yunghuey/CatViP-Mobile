@@ -25,9 +25,40 @@ class AuthRepository{
 
       if (response.statusCode == 200) {
           String data =  response.body;
+          pref.setString("token", data);
+          return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> refreshToken() async{
+    print('in refresh token');
+    var pref = await SharedPreferences.getInstance();
+    try{
+      var url = Uri.parse('http://10.131.76.30:7015/api/auth/refresh');
+      String? token = pref.getString('token');
+
+      if (token != null){
+        var header = {
+          "Content-Type": "application/json",
+          'token' : token
+        };
+
+        var response = await http.put(url, headers: header,);
+
+        if (response.statusCode == 200) {
+          String data =  response.body;
           print(data);
           pref.setString("token", data);
           return true;
+        } else {
+          print('not receiving 200 code');
+          return false;
+        }
       }
       return false;
     } catch (e) {

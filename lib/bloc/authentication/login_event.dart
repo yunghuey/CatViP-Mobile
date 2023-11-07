@@ -18,3 +18,7 @@ class LoginButtonPressed extends AuthEvents{
 }
 
 class EmptyField extends AuthEvents{}
+
+class GetRefreshToken extends AuthEvents{}
+
+class GetLogin extends AuthEvents{}
