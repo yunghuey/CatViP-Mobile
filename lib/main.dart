@@ -1,5 +1,5 @@
-import 'package:CatViP/bloc/authentication/login_bloc.dart';
-import 'package:CatViP/bloc/authentication/login_state.dart';
+import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
+import 'package:CatViP/bloc/authentication/login/login_state.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/pages/splashscreen.dart';

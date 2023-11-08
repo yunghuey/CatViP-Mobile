@@ -1,5 +1,5 @@
 class APIConstant {
-  static const String URL = "http://10.131.76.30:7015/api/";
+  static const String URL = "http://10.131.74.53:7015/api/";
 
   // auth module
   static String get LoginURL => "${APIConstant.URL}Auth/login";

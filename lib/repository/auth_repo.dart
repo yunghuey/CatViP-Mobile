@@ -39,10 +39,11 @@ class AuthRepository{
     print('in refresh token');
     var pref = await SharedPreferences.getInstance();
     try{
-      var url = Uri.parse('http://10.131.76.30:7015/api/auth/refresh');
+      var url = Uri.parse(APIConstant.RefreshURL);
       String? token = pref.getString('token');
 
       if (token != null){
+        print('got token');
         var header = {
           "Content-Type": "application/json",
           'token' : token
@@ -51,6 +52,7 @@ class AuthRepository{
         var response = await http.put(url, headers: header,);
 
         if (response.statusCode == 200) {
+          print('status 200');
           String data =  response.body;
           print(data);
           pref.setString("token", data);
