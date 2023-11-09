@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:CatViP/repository/APIConstant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:image/image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository{
@@ -44,6 +43,7 @@ class AuthRepository{
 
       if (token != null){
         print('got token');
+        print(token);
         var header = {
           "Content-Type": "application/json",
           'token' : token
@@ -64,8 +64,59 @@ class AuthRepository{
       }
       return false;
     } catch (e) {
+      print('error');
       print(e.toString());
       return false;
+    }
+  }
+
+  Future<int> register(String username, String fullname, String email, String password, int gender, String bdayDate) async{
+    print('inside register');
+    var pref = await SharedPreferences.getInstance();
+    try{
+      bool genderFemale;
+      if (gender == 0){ genderFemale = false; }
+      else            { genderFemale = true; }
+
+      var url = Uri.parse('http://10.131.76.30:7015/api/auth/register');
+
+      var body = json.encode({
+        "username": username,
+        "fullName": fullname,
+        "email": email,
+        "password": password,
+        "gender": true,
+        "dateOfBirth": bdayDate,
+        "roleId": 2
+      });
+
+      print(body.toString());
+      var response = await http.post(url,
+          headers: {"Content-Type": "application/json"},
+          body: body
+      );
+
+      if (response.statusCode == 200){
+        String data =  response.body;
+        pref.setString("token", data);
+        return 0;
+      }
+      else {
+        String data =  response.body;
+        if(data[0] == 'U'){
+          // username duplicated
+          return 1;
+        } else if (data[0] == 'E') {
+        // email duplicated
+          return 2;
+        }
+      }
+      return 3;
+
+    } catch (e) {
+      print('error in register');
+      print(e.toString());
+      return 3;
     }
   }
 }
