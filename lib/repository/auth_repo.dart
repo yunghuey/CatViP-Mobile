@@ -78,7 +78,7 @@ class AuthRepository{
       if (gender == 0){ genderFemale = false; }
       else            { genderFemale = true; }
 
-      var url = Uri.parse('http://10.131.76.30:7015/api/auth/register');
+      var url = Uri.parse(APIConstant.RegisterURL);
 
       var body = json.encode({
         "username": username,
