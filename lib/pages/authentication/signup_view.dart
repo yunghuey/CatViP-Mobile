@@ -1,4 +1,5 @@
 import 'package:CatViP/pages/authentication/login_view.dart';
+import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -78,7 +79,7 @@ class _SignUpViewState extends State<SignUpView> {
           if (state is RegisterSuccessState) {
             Navigator.pushAndRemoveUntil(
               context, MaterialPageRoute(
-              builder: (context) => LoginView()), (Route<dynamic> route) => false
+              builder: (context) => HomePage()), (Route<dynamic> route) => false
             );
           } else if (state is UsernameFailState) {
             ScaffoldMessenger.of(context).showSnackBar(
