@@ -33,7 +33,7 @@ class _SplashState extends State<Splash> {
     super.initState();
     authBloc = BlocProvider.of<AuthBloc>(context);
     // Delay the execution of the FutureBuilder for 2000 milliseconds.
-    Future.delayed(Duration(milliseconds: 2000),(){
+    Future.delayed(Duration(milliseconds: 1000),(){
       redirect();
     });
   }
