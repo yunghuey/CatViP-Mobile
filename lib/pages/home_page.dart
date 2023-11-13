@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,15 +16,23 @@ class _HomePageState extends State<HomePage> {
     retrieveSharedPreference();
     return Scaffold(
       appBar: AppBar(
+        //flexibleSpace: _logoImage(),
         title: Text('CatViP'),
         backgroundColor: HexColor("#ecd9c9"),
         bottomOpacity: 0.0,
         elevation: 0.0,
         automaticallyImplyLeading: false,
       ),
-      body: Text("hello"),
+      body: Center(
+        child: Column(
+          children: [
+            Text("hello"),
+          ],
+        ),
+      ),
     );
   }
+
 
   Future<void> retrieveSharedPreference() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -36,5 +45,45 @@ class _HomePageState extends State<HomePage> {
       print('Value not found in SharedPreferences');
     }
   }
+
+/*
+  Widget pageRouter() {
+
+    final GoRouter _router = GoRouter(
+        routes: [
+          ShellRoute(
+          routes: [
+          GoRoute(
+              path: '/home',
+              builder: (context,state) => HomePage()
+           ),
+          GoRoute(
+              path: '/addPost',
+              builder: (context,state) => HomePage()
+          ),
+          GoRoute(
+              path: '/shop',
+              builder: (context,state) => HomePage()
+          ),
+          GoRoute(
+              path: '/profile',
+              builder: (context,state) => HomePage()
+          ),
+          ],
+            builder: (context, state, child){
+            return BottomNavigationBar(child: child);
+            }
+          ),
+        ],
+    );
+
+    MaterialApp.router(
+        routerConfig: _router
+    );
+
+  }
+
+ */
+
 
 }

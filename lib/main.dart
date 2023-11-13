@@ -3,6 +3,8 @@ import 'package:CatViP/bloc/authentication/login/login_state.dart';
 import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
 import 'package:CatViP/bloc/authentication/register/register_state.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
+import 'package:CatViP/pages/home_page.dart';
+import 'package:CatViP/pages/post/new_post.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
@@ -12,6 +14,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 void main() {
   runApp(const MyApp());
+  //runApp(const HomePage());
 }
 
 class MyApp extends StatelessWidget {
@@ -54,7 +57,8 @@ class MyApp extends StatelessWidget {
                 color: HexColor('#3c1e08'),
               )
           ),
-          home: Splash(),
+          //home: Splash(),
+          home: HomePage(),
           //    need to change into splash screen
         )
     );
