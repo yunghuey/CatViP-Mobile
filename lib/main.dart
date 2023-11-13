@@ -1,5 +1,7 @@
-import 'package:CatViP/bloc/authentication/login_bloc.dart';
-import 'package:CatViP/bloc/authentication/login_state.dart';
+import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
+import 'package:CatViP/bloc/authentication/login/login_state.dart';
+import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
+import 'package:CatViP/bloc/authentication/register/register_state.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/pages/splashscreen.dart';
@@ -19,39 +21,49 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const title = 'CatViP';
-    return BlocProvider(
-        create: (context) => AuthBloc(LoginInitState(), AuthRepository()),
+    return MultiBlocProvider(
+      // whichever page that declare BlocProvider need to initialize here
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(LoginInitState(), AuthRepository()),
+        ),
+        //  need to
+        BlocProvider<RegisterBloc>(
+          create: (context) => RegisterBloc(RegisterInitState(), AuthRepository()),
+        )
+      ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: title,
           theme: ThemeData(
-            scaffoldBackgroundColor: HexColor("#ecd9c9"),
-            fontFamily: 'Times New Roman',
-            textTheme: TextTheme(
-              bodyMedium: TextStyle(
-                color: HexColor("#3c1e08"),
+              scaffoldBackgroundColor: HexColor("#ecd9c9"),
+              fontFamily: 'Times New Roman',
+              textTheme: TextTheme(
+                  bodyMedium: TextStyle(
+                    color: HexColor("#3c1e08"),
+                    fontSize: 13,
+                  ),
+                  bodyLarge: TextStyle(
+                    color: HexColor("#3c1e08"),
+                    fontSize: 26,
+                  )
               ),
-              bodyLarge: TextStyle(
-                color: HexColor("#3c1e08"),
-                fontSize: 26,
-              )
-            ),
-            appBarTheme: AppBarTheme(
+              appBarTheme: AppBarTheme(
 
-              iconTheme: IconThemeData(color: HexColor('#3c1e08')),
-              color: HexColor('#3c1e08'),
-            )
+                iconTheme: IconThemeData(color: HexColor('#3c1e08')),
+                color: HexColor('#3c1e08'),
+              )
           ),
           home: Splash(),
-        //    need to change into splash screen
+          //    need to change into splash screen
         )
     );
-
-    // return MaterialApp(
-    //   routes: {
-    //     '/': (context) => UI_classname(),
-    //     '/user' : (context) => profile_classname(),
-    //   },
-    // );
   }
 }
+// dont delete by yung huey
+// return MaterialApp(
+//   routes: {
+//     '/': (context) => UI_classname(),
+//     '/user' : (context) => profile_classname(),
+//   },
+// );

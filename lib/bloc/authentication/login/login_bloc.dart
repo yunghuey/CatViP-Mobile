@@ -1,5 +1,5 @@
-import 'package:CatViP/bloc/authentication/login_event.dart';
-import 'package:CatViP/bloc/authentication/login_state.dart';
+import 'package:CatViP/bloc/authentication/login/login_event.dart';
+import 'package:CatViP/bloc/authentication/login/login_state.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +19,16 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
       emit(LoginErrorState(message: "Please fill up the form"));
     });
 
+    on<GetRefreshToken>((event, emit) async{
+      print('in bloc');
+      bool getNewToken = await repo.refreshToken();
+      if (getNewToken){
+        emit(RefreshTokenSuccess());
+      } else{
+        emit(RefreshTokenFail());
+      }
+    });
+
     on<LoginButtonPressed>((event, emit) async {
       emit(LoginLoadingState());
       
@@ -33,5 +43,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
         emit(LoginErrorState(message: "Invalid username or password"));
       }
     });
+
+
   }}
 

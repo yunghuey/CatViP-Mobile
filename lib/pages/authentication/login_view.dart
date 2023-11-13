@@ -1,6 +1,6 @@
-import 'package:CatViP/bloc/authentication/login_bloc.dart';
-import 'package:CatViP/bloc/authentication/login_event.dart';
-import 'package:CatViP/bloc/authentication/login_state.dart';
+import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
+import 'package:CatViP/bloc/authentication/login/login_event.dart';
+import 'package:CatViP/bloc/authentication/login/login_state.dart';
 import 'package:CatViP/pages/authentication/signup_view.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -55,8 +55,9 @@ class _LoginViewState extends State<LoginView> {
       BlocListener<AuthBloc, AuthState>(
         listener: (context, state){
           if (state is UserLoginSuccessState){
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => const HomePage())
+            Navigator.pushAndRemoveUntil(
+                context, MaterialPageRoute(
+                builder: (context) => const HomePage()), (Route<dynamic> route) => false
             );
           }
         },
