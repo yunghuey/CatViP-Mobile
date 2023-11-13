@@ -60,7 +60,7 @@ class _SplashState extends State<Splash> {
                 builder: (context) => HomePage()),
                     (Route<dynamic> route) => false
             );
-          } else if (state is RefreshTokenFail){
+          } else if (state is RefreshTokenFail || state is LoginInitState){
             Navigator.pushAndRemoveUntil(
                 context, MaterialPageRoute(
                 builder: (context) => LoginView()),
