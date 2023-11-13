@@ -119,4 +119,25 @@ class AuthRepository{
       return 3;
     }
   }
+
+  Future<bool> sendEmail(String email) async{
+    print('inside send email');
+    try{
+      var url = Uri.parse(APIConstant.ForgotPasswordURL + "?email=" + email);
+      print(url.toString());
+      var response = await http.post(url);
+
+      if (response.statusCode == 200){
+        return true;
+      } else {
+      //   status code == 400
+        print('invalid email');
+      }
+      return false;
+    } catch (e){
+      print('error in send email for forgot password');
+      print(e.toString());
+      return false;
+    }
+  }
 }

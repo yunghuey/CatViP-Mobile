@@ -1,6 +1,7 @@
 import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/login/login_event.dart';
 import 'package:CatViP/bloc/authentication/login/login_state.dart';
+import 'package:CatViP/pages/authentication/forgotpwd_view.dart';
 import 'package:CatViP/pages/authentication/signup_view.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -105,6 +106,7 @@ class _LoginViewState extends State<LoginView> {
         child: TextButton(
           onPressed: (){
             print("forgot password");
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPwd()));
           } ,
           child: Text('Forgot password', style: Theme.of(context).textTheme.bodyMedium,),
         )

@@ -1,3 +1,5 @@
+import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_bloc.dart';
+import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_state.dart';
 import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/login/login_state.dart';
 import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
@@ -30,6 +32,9 @@ class MyApp extends StatelessWidget {
         //  need to
         BlocProvider<RegisterBloc>(
           create: (context) => RegisterBloc(RegisterInitState(), AuthRepository()),
+        ),
+        BlocProvider<ForgotPwdBloc>(
+          create: (context) => ForgotPwdBloc(PasswordInitState(), AuthRepository()),
         )
       ],
         child: MaterialApp(
