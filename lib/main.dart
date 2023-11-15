@@ -61,8 +61,8 @@ class MyApp extends StatelessWidget {
                 color: HexColor('#3c1e08'),
               )
           ),
-          //home: Splash(),
-          home: HomePage(),
+          home: Splash(),
+          //home: HomePage(),
 
           //    need to change into splash screen
         ),
