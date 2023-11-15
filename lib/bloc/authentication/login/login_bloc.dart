@@ -44,6 +44,9 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
       }
     });
 
+    on<GetLogin>((event, emit) {
+      emit(LoginInitState());
+    });
 
   }}
 
