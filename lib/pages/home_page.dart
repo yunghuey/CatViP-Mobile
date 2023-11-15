@@ -3,6 +3,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 
+import '../pageRoutes/bottom_navigation_bar.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -27,9 +29,11 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Text("hello"),
+
           ],
         ),
       ),
+        bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 
@@ -45,45 +49,6 @@ class _HomePageState extends State<HomePage> {
       print('Value not found in SharedPreferences');
     }
   }
-
-/*
-  Widget pageRouter() {
-
-    final GoRouter _router = GoRouter(
-        routes: [
-          ShellRoute(
-          routes: [
-          GoRoute(
-              path: '/home',
-              builder: (context,state) => HomePage()
-           ),
-          GoRoute(
-              path: '/addPost',
-              builder: (context,state) => HomePage()
-          ),
-          GoRoute(
-              path: '/shop',
-              builder: (context,state) => HomePage()
-          ),
-          GoRoute(
-              path: '/profile',
-              builder: (context,state) => HomePage()
-          ),
-          ],
-            builder: (context, state, child){
-            return BottomNavigationBar(child: child);
-            }
-          ),
-        ],
-    );
-
-    MaterialApp.router(
-        routerConfig: _router
-    );
-
-  }
-
- */
 
 
 }

@@ -5,6 +5,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import '../../pageRoutes/bottom_navigation_bar.dart';
+
 class NewPost extends StatefulWidget {
   const NewPost({Key? key}) : super(key: key);
 
@@ -74,6 +76,7 @@ class _NewPostState extends State<NewPost> {
             ),
           ),
         ),
+        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }
@@ -250,4 +253,12 @@ class _NewPostState extends State<NewPost> {
       ),
     );
   }
+
+  /*
+  Widget postTypes() {
+    return Container(
+
+  }
+   */
+
 }
