@@ -19,7 +19,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       // Home button clicked
         print('Home button clicked');
         //Navigator.pushNamed(context, MyNavigator.initialRoute);
-        Navigator.pushReplacementNamed(context, MyNavigator.initialRoute);
+        // Navigator.pushReplacementNamed(context, MyNavigator.initialRoute);
         break;
       case 1:
       // Add button clicked

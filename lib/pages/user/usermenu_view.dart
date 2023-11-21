@@ -1,6 +1,7 @@
 import 'package:CatViP/bloc/authentication/logout/logout_bloc.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_event.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
+import 'package:CatViP/pages/cat/createcat_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -90,7 +91,7 @@ class _UserMenuState extends State<UserMenu> {
             // Handle My Profile button click
           }),
           _buildButton('Register My Cat', () {
-            // Handle Register My Cat button click
+            Navigator.push(context,MaterialPageRoute(builder: (context) => CreateCatView(),));
           }),
           _buildButton('View All Cat', () {
             // Handle View All Cat button click

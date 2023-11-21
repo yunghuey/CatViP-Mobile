@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
                   ),
                   bodyLarge: TextStyle(
                     color: HexColor("#3c1e08"),
-                    fontSize: 26,
+                    fontSize: 23,
                   )
               ),
               appBarTheme: AppBarTheme(
