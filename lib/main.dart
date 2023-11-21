@@ -4,6 +4,8 @@ import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/login/login_state.dart';
 import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
 import 'package:CatViP/bloc/authentication/register/register_state.dart';
+import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
+import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pageRoutes/navigator.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/home_page.dart';
@@ -11,6 +13,7 @@ import 'package:CatViP/pages/post/new_post.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
+import 'package:CatViP/repository/post_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -40,7 +43,11 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ForgotPwdBloc>(
           create: (context) => ForgotPwdBloc(PasswordInitState(), AuthRepository()),
-        )
+        ),
+        BlocProvider<GetPostBloc>(
+          create: (context) => GetPostBloc(),
+        ),
+
       ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data'; // Add this import
 import 'package:flutter/material.dart';
@@ -34,10 +35,13 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
-  Future<Uint8List?> _getImageBytes(File imageFile) async {
+  Future<String?> _getImageBase64(File imageFile) async {
     try {
       List<int> imageBytes = await imageFile.readAsBytes();
-      return Uint8List.fromList(imageBytes);
+      String base64String = base64Encode(Uint8List.fromList(imageBytes));
+      print(base64Encode(Uint8List.fromList(imageBytes)));
+      //return base64String;
+      return base64Encode(Uint8List.fromList(imageBytes));
     } catch (e) {
       print("Error reading image as bytes: $e");
       return null;
@@ -146,13 +150,13 @@ class _NewPostState extends State<NewPost> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: FutureBuilder<Uint8List?>(
-                  future: image != null ? _getImageBytes(image!) : null,
+                child: FutureBuilder<String?>(
+                  future: image != null ? _getImageBase64(image!) : null,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done &&
                         snapshot.hasData) {
                       return Image.memory(
-                        snapshot.data!,
+                        base64Decode(snapshot.data!),
                         width: 300,
                         height: 300,
                         fit: BoxFit.cover,
@@ -254,11 +258,5 @@ class _NewPostState extends State<NewPost> {
     );
   }
 
-  /*
-  Widget postTypes() {
-    return Container(
-
-  }
-   */
 
 }
