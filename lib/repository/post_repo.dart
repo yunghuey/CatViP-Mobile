@@ -23,9 +23,9 @@ class AuthRepository{
       );
 
       if (response.statusCode == 200) {
-          String data =  response.body;
-          pref.setString("token", data);
-          return true;
+        String data =  response.body;
+        pref.setString("token", data);
+        return true;
       }
       return false;
     } catch (e) {
@@ -107,7 +107,7 @@ class AuthRepository{
           // username duplicated
           return 1;
         } else if (data[0] == 'E') {
-        // email duplicated
+          // email duplicated
           return 2;
         }
       }
@@ -117,55 +117,6 @@ class AuthRepository{
       print('error in register');
       print(e.toString());
       return 3;
-    }
-  }
-
-  Future<bool> sendEmail(String email) async{
-    print('inside send email');
-    try{
-      var url = Uri.parse(APIConstant.ForgotPasswordURL + "?email=" + email);
-      print(url.toString());
-      var response = await http.post(url);
-
-      if (response.statusCode == 200){
-        return true;
-      } else {
-      //   status code == 400
-        print('invalid email');
-      }
-      return false;
-    } catch (e){
-      print('error in send email for forgot password');
-      print(e.toString());
-      return false;
-    }
-  }
-
-  Future<bool> logout() async{
-    var pref = await SharedPreferences.getInstance();
-    try{
-      var url = Uri.parse(APIConstant.LogoutURL);
-      String? token = pref.getString('token');
-
-      if (token != null){
-        var header = {
-          "Content-Type": "application/json",
-          'token' : token
-        };
-
-        var response = await http.delete(url, headers: header,);
-
-        if (response.statusCode == 200) {
-          print('logout success');
-          pref.remove("token");
-          return true;
-        }
-      }
-      return false;
-    } catch (e) {
-      print('error in logout');
-      print(e.toString());
-      return false;
     }
   }
 }

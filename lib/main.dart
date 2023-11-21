@@ -2,18 +2,25 @@ import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_bloc.dart';
 import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_state.dart';
 import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/login/login_state.dart';
+import 'package:CatViP/bloc/authentication/logout/logout_bloc.dart';
+import 'package:CatViP/bloc/authentication/logout/logout_state.dart';
 import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
 import 'package:CatViP/bloc/authentication/register/register_state.dart';
+import 'package:CatViP/pageRoutes/navigator.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
+import 'package:CatViP/pages/home_page.dart';
+import 'package:CatViP/pages/post/new_post.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(const MyApp());
+  //runApp(const HomePage());
 }
 
 class MyApp extends StatelessWidget {
@@ -35,11 +42,16 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ForgotPwdBloc>(
           create: (context) => ForgotPwdBloc(PasswordInitState(), AuthRepository()),
-        )
+        ),
+        BlocProvider<LogoutBloc>(
+          create: (context) => LogoutBloc(LogoutInitState(), AuthRepository()),
+        ),
       ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: title,
+          initialRoute: MyNavigator.initialRoute,
+          onGenerateRoute: MyNavigator.generateRoute,
           theme: ThemeData(
               scaffoldBackgroundColor: HexColor("#ecd9c9"),
               fontFamily: 'Times New Roman',
@@ -50,18 +62,20 @@ class MyApp extends StatelessWidget {
                   ),
                   bodyLarge: TextStyle(
                     color: HexColor("#3c1e08"),
-                    fontSize: 26,
+                    fontSize: 23,
                   )
               ),
               appBarTheme: AppBarTheme(
-
                 iconTheme: IconThemeData(color: HexColor('#3c1e08')),
                 color: HexColor('#3c1e08'),
               )
           ),
           home: Splash(),
+          //home: HomePage(),
+
           //    need to change into splash screen
-        )
+        ),
+
     );
   }
 }
