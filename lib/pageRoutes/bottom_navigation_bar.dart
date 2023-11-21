@@ -34,6 +34,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       case 3:
       // Profile button clicked
         print('Profile button clicked');
+        Navigator.pushReplacementNamed(context, MyNavigator.fifthRoute);
         break;
     }
 

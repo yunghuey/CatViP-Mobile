@@ -140,4 +140,32 @@ class AuthRepository{
       return false;
     }
   }
+
+  Future<bool> logout() async{
+    var pref = await SharedPreferences.getInstance();
+    try{
+      var url = Uri.parse(APIConstant.LogoutURL);
+      String? token = pref.getString('token');
+
+      if (token != null){
+        var header = {
+          "Content-Type": "application/json",
+          'token' : token
+        };
+
+        var response = await http.delete(url, headers: header,);
+
+        if (response.statusCode == 200) {
+          print('logout success');
+          pref.remove("token");
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      print('error in logout');
+      print(e.toString());
+      return false;
+    }
+  }
 }
