@@ -36,15 +36,12 @@ class AuthRepository{
   }
 
   Future<bool> refreshToken() async{
-    print('in refresh token');
     var pref = await SharedPreferences.getInstance();
     try{
       var url = Uri.parse(APIConstant.RefreshURL);
       String? token = pref.getString('token');
 
       if (token != null){
-        print('got token');
-        print(token);
         var header = {
           "Content-Type": "application/json",
           'token' : token
@@ -53,7 +50,7 @@ class AuthRepository{
         var response = await http.put(url, headers: header,);
 
         if (response.statusCode == 200) {
-          print('status 200');
+          print('new token');
           String data =  response.body;
           print(data);
           pref.setString("token", data);
@@ -72,7 +69,6 @@ class AuthRepository{
   }
 
   Future<int> register(String username, String fullname, String email, String password, int gender, String bdayDate) async{
-    print('inside register');
     var pref = await SharedPreferences.getInstance();
     try{
       bool genderFemale;
@@ -86,7 +82,7 @@ class AuthRepository{
         "fullName": fullname,
         "email": email,
         "password": password,
-        "gender": true,
+        "gender": genderFemale,
         "dateOfBirth": bdayDate,
         "roleId": 2
       });
@@ -122,7 +118,6 @@ class AuthRepository{
   }
 
   Future<bool> sendEmail(String email) async{
-    print('inside send email');
     try{
       var url = Uri.parse(APIConstant.ForgotPasswordURL + "?email=" + email);
       print(url.toString());
