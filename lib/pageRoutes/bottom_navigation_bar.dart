@@ -13,19 +13,25 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   int _currentIndex = 0;
 
   void _onItemTapped(int index) {
+
+    setState(() {
+      _currentIndex = index;
+    });
+
     // You can add specific actions for each tab here
     switch (index) {
       case 0:
       // Home button clicked
         print('Home button clicked');
         //Navigator.pushNamed(context, MyNavigator.initialRoute);
-        // Navigator.pushReplacementNamed(context, MyNavigator.initialRoute);
+        Navigator.pushNamed(context, MyNavigator.secondRoute);
+
         break;
       case 1:
       // Add button clicked
         print('Add button clicked');
         //Navigator.pushNamed(context, MyNavigator.secondRoute);
-        Navigator.pushReplacementNamed(context, MyNavigator.secondRoute);
+        Navigator.pushNamed(context, MyNavigator.thirdRoute);
         break;
       case 2:
       // Shop button clicked
@@ -38,9 +44,6 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         break;
     }
 
-    setState(() {
-      _currentIndex = index;
-    });
   }
 
   @override

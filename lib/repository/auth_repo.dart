@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository{
+
   Future<bool> login(String username, String password) async {
     var pref = await SharedPreferences.getInstance();
     try {
