@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:CatViP/bloc/cat/new_cat/createcat_bloc.dart';
+import 'package:CatViP/bloc/cat/new_cat/createcat_event.dart';
+import 'package:CatViP/bloc/cat/new_cat/createcat_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:intl/intl.dart';
 
 class CreateCatView extends StatefulWidget {
   const CreateCatView({super.key});
@@ -15,8 +20,11 @@ class CreateCatView extends StatefulWidget {
 class _CreateCatViewState extends State<CreateCatView> {
   TextEditingController catnameController = TextEditingController();
   TextEditingController catdescController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  int _gender = 0;
 
+  late CreateCatBloc createBloc;
   File? image;
   final _picker = ImagePicker();
 
@@ -41,6 +49,21 @@ class _CreateCatViewState extends State<CreateCatView> {
     }
   }
 
+  late var msg = Container();
+  late final status = BlocBuilder<CreateCatBloc, CreateCatState>(
+    builder: (context, state){
+      if (state is CreateCatLoadingState){
+        return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+      }
+      return Container();
+    },
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    createBloc = BlocProvider.of<CreateCatBloc>(context);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,28 +73,51 @@ class _CreateCatViewState extends State<CreateCatView> {
         bottomOpacity: 0.0,
         elevation: 0.0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _catNameField(),
-                SizedBox(height: 5.0),
-                _catNameText(),
-                _catDescField(),
-                SizedBox(height: 15.0),
-                _catImageText(),
-                SizedBox(height: 10.0),
-                _insertImage(context),
-                _createCatButton(),
-              ],
+      body:
+      BlocListener<CreateCatBloc, CreateCatState>(
+        // ignore: curly_braces_in_flow_control_structures
+        listener: (context, state) {
+          if (state is CreateCatSuccessState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Cat is created successfully'))
+            ); //   navigate to View All Cat
+            //   set texteditingcontroller to empty
+          }
+          else if (state is CreateCatFailState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message))
+            );
+          }
+        } ,
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _catNameField(),
+                  SizedBox(height: 5.0),
+                  _catNameText(),
+                  _catDescField(),
+                  _catgenderField(),
+                  _catdobField(),
+                  SizedBox(height: 15.0),
+                  _catImageText(),
+                  SizedBox(height: 10.0),
+                  _insertImage(context),
+                  msg,
+                  status,
+                  _createCatButton(),
+                ],
+              ),
             ),
           ),
-        ),
+        ),// listener
+
       ),
+
     );
   }
 
@@ -115,12 +161,6 @@ class _CreateCatViewState extends State<CreateCatView> {
         if (value == null || value.isEmpty){
           return 'Please enter cat description';
         }
-        if (value.trim().contains(' ')){
-          List<String> words = value.split(' ');
-          if (words.length > 1){
-            return 'Cat name cannot contain whitespace';
-          }
-        }
         return null;
       },
       controller: catdescController,
@@ -138,6 +178,118 @@ class _CreateCatViewState extends State<CreateCatView> {
     ),
     );
   }
+
+  Widget _catgenderField() {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Container(
+        decoration: BoxDecoration(
+
+            border: Border(
+                bottom: BorderSide(
+                  color: HexColor("#a4a4a4"),
+                  width: 1.0,
+                )
+            )
+
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Gender", style: TextStyle(fontSize: 16,),),
+            Row(
+              children: [
+                Expanded(
+                  child: RadioListTile(
+                    title: Text('Male', style: TextStyle(fontSize: 14),),
+                    value: 0,
+                    activeColor: HexColor('#3c1e08'),
+                    groupValue: _gender,
+                    onChanged: (value) {
+                      setState(() {
+                        _gender = value!;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: RadioListTile(
+                    title: Text('Female', style: TextStyle(fontSize: 14),),
+                    value: 1,
+                    activeColor: HexColor('#3c1e08'),
+                    groupValue: _gender,
+                    onChanged: (value) {
+                      setState(() {
+                        _gender = value!;
+                      });                    },
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _selectDate() async{
+    DateTime now = DateTime.now();
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate:  DateTime(1950),
+      lastDate: now,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData(
+            dialogBackgroundColor: Colors.white,
+            primarySwatch: Colors.brown,
+
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null){
+      setState(() {
+        String datedob = DateFormat("yyyy-MM-dd").format(picked);
+        dateController.text = datedob;
+      });
+    }
+  }
+
+  Widget _catdobField(){
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: TextFormField(
+        readOnly: true,
+        controller: dateController,
+        decoration: InputDecoration(
+          labelText: "Date of birth",
+          prefixIcon: Icon(Icons.date_range_rounded, color: HexColor("#3c1e08"),),
+          focusColor: HexColor("#3c1e08"),
+          labelStyle: TextStyle(color: HexColor("#3c1e08")),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: HexColor("#a4a4a4")),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color:  HexColor("#3c1e08")),
+          ),
+        ),
+        maxLines: 1,
+        validator: (value){
+          if (value!.isEmpty || value!.length < 1){
+            return 'Choose Date';
+          }
+        },
+        onTap: (){
+          _selectDate();
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+      ),
+    );
+  }
+
 
   Widget _catImageText(){
     return Text("Choose a profile image", style: TextStyle(fontSize: 16),);
@@ -245,7 +397,7 @@ class _CreateCatViewState extends State<CreateCatView> {
               },
               child: Icon(
                 Icons.camera_alt,
-                color: Colors.teal,
+                color: HexColor("#3c1e08"),
                 size: 28.0,
               ),
             ),
@@ -262,9 +414,28 @@ class _CreateCatViewState extends State<CreateCatView> {
         width: 400.0,
         height: 55.0,
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             if(_formKey.currentState!.validate()){
               // success validation
+              if (image != null) {
+                Uint8List? imageData = await _getImageBytes(image!);
+                if (imageData != null){
+                  String base64String = base64Encode(Uint8List.fromList(imageData));
+                  print(base64String);
+                //   continue create cat process
+                createBloc.add(CreateButtonPressed(
+                  catname: catnameController.text.trim(),
+                  catdesc: catdescController.text.trim(),
+                  dob: dateController.text,
+                  gender: int.parse(_gender.toString()),
+                  imagebyte: base64String,
+                ));
+                }
+              } else {
+                setState(() {
+                  msg = Container(child: Text("Please insert an image", style: TextStyle(color: Colors.red),));
+                });
+              }
             }
           },
           style: ButtonStyle(

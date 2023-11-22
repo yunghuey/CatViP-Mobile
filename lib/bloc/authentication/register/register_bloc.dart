@@ -1,4 +1,3 @@
-import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/register/register_event.dart';
 import 'package:CatViP/bloc/authentication/register/register_state.dart';
 import 'package:CatViP/repository/auth_repo.dart';
@@ -13,7 +12,6 @@ class RegisterBloc extends Bloc<RegisterEvents, RegisterState>{
 
     on<SignUpButtonPressed>((event,emit) async{
       emit(RegisterLoadingState());
-      print('going to bloc');
       int validSignUp = await repo.register(event.username,event.fullname,event.email, event.password, event.gender, event.bdayDate);
       if (validSignUp == 0){
         emit(RegisterSuccessState());
