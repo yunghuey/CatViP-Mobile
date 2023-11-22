@@ -25,6 +25,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         print('Home button clicked');
         //Navigator.pushNamed(context, MyNavigator.initialRoute);
         Navigator.pushNamed(context, MyNavigator.secondRoute);
+
         break;
       case 1:
       // Add button clicked
@@ -39,6 +40,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       case 3:
       // Profile button clicked
         print('Profile button clicked');
+        Navigator.pushReplacementNamed(context, MyNavigator.fifthRoute);
         break;
     }
 

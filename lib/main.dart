@@ -2,6 +2,8 @@ import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_bloc.dart';
 import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_state.dart';
 import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/login/login_state.dart';
+import 'package:CatViP/bloc/authentication/logout/logout_bloc.dart';
+import 'package:CatViP/bloc/authentication/logout/logout_state.dart';
 import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
 import 'package:CatViP/bloc/authentication/register/register_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
@@ -47,7 +49,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<GetPostBloc>(
           create: (context) => GetPostBloc(),
         ),
-
+        BlocProvider<LogoutBloc>(
+          create: (context) => LogoutBloc(LogoutInitState(), AuthRepository()),
+        ),
       ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -64,11 +68,10 @@ class MyApp extends StatelessWidget {
                   ),
                   bodyLarge: TextStyle(
                     color: HexColor("#3c1e08"),
-                    fontSize: 26,
+                    fontSize: 23,
                   )
               ),
               appBarTheme: AppBarTheme(
-
                 iconTheme: IconThemeData(color: HexColor('#3c1e08')),
                 color: HexColor('#3c1e08'),
               )
