@@ -402,10 +402,13 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Future<void> _selectDate() async{
+    DateTime now = DateTime.now();
+    DateTime lastdob = DateTime(now.year - 10, now.month, now.day);
     DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate:  DateTime(1950), lastDate: DateTime.now(),
+        initialDate: lastdob,
+        firstDate:  DateTime(1950),
+        lastDate: lastdob,
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData(
