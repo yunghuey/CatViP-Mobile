@@ -6,6 +6,8 @@ import 'package:CatViP/bloc/authentication/logout/logout_bloc.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_state.dart';
 import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
 import 'package:CatViP/bloc/authentication/register/register_state.dart';
+import 'package:CatViP/bloc/cat/new_cat/createcat_bloc.dart';
+import 'package:CatViP/bloc/cat/new_cat/createcat_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pageRoutes/navigator.dart';
@@ -15,6 +17,7 @@ import 'package:CatViP/pages/post/new_post.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
+import 'package:CatViP/repository/cat_repo.dart';
 import 'package:CatViP/repository/post_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,6 +54,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<LogoutBloc>(
           create: (context) => LogoutBloc(LogoutInitState(), AuthRepository()),
+        ),
+        BlocProvider<CreateCatBloc>(
+          create: (context) => CreateCatBloc(CreateCatInitState(), CatRepository()),
         ),
       ],
         child: MaterialApp(
