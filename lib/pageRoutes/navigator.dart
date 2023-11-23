@@ -10,7 +10,8 @@ class MyNavigator {
   static const String secondRoute = '/home';
   static const String thirdRoute = '/newPost';
   static const String fourthRoute = '/shopping';
-  static const String fifthRoute = '/profile';
+  static const String userRoute = '/profile';
+  static const String searchRoute = '/search';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -22,7 +23,9 @@ class MyNavigator {
         return MaterialPageRoute(builder: (_) => NewPost());
       // case fourthRoute:
       //   return MaterialPageRoute(builder: (_) => Shopping());
-      case fifthRoute:
+      case userRoute:
+        return MaterialPageRoute(builder: (_) => UserMenu());
+      case searchRoute:
         return MaterialPageRoute(builder: (_) => UserMenu());
       default:
         return MaterialPageRoute(builder: (_) => NotFoundScreen());

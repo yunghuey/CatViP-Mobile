@@ -25,22 +25,27 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         print('Home button clicked');
         //Navigator.pushNamed(context, MyNavigator.initialRoute);
         Navigator.pushNamed(context, MyNavigator.secondRoute);
-
         break;
       case 1:
       // Add button clicked
         print('Add button clicked');
         //Navigator.pushNamed(context, MyNavigator.secondRoute);
-        Navigator.pushNamed(context, MyNavigator.thirdRoute);
+        Navigator.pushNamed(context, MyNavigator.searchRoute);
         break;
       case 2:
       // Shop button clicked
-        print('Shop button clicked');
+      // Add button clicked
+        print('Add button clicked');
+        //Navigator.pushNamed(context, MyNavigator.secondRoute);
+        Navigator.pushNamed(context, MyNavigator.thirdRoute);
         break;
       case 3:
-      // Profile button clicked
+        print('Shop button clicked');
+        break;
+      case 4:
+        // Profile button clicked
         print('Profile button clicked');
-        Navigator.pushReplacementNamed(context, MyNavigator.fifthRoute);
+        Navigator.pushReplacementNamed(context, MyNavigator.userRoute);
         break;
     }
 
@@ -55,6 +60,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
+          backgroundColor: Colors.black,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Explore',
           backgroundColor: Colors.black,
         ),
         BottomNavigationBarItem(
