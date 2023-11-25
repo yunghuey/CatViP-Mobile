@@ -12,6 +12,7 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
   final PostRepository postRepository = PostRepository();
 
   GetPostBloc() : super(GetPostInitial()) {
+
     on<GetPostList>((event, emit) async {
       try {
         emit(GetPostLoading());

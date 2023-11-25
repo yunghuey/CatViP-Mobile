@@ -18,11 +18,15 @@ import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:CatViP/repository/cat_repo.dart';
+import 'package:CatViP/repository/postType_repo.dart';
 import 'package:CatViP/repository/post_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:go_router/go_router.dart';
+
+import 'bloc/post/new_post/new_post_bloc.dart';
+import 'bloc/post/new_post/new_post_state.dart';
 
 void main() {
   runApp(const MyApp());
@@ -57,6 +61,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<CreateCatBloc>(
           create: (context) => CreateCatBloc(CreateCatInitState(), CatRepository()),
+        ),
+        BlocProvider<NewPostBloc>(
+          create: (context) => NewPostBloc(NewPostInitState(), PostRepository(), PostTypeRepository()),
         ),
       ],
         child: MaterialApp(

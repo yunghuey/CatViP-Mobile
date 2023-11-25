@@ -358,7 +358,7 @@ class _CreateCatViewState extends State<CreateCatView> {
               height: 250, // Set your desired height for the square box
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.teal,
+                  color: Colors.brown,
                   width: 2.0,
                 ),
               ),
