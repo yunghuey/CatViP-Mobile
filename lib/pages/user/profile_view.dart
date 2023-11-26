@@ -92,6 +92,8 @@ class _ProfileViewState extends State<ProfileView> {
   );
   late UserModel user;
   String message = "Welcome";
+  //  need to get all cat of this user and all post by this user
+  // when tap on cat, should be able to get the index
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,10 +107,7 @@ class _ProfileViewState extends State<ProfileView> {
                 style: Theme.of(context).textTheme.bodyLarge,
               );
             } else {
-              return Text(
-                "Welcome",
-                style: Theme.of(context).textTheme.bodyLarge,
-              );
+              return Text( "Welcome", style: Theme.of(context).textTheme.bodyLarge,);
             }
           },
         ),
