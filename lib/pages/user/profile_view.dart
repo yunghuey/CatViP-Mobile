@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:CatViP/bloc/authentication/logout/logout_bloc.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_event.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_state.dart';
@@ -88,7 +90,7 @@ class _ProfileViewState extends State<ProfileView> {
         return Container();
       }
   );
-  late UserModel? user;
+  late UserModel user;
   String message = "Welcome";
   @override
   Widget build(BuildContext context) {
@@ -157,7 +159,7 @@ class _ProfileViewState extends State<ProfileView> {
             } else if (state is UserProfileLoadedState) {
               user = state.user;
               // setState(() {
-              message = user!.username ?? "Welcome";              // });
+              message = user.username ?? "Welcome";              // });
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -184,13 +186,15 @@ class _ProfileViewState extends State<ProfileView> {
         height: 100,
         width: 100,
         decoration: BoxDecoration(
-          color: Colors.blueGrey,
+          color: Colors.white,
           shape:BoxShape.circle,
           image: DecorationImage(
-            image: ResizeImage(AssetImage('assets/Dinosaur.png'), width: 170),
-            fit: BoxFit.cover,
+          image: user.profileImage != ""
+                ? MemoryImage(base64Decode(user!.profileImage!)) as ImageProvider<Object>
+                : AssetImage('assets/profileimage.png'),
+          fit: BoxFit.cover,
           ),
-        ),
+        )
       );
   }
 
