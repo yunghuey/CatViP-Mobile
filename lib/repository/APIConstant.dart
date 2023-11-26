@@ -7,8 +7,11 @@ class APIConstant {
   // static const String URL = "http://192.168.0.126:7015/api/";
 
   // yung huey IP
-  static const String URL = "http://192.168.137.1:7015/api/";
+  // utem
+  // static const String URL = "http://192.168.137.1:7015/api/";
+  // utem lan
   // static const String URL = "http://10.131.74.197:7015/api/";
+  static const String URL = "http://192.168.0.157:7015/api/";
 
 
   // auth module
@@ -17,6 +20,7 @@ class APIConstant {
   static String get RegisterURL => "${APIConstant.URL}auth/register";
   static String get ForgotPasswordURL => "${APIConstant.URL}auth/forgot-password";
   static String get LogoutURL => "${APIConstant.URL}auth/logout";
+  static String get viewProfileURL => "${APIConstant.URL}auth/GetUserInfo";
 
   // post module
   static String get NewPostURL => "${APIConstant.URL}post/createpost";

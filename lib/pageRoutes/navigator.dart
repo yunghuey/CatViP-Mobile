@@ -1,7 +1,6 @@
 import 'package:CatViP/pages/home_page.dart';
 import 'package:CatViP/pages/post/new_post.dart';
 import 'package:CatViP/pages/user/profile_view.dart';
-import 'package:CatViP/pages/user/usermenu_view.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/splashscreen.dart';

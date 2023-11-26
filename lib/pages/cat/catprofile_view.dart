@@ -11,6 +11,42 @@ class CatProfileView extends StatefulWidget {
 }
 
 class _CatProfileViewState extends State<CatProfileView> {
+  List<Map<String, String>> listPost = [
+    {
+      'images': 'assets/sunset.jpg',
+    },
+    {
+      'images': 'assets/hk2.jpg',
+    },
+    {
+      'images': 'assets/sunset.jpg'
+    },
+    {
+      'images': 'assets/mountain.jpg'
+    },
+    {
+      'images': 'assets/hk1.jpg',
+    },
+    {
+      'images': 'assets/hk2.jpg',
+    },
+    {
+      'images': 'assets/sunset.jpg'
+    },
+    {
+      'images': 'assets/mountain.jpg'
+    },
+    {
+      'images': 'assets/hk1.jpg',
+    },
+    {
+      'images': 'assets/hk2.jpg',
+    },
+    {
+      'images': 'assets/sunset.jpg'
+    },
+  ];
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,13 +56,15 @@ class _CatProfileViewState extends State<CatProfileView> {
         bottomOpacity: 0.0,
         elevation: 0.0,
       ),
-      body: Column(
-        children: [
-          _userDetails(),
-          SizedBox(height: 10),
-          _catDesc(),
-          _getAllPosts(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _userDetails(),
+            SizedBox(height: 10),
+            _catDesc(),
+            _getAllPosts(),
+          ],
+        ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(),
 
@@ -89,22 +127,32 @@ class _CatProfileViewState extends State<CatProfileView> {
   }
 
   Widget _getAllPosts(){
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          itemCount: 30,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-          itemBuilder: (context, index){
-            return Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Container(
-                  color: Colors.blue,
-                )
-            );
-          },
-        ),
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1/1,
+        crossAxisSpacing: 2,
+        mainAxisSpacing: 2,
       ),
+      itemBuilder: (context, index){
+        final post = listPost[index];
+
+        return GestureDetector(
+          onTap: (){
+            //   handle one image
+            //   new page
+          },
+          child: Container(
+            color: Colors.grey,
+            child: Image.asset(
+              post['images']!,
+              fit: BoxFit.cover,),
+          ),
+        );
+      },
+      itemCount: listPost.length,
     );
   }
 }
