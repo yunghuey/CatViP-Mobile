@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:http/http.dart' as http;
 import 'package:CatViP/repository/APIConstant.dart';
 import 'dart:convert';
@@ -43,7 +41,6 @@ class CatRepository{
           return true;
         } else {
           print(response.statusCode);
-
         }
       }
     //   failed to get token

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:CatViP/repository/APIConstant.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -155,6 +154,9 @@ class AuthRepository{
           print('logout success');
           pref.remove("token");
           return true;
+        } else {
+          print(response.statusCode);
+          print(response.body.toString());
         }
       }
       return false;
