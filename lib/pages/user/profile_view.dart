@@ -207,12 +207,15 @@ class _ProfileViewState extends State<ProfileView> {
           ListTile(
             leading: Icon(Icons.edit),
             title: Text("Edit profile"),
-            onTap: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EditProfileView(),))
-                  .then((result){
-                  if (result == true){ userBloc.add(StartLoadProfile()); }
-              }),
-              ;
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => EditProfileView()),
+              ).then((result) {
+                if (result == true) {
+                  userBloc.add(StartLoadProfile());
+                }
+              });
             },
           ),
           ListTile(
