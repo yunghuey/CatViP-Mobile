@@ -37,4 +37,42 @@ class UserRepository{
     }
     return null;
   }
+
+  Future<bool> updateUser(UserModel user) async {
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+
+      if (token!.isNotEmpty) {
+        var url = Uri.parse(APIConstant.editProfileURL);
+        var header = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${token}",
+        };
+        var body = json.encode({
+          "fullName": user.fullname,
+          "dateOfBirth": user.dateOfBirth,
+          "gender": user.gender,
+          "address": user.address,
+          "longitude": user.longitude,
+          "latitude": user.latitude,
+          "profileImage": user.profileImage
+        });
+        print(body.toString());
+        var response = await http.put(url, headers: header, body: body);
+
+        if (response.statusCode == 200){
+          print("profile updated");
+          return true;
+        } else {
+          print("response fail: ${response.statusCode}");
+          print("response fail: ${response.body}");
+        }
+      }
+      return false;
+    } catch (e){
+      print("error in updating user ${e.toString()}");
+      return false;
+    }
+  }
 }

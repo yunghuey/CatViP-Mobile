@@ -1,12 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/model/user/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:CatViP/bloc/user/userprofile_event.dart';
+import 'package:CatViP/bloc/user/userprofile_state.dart';
+import 'package:geocoding/geocoding.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
@@ -16,23 +20,38 @@ class EditProfileView extends StatefulWidget {
 }
 
 class EditProfileViewState extends State<EditProfileView> {
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController fullnameController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
 
+  double lat  = 0.0, long = 0.0;
   final _formKey = GlobalKey<FormState>();
-  int _gender = 0;
+  int _gender = 2;
   late UserModel user;
   File? image;
   String base64image = "";
   final _picker = ImagePicker();
+  DateTime currentDate = DateTime(1999);
+  late UserProfileBloc userBloc;
+  int profileEdited = 0;
   @override
   void initState() {
     // TODO: implement initState
-    usernameController.text = "hello";
+    userBloc = BlocProvider.of<UserProfileBloc>(context);
+    userBloc.add(StartLoadProfile());
     super.initState();
+  }
+
+  void _getCoordinates(String address) async {
+    try {
+      List<Location> locations = await locationFromAddress(address);
+      lat = locations.first.latitude;
+      long = locations.first.longitude;
+      print('Latitude: ${locations.first.latitude}, Longitude: ${locations.first.longitude}');
+    } on Exception catch (e) {
+      print('Error: ${e.toString()}');
+    }
   }
 
   Future<Uint8List?> _getImageBytes(File imageFile) async {
@@ -54,23 +73,88 @@ class EditProfileViewState extends State<EditProfileView> {
         bottomOpacity: 0.0,
         elevation: 0.0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                _profileImage(),
-                _usernameField(),
-                _emailField(),
-                _fullnameField(),
-                _dobField(),
-                _genderField(),
-                _updateButton(),
-              ],
-            ),
-          ),
+      body:
+      BlocListener<UserProfileBloc,UserProfileState>(
+        listener: (context, state){
+          if (state is UserProfileUpdated){
+            Navigator.pop(context, true);
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('User profile has been updated'))
+            );
+          }
+        },
+        child:BlocBuilder<UserProfileBloc, UserProfileState>(
+          builder: (context, state){
+            if (state is UserProfileLoadingState){
+              return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+            }
+            else if (state is UserProfileUpdating){
+              return Center(
+                child:
+                  Column(
+
+                    children: [
+                      SizedBox(height: 10),
+                      Text("Updating...Please wait"),
+                      SizedBox(height: 10),
+                      CircularProgressIndicator(color:  HexColor("#3c1e08"),)
+                    ],
+                  )
+              );
+            }
+            else if (state is UserProfileLoadedState){
+              user = state.user;
+              //   define the text controller
+              if (fullnameController.text == ""){
+                fullnameController.text = user.fullname;
+              }
+              if (addressController.text == "" && user.address != null && user.address!.isNotEmpty) {
+                addressController.text = user.address!;
+              }
+              print("image: ${user.profileImage}");
+              if (profileEdited == 0){
+                base64image = user.profileImage!;
+                profileEdited = 1;
+                print("profile image initialized: ${profileEdited}");
+              }
+
+              if (currentDate == DateTime(1999)){
+                String formatteddate = DateFormat("yyyy-MM-dd").format(DateTime.parse(user.dateOfBirth));
+                dateController.text = formatteddate;
+                print("passed by this reset date");
+                currentDate = DateTime.parse(user.dateOfBirth);
+              }
+              if (_gender == 2){
+                if(user.gender == true){
+                  _gender = 1;
+                } else {
+                  _gender = 0;
+                }
+              }
+
+              return Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        _profileImage(),
+                        _fullnameField(),
+                        _addressField(),
+                        _dobField(),
+                        _genderField(),
+                        _updateButton(),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+            else{
+              return Container();
+            }
+          },
         ),
       ),
     );
@@ -106,80 +190,20 @@ class EditProfileViewState extends State<EditProfileView> {
                   height: 250,
                   fit: BoxFit.cover,
                 );
-              } else {
-                // if profileimage got, display image, else display this
+              }
+              else {
                 return Center(
-                  child: Image(image: AssetImage('assets/profileimage.png'),),
+                  child: Image(
+                  image: base64image != ""
+                  ? MemoryImage(base64Decode(base64image)) as ImageProvider<Object>
+                      : AssetImage('assets/profileimage.png'),
+                  )
                 );
               }
             },
           ),
         ),
     ),
-    );
-  }
-
-  Widget _usernameField(){
-    return Padding(
-      padding: const EdgeInsets.only(top: 5.0),
-      child: TextFormField(
-        validator: (value) {
-          if (value == null || value.isEmpty){
-            return 'Please enter username';
-          }
-          if (value.trim().contains(' ')){
-            List<String> words = value.split(' ');
-            if (words.length > 1){
-              return 'Username cannot contain whitespace';
-            }
-          }
-          return null;
-        },
-        controller: usernameController,
-        decoration:  InputDecoration(
-            prefixIcon: Icon(Icons.person, color: HexColor("#3c1e08"),),
-            labelText: 'Username',
-            labelStyle: TextStyle(color: HexColor("#3c1e08")),
-            focusColor: HexColor("#3c1e08"),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: HexColor("#a4a4a4")),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color:  HexColor("#3c1e08")),
-            )
-        ),
-      ),
-    );
-  }
-
-  Widget _emailField(){
-    return Padding(
-      padding: const EdgeInsets.only(top: 5.0),
-      child: TextFormField(
-        validator: (value) {
-          if (value == null || value.isEmpty){
-            return 'Please enter email';
-          }
-          if (!value.trim().contains('@')){
-            return 'Email is not completed';
-          }
-          return null;
-        },
-        keyboardType: TextInputType.emailAddress,
-        controller: emailController,
-        decoration:  InputDecoration(
-          prefixIcon: Icon(Icons.email_rounded, color: HexColor("#3c1e08"),),
-          labelText: 'Email',
-          labelStyle: TextStyle(color: HexColor("#3c1e08")),
-          focusColor: HexColor("#3c1e08"),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: HexColor("#a4a4a4")),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color:  HexColor("#3c1e08")),
-          ),
-        ),
-      ),
     );
   }
 
@@ -197,6 +221,28 @@ class EditProfileViewState extends State<EditProfileView> {
         decoration:  InputDecoration(
           prefixIcon: Icon(Icons.account_box_rounded, color: HexColor("#3c1e08"),),
           labelText: 'Full name',
+          labelStyle: TextStyle(color: HexColor("#3c1e08")),
+          focusColor: HexColor("#3c1e08"),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: HexColor("#a4a4a4")),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color:  HexColor("#3c1e08")),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _addressField(){
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: TextFormField(
+        controller: addressController,
+        maxLines: 3,
+        decoration:  InputDecoration(
+          prefixIcon: Icon(Icons.house, color: HexColor("#3c1e08"),),
+          labelText: 'Address',
           labelStyle: TextStyle(color: HexColor("#3c1e08")),
           focusColor: HexColor("#3c1e08"),
           enabledBorder: UnderlineInputBorder(
@@ -284,14 +330,15 @@ class EditProfileViewState extends State<EditProfileView> {
           ),
         ),
         maxLines: 1,
-        validator: (value){
-          if (value!.isEmpty || value!.length < 1){
-            return 'Choose Date';
-          }
-        },
-        onTap: (){
-          _selectDate();
+        onTap: () async {
+          DateTime newpicked = await _selectDate();
           FocusScope.of(context).requestFocus(new FocusNode());
+          setState(() {
+            String datedob = DateFormat("yyyy-MM-dd").format(newpicked);
+            dateController.text = datedob;
+            print("dateController after select date: ${dateController.text}");
+            print("currentdate after select date: ${currentDate.toString()}");
+;          });
         },
       ),
     );
@@ -304,9 +351,49 @@ class EditProfileViewState extends State<EditProfileView> {
         width: 300.0,
         height: 55.0,
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             if(_formKey.currentState!.validate()){
               // success validation
+              String username = user.username;
+              String email = user.email;
+              String fullName = fullnameController.text.trim();
+              String date = dateController.text;
+              bool gender = _gender.toString() == 1 ? true : false;
+              String address = addressController.text.trim().isNotEmpty ? addressController.text.trim() : "";
+              String? profileImg;
+              print(addressController.text.trim());
+              print(fullnameController.text.trim());
+              print(_gender.toString());
+              print(dateController.text);
+              if (image != null){
+                Uint8List? imageData = await _getImageBytes(image!);
+                if (imageData != null){
+                  profileImg = base64Encode(Uint8List.fromList(imageData!));
+                  print(profileImg);
+                }
+              } else {
+                profileImg = base64image;
+              }
+              if (addressController.text != ""){
+                _getCoordinates(addressController.text.trim());
+              }
+              UserModel userupdate = UserModel(
+                username: username,
+                email: email,
+                fullname: fullName,
+                gender: gender,
+                dateOfBirth: date,
+                address: address,
+                profileImage: profileImg,
+                longitude: long,
+                latitude: lat,
+              );
+              userBloc.add(UpdateButtonPressed(user: userupdate));
+            }
+            else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Having problem in updating user'))
+              );
             }
 
           },
@@ -362,16 +449,19 @@ class EditProfileViewState extends State<EditProfileView> {
                 },
                 label: Text("Gallery", style: TextStyle(color:HexColor("#3c1e08")),),
               ),
-              TextButton.icon(
-                icon: Icon(Icons.delete, color: HexColor("#3c1e08")),
-                onPressed: () {
-                  base64image = "";
-                  setState(() {
-                    image = null;
-                  });
-
-                },
-                label: Text("Remove", style: TextStyle(color:HexColor("#3c1e08")),),
+              Visibility(
+                visible: base64image.isNotEmpty,
+                child: TextButton.icon(
+                  icon: Icon(Icons.delete, color: HexColor("#3c1e08")),
+                  onPressed: () {
+                    base64image = "";
+                    setState(() {
+                      image = null;
+                    });
+                    Navigator.pop(context);
+                  },
+                  label: Text("Remove", style: TextStyle(color:HexColor("#3c1e08")),),
+                ),
               ),
             ],
           )
@@ -380,12 +470,12 @@ class EditProfileViewState extends State<EditProfileView> {
     );
   }
 
-  Future<void> _selectDate() async{
+  Future<DateTime> _selectDate() async {
     DateTime now = DateTime.now();
     DateTime lastdob = DateTime(now.year - 10, now.month, now.day);
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: lastdob,
+      initialDate: currentDate,
       firstDate:  DateTime(1950),
       lastDate: lastdob,
       builder: (BuildContext context, Widget? child) {
@@ -393,7 +483,6 @@ class EditProfileViewState extends State<EditProfileView> {
           data: ThemeData(
             dialogBackgroundColor: Colors.white,
             primarySwatch: Colors.brown,
-
           ),
           child: child!,
         );
@@ -403,8 +492,11 @@ class EditProfileViewState extends State<EditProfileView> {
       setState(() {
         String datedob = DateFormat("yyyy-MM-dd").format(picked);
         dateController.text = datedob;
+        currentDate = picked;
       });
+      return picked;
     }
+    return currentDate;
   }
 
   Future<void> getImage(ImageSource source) async {
@@ -412,11 +504,17 @@ class EditProfileViewState extends State<EditProfileView> {
 
     if (pickedFile != null) {
       image = File(pickedFile.path as String);
+      if (image != null){
+        Uint8List? imageData = await _getImageBytes(image!);
+        if (imageData != null){
+          base64image = base64Encode(Uint8List.fromList(imageData!));
+          print(base64image);
+        }
+      }
       setState(() {});
     } else {
       print("No Image Selected");
     }
   }
-
 
 }

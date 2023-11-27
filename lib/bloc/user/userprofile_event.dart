@@ -1,3 +1,4 @@
+import 'package:CatViP/model/user/user_model.dart';
 import 'package:equatable/equatable.dart';
 
 class UserProfileEvent extends Equatable{
@@ -6,3 +7,8 @@ class UserProfileEvent extends Equatable{
 }
 
 class StartLoadProfile extends UserProfileEvent {}
+
+class UpdateButtonPressed extends UserProfileEvent {
+  UserModel user;
+  UpdateButtonPressed({ required this.user });
+}

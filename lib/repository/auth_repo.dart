@@ -154,6 +154,9 @@ class AuthRepository{
           print('logout success');
           pref.remove("token");
           return true;
+        } else {
+          print(response.statusCode);
+          print(response.body.toString());
         }
       }
       return false;

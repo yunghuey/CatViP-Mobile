@@ -21,6 +21,7 @@ class APIConstant {
   static String get ForgotPasswordURL => "${APIConstant.URL}auth/forgot-password";
   static String get LogoutURL => "${APIConstant.URL}auth/logout";
   static String get viewProfileURL => "${APIConstant.URL}auth/GetUserInfo";
+  static String get editProfileURL => "${APIConstant.URL}auth/editProfile-mobile";
 
   // post module
   static String get NewPostURL => "${APIConstant.URL}post/createpost";

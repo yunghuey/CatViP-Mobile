@@ -18,7 +18,16 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState>{
       } else{
         UserProfileErrorState(message: "Fail to load user profile");
       }
+    });
 
+    on<UpdateButtonPressed>((event, emit) async {
+        emit(UserProfileUpdating());
+        bool isUpdated = await repo.updateUser(event.user);
+        if (isUpdated){
+          emit(UserProfileUpdated());
+        } else{
+          emit(UserProfileErrorState(message: "Error in updating"));
+        }
     });
   }
 }

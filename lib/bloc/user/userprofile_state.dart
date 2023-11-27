@@ -18,3 +18,7 @@ class UserProfileErrorState extends UserProfileState {
   final message;
   UserProfileErrorState({required this.message});
 }
+
+class UserProfileUpdating extends UserProfileState {}
+
+class UserProfileUpdated extends UserProfileState {}

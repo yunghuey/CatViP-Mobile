@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:CatViP/bloc/authentication/logout/logout_bloc.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_event.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_state.dart';
@@ -27,6 +26,7 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   late LogoutBloc logoutbloc;
   late UserProfileBloc userBloc;
+
   List<Map<String, String>> listPost = [
     {
       'images': 'assets/sunset.jpg',
@@ -73,7 +73,6 @@ class _ProfileViewState extends State<ProfileView> {
       'image': 'assets/meow.jpg'
     }
   ];
-
 
   @override
   void initState() {
@@ -155,7 +154,8 @@ class _ProfileViewState extends State<ProfileView> {
           builder: (context, state) {
             if (state is UserProfileLoadingState) {
               return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-            } else if (state is UserProfileLoadedState) {
+            }
+            else if (state is UserProfileLoadedState) {
               user = state.user;
               // setState(() {
               message = user.username ?? "Welcome";              // });
@@ -208,7 +208,11 @@ class _ProfileViewState extends State<ProfileView> {
             leading: Icon(Icons.edit),
             title: Text("Edit profile"),
             onTap: (){
-              Navigator.push(context,MaterialPageRoute(builder: (context) => EditProfileView(),));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EditProfileView(),))
+                  .then((result){
+                  if (result == true){ userBloc.add(StartLoadProfile()); }
+              }),
+              ;
             },
           ),
           ListTile(
@@ -232,7 +236,6 @@ class _ProfileViewState extends State<ProfileView> {
           )
         ],
       )
-
     );
   }
 
@@ -265,7 +268,6 @@ class _ProfileViewState extends State<ProfileView> {
     } else {
       return Column();
     }
-
   }
 
   Widget _userDetails(){
