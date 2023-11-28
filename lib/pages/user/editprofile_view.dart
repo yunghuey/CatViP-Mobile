@@ -92,7 +92,6 @@ class EditProfileViewState extends State<EditProfileView> {
               return Center(
                 child:
                   Column(
-
                     children: [
                       SizedBox(height: 10),
                       Text("Updating...Please wait"),
@@ -125,11 +124,7 @@ class EditProfileViewState extends State<EditProfileView> {
                 currentDate = DateTime.parse(user.dateOfBirth);
               }
               if (_gender == 2){
-                if(user.gender == true){
-                  _gender = 1;
-                } else {
-                  _gender = 0;
-                }
+                _gender = user.gender == true ? 1 :0;
               }
 
               return Padding(

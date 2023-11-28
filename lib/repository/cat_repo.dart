@@ -72,4 +72,82 @@ class CatRepository{
     }
   }
 
+  Future<bool> updateCat(CatModel cat) async {
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.UpdateCatURL+ cat.id.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var body = json.encode({
+        "name": cat.name,
+        "description": cat.desc,
+        "dateOfBirth": cat.dob,
+        "gender": cat.gender,
+        "profileImage": cat.profileImage
+      });
+
+      var response = await http.put(url, headers: header, body: body);
+
+      if (response.statusCode == 200){
+        return true;
+      }
+      return false;
+    } catch (e){
+      print("error in updating cat");
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> removeCat(int id) async {
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.DeleteCatURL+ id.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.delete(url, headers: header);
+
+      if (response.statusCode == 200){
+        return true;
+      }
+      return false;
+    } catch(e){
+      print("error in deleting cat");
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<CatModel?> getCat(int catid) async {
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.GetOneCatURL + catid.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      print(url);
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200){
+        var result = jsonDecode(response.body);
+        print(result);
+        return CatModel.fromJson(result);
+      }
+      print(response.statusCode);
+      print(response.body);
+      return null;
+    } catch (e){
+      print("error in get one cat");
+      print(e.toString());
+      return null;
+    }
+  }
+
 }

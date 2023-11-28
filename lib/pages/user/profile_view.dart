@@ -68,16 +68,6 @@ class _ProfileViewState extends State<ProfileView> {
     },
   ];
 
-  List<Map<String, String>> listCat = [
-    {
-      'name': 'Tabby',
-      'image': 'assets/Dinosaur.png'
-    },
-    {
-      'name': 'Daisy',
-      'image': 'assets/meow.jpg'
-    }
-  ];
 
   @override
   void initState() {
@@ -238,12 +228,14 @@ class _ProfileViewState extends State<ProfileView> {
             leading: Icon(Icons.edit),
             title: Text("Edit profile"),
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => EditProfileView()),
               ).then((result) {
                 if (result == true) {
                   userBloc.add(StartLoadProfile());
+                  catBloc.add(StartLoadCat());
+                //   postBloc.add();
                 }
               });
             },
@@ -387,7 +379,15 @@ class _ProfileViewState extends State<ProfileView> {
                       padding: const EdgeInsets.all(5.0),
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context,MaterialPageRoute(builder: (context) => CatProfileView(currentcat: cats[index],fromOwner: true,)));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => CatProfileView(currentcat: cats[index],fromOwner: true,)))
+                              .then((value) {
+                                print("value in catprofileview from Profile ${value}");
+                                // if (value == true){
+                                  catBloc.add(StartLoadCat());
+                                // }
+                          });
                         },
                         child: CircleAvatar(
                           backgroundColor: HexColor("#3c1e08"),

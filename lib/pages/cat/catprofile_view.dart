@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
+import 'package:CatViP/bloc/cat/catprofile_event.dart';
+import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/cat/createcat_view.dart';
 import 'package:CatViP/pages/cat/editcat_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 
@@ -53,12 +57,23 @@ class _CatProfileViewState extends State<CatProfileView> {
       'images': 'assets/sunset.jpg'
     },
   ];
+  late CatProfileBloc catBloc;
+  late CatModel cat;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    cat = widget.currentcat;
+    catBloc = BlocProvider.of<CatProfileBloc>(context);
+    catBloc.add(ReloadOneCatEvent(catid: cat.id));
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.currentcat.name, style: Theme.of(context).textTheme.bodyLarge),
+        title: Text(cat.name, style: Theme.of(context).textTheme.bodyLarge),
         backgroundColor: HexColor("#ecd9c9"),
         bottomOpacity: 0.0,
         elevation: 0.0,
@@ -66,22 +81,43 @@ class _CatProfileViewState extends State<CatProfileView> {
           IconButton(
             icon: Icon(Icons.edit, color: HexColor("#3c1e08"),),
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>EditCatView()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context)=>EditCatView(currentCat: widget.currentcat))
+              ).then((value) {
+                  catBloc.add(ReloadOneCatEvent(catid: value));
+              });
             },
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _userDetails(),
-            SizedBox(height: 10),
-            _catDesc(),
-            // _getAllPosts(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      body:
+            BlocBuilder<CatProfileBloc, CatProfileState>(
+                builder: (context, state){
+                  if (state is LoadedOneCatState){
+                    print("get cat at frontend after updating");
+                    cat = state.cat;
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          _catDetails(),
+                          SizedBox(height: 10),
+                          _catDesc(),
+                          // _getAllPosts(),
+
+                        ],
+                      ),
+                    );
+                  } else if (state is CatProfileLoadingState){
+                    return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+                  }
+                  else if (state is CatProfileEmptyState){
+                    return Container(child: Text("No cat"),);
+                  }
+                  else {
+                    return Container();
+                  }
+                }
+            ),
     );
   }
 
@@ -93,8 +129,8 @@ class _CatProfileViewState extends State<CatProfileView> {
         color: Colors.blueGrey,
         shape:BoxShape.circle,
         image: DecorationImage(
-          image: widget.currentcat.profileImage != ""
-              ? MemoryImage(base64Decode(widget.currentcat.profileImage))  as ImageProvider<Object>
+          image: cat.profileImage != ""
+              ? MemoryImage(base64Decode(cat.profileImage))  as ImageProvider<Object>
               : AssetImage('assets/profileimage.png'),
           fit: BoxFit.cover,
         ),
@@ -108,14 +144,14 @@ class _CatProfileViewState extends State<CatProfileView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.currentcat.desc),
+          Text(cat.desc),
         ],
       ),
     );
   }
   Widget _catProfile(){
     DateTime currentDate = DateTime.now();
-    DateTime bday = DateTime.parse(widget.currentcat.dob);
+    DateTime bday = DateTime.parse(cat.dob);
     String formatteddate = DateFormat("yyyy-MM-dd").format(bday);
     Duration difference = currentDate.difference(bday);
     int age = difference.inDays;
@@ -129,7 +165,7 @@ class _CatProfileViewState extends State<CatProfileView> {
     );
   }
 
-  Widget _userDetails(){
+  Widget _catDetails(){
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, top: 10.0),
       child: Row(

@@ -31,5 +31,8 @@ class APIConstant {
   // cat module
   static String get NewCatURL => "${APIConstant.URL}cat/StoreCat";
   static String get GetMyCatURL => "${APIConstant.URL}cat/GetCats";
+  static String get UpdateCatURL => "${APIConstant.URL}cat/EditCat/";
+  static String get DeleteCatURL => "${APIConstant.URL}cat/DeleteCat/";
+  static String get GetOneCatURL => "${APIConstant.URL}cat/GetCat/";
 
 }
