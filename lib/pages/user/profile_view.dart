@@ -5,15 +5,20 @@ import 'package:CatViP/bloc/authentication/logout/logout_state.dart';
 import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
 import 'package:CatViP/bloc/cat/catprofile_event.dart';
 import 'package:CatViP/bloc/cat/catprofile_state.dart';
+import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
+import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
+import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_event.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
+import 'package:CatViP/model/post/post.dart';
 import 'package:CatViP/model/user/user_model.dart';
 import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/cat/createcat_view.dart';
+import 'package:CatViP/pages/expert/expertIntro_view.dart';
 import 'package:CatViP/pages/user/editprofile_view.dart';
 import 'package:CatViP/repository/user_repo.dart';
 import 'package:flutter/material.dart';
@@ -31,42 +36,7 @@ class _ProfileViewState extends State<ProfileView> {
   late LogoutBloc logoutbloc;
   late UserProfileBloc userBloc;
   late CatProfileBloc catBloc;
-
-  List<Map<String, String>> listPost = [
-    {
-      'images': 'assets/sunset.jpg',
-    },
-    {
-      'images': 'assets/hk2.jpg',
-    },
-    {
-      'images': 'assets/sunset.jpg'
-    },
-    {
-      'images': 'assets/mountain.jpg'
-    },
-    {
-      'images': 'assets/hk1.jpg',
-    },
-    {
-      'images': 'assets/hk2.jpg',
-    },
-    {
-      'images': 'assets/sunset.jpg'
-    },
-    {
-      'images': 'assets/mountain.jpg'
-    },
-    {
-      'images': 'assets/hk1.jpg',
-    },
-    {
-      'images': 'assets/hk2.jpg',
-    },
-    {
-      'images': 'assets/sunset.jpg'
-    },
-  ];
+  late GetPostBloc postBloc;
 
 
   @override
@@ -76,6 +46,8 @@ class _ProfileViewState extends State<ProfileView> {
     userBloc.add(StartLoadProfile());
     catBloc = BlocProvider.of<CatProfileBloc>(context);
     catBloc.add(StartLoadCat());
+    postBloc = BlocProvider.of<GetPostBloc>(context);
+    postBloc.add(StartLoadOwnPost());
     super.initState();
   }
   late final msg = BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -88,8 +60,14 @@ class _ProfileViewState extends State<ProfileView> {
   );
 
   late List<CatModel> cats;
+  late List<Post> listPost;
   late UserModel user;
   String message = "Welcome";
+  final String applyExpert = "Apply as Expert";
+  final String checkExpert = "Check application status";
+  final String viewExpert = "View application";
+  String expertMsg = "Apply as Expert";
+
   //  need to get all cat of this user and all post by this user
   // when tap on cat, should be able to get the index
   @override
@@ -156,6 +134,7 @@ class _ProfileViewState extends State<ProfileView> {
             }
             else if (state is UserProfileLoadedState) {
               user = state.user;
+              expertMsg = user.isExpert! ? viewExpert : applyExpert;
               message = user.username ?? "Welcome";
               return SingleChildScrollView(
                 child: Column(
@@ -175,14 +154,15 @@ class _ProfileViewState extends State<ProfileView> {
                         }
                       },
                     ),
-                    BlocBuilder<CatProfileBloc, CatProfileState>(
+                    BlocBuilder<GetPostBloc, GetPostState>(
                       builder: (context, state) {
-                        if (state is CatProfileLoadingState) {
+                        if (state is GetPostLoading) {
                           return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                        } else if (state is CatProfileLoadedState) {
+                        } else if (state is GetPostLoaded) {
+                          listPost = state.postList;
                           return _getAllPosts();
                         } else {
-                          return Container(); // Handle other cases
+                          return Center(child: Container(child: Text("Create your first post today!"),)); // Handle other cases
                         }
                       },
                     ),
@@ -235,7 +215,9 @@ class _ProfileViewState extends State<ProfileView> {
                 if (result == true) {
                   userBloc.add(StartLoadProfile());
                   catBloc.add(StartLoadCat());
-                //   postBloc.add();
+                  postBloc.add(StartLoadOwnPost());
+
+                  //   postBloc.add();
                 }
               });
             },
@@ -249,8 +231,18 @@ class _ProfileViewState extends State<ProfileView> {
           ),
           ListTile(
             leading: Icon(Icons.grade_rounded),
-            title: Text("Apply for expert"),
-            onTap: (){},
+            // need an API to check if this user is Applied + Not Expert
+            // need an API to check if this user is No Apply + Not Expert
+            // need an API to check if this user is Applied + Expert
+            title: Text(expertMsg),
+            onTap: (){
+                if (user.isExpert!){
+                  // go to introduction page and then apply page
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ExpertIntro()));
+                } else {
+                //   check status
+                }
+            },
           ),
           ListTile(
             leading: Icon(Icons.logout),
@@ -386,7 +378,9 @@ class _ProfileViewState extends State<ProfileView> {
                                 print("value in catprofileview from Profile ${value}");
                                 // if (value == true){
                                   catBloc.add(StartLoadCat());
-                                // }
+                                  postBloc.add(StartLoadOwnPost());
+
+                            // }
                           });
                         },
                         child: CircleAvatar(
@@ -430,12 +424,12 @@ class _ProfileViewState extends State<ProfileView> {
           onTap: (){
           //   handle one image
           //   new page
+          //   wait for wafir's code
           },
           child: Container(
             color: Colors.grey,
-            child: Image.asset(
-              post['images']!,
-              fit: BoxFit.cover,),
+            child: post.postImages != null && post.postImages!.isNotEmpty ?
+            Image(image: MemoryImage(base64Decode(post.postImages![0].image!)),fit: BoxFit.cover,) : Container(),
           ),
         );
       },

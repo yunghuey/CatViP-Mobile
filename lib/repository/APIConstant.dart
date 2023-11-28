@@ -26,6 +26,8 @@ class APIConstant {
   // post module
   static String get NewPostURL => "${APIConstant.URL}post/createpost";
   static String get GetPostsURL => "${APIConstant.URL}post/getposts";
+  static String get GetOwnPostURL =>  "${APIConstant.URL}post/GetOwnPosts";
+  static String get GetCatPostURL =>  "${APIConstant.URL}post/GetCatPosts/";
   //static String get GetPostURL => "${APIConstant.URL}auth/refresh";
 
   // cat module

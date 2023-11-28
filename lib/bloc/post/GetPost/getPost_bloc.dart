@@ -27,6 +27,26 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
             error: "Failed to fetch data in your device online"));
       }
     });
+
+    on<StartLoadOwnPost>((event, emit) async{
+      emit(GetPostLoading());
+      final List<Post> postList = await postRepository.fetchPost();
+      if (postList.length > 0){
+        emit(GetPostLoaded(postList: postList));
+      } else{
+        emit(GetPostEmpty());
+      }
+    });
+    
+    on<StartLoadSingleCatPost>((event, emit) async {
+      emit(GetPostLoading());
+      final List<Post> postList = await postRepository.fetchCatPost(event.catid);
+      if (postList.length > 0){
+        emit(GetPostSingleCatLoaded(postList: postList));
+      } else{
+        emit(GetPostEmpty());
+      }
+    });
   }
 
 }

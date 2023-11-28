@@ -133,7 +133,6 @@ class CatRepository{
         "Content-Type": "application/json",
         "Authorization": "Bearer ${token}",
       };
-      print(url);
       var response = await http.get(url, headers: header);
       if (response.statusCode == 200){
         var result = jsonDecode(response.body);
