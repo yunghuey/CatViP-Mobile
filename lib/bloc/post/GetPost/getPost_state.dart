@@ -21,3 +21,10 @@ class GetPostError extends GetPostState {
   final String? error;
   const GetPostError({required this.error});
 }
+
+class GetPostEmpty extends GetPostState {}
+
+class GetPostSingleCatLoaded extends GetPostState{
+  final List<Post> postList;
+  const GetPostSingleCatLoaded({required this.postList});
+}

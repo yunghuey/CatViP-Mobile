@@ -81,7 +81,57 @@ class PostRepository{
 
   }
 
-   
+//   Get Own Post
+  Future<List<Post>> fetchMyPost() async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.GetOwnPostURL);
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200){
+        List<dynamic> jsonData = json.decode(response.body);
 
+        // Assuming the JSON data is a List of posts
+        List<Post> posts = jsonData.map((e) => Post.fromJson(e)).toList();
+        return posts;
+      }
+      return [];
+    } catch (e){
+      print("error in get own post");
+      print(e.toString());
+      return [];
+    }
+  }
+
+  // get post of a cat
+  Future<List<Post>> fetchCatPost(int catid) async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.GetCatPostURL + catid.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200){
+        List<dynamic> jsonData = json.decode(response.body);
+
+        // Assuming the JSON data is a List of posts
+        List<Post> posts = jsonData.map((e) => Post.fromJson(e)).toList();
+        print("post: ${posts.toString}");
+        return posts;
+      }
+      return [];
+    } catch (e){
+      print("error in get own post");
+      print(e.toString());
+      return [];
+    }
+  }
 
 }

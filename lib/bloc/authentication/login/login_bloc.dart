@@ -33,7 +33,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
       emit(LoginLoadingState());
       
       bool isValidLogin = await repo.login(event.username, event.password);
-      // print(isValidLogin);
+      print(isValidLogin);
       if (isValidLogin)
       {
         emit(UserLoginSuccessState());
