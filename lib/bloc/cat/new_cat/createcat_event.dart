@@ -1,3 +1,4 @@
+import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:equatable/equatable.dart';
 
 class CreateCatEvents extends Equatable{
@@ -8,17 +9,7 @@ class CreateCatEvents extends Equatable{
 class StartCreateCat extends CreateCatEvents {}
 
 class CreateButtonPressed extends CreateCatEvents{
-  final String catname;
-  final String catdesc;
-  final String dob;
-  final int gender;
-  final String imagebyte;
+  CatModel cat;
 
-  CreateButtonPressed({
-    required this.catname,
-    required this.catdesc,
-    required this.dob,
-    required this.gender,
-    required this.imagebyte,
-  });
+  CreateButtonPressed({required this.cat });
 }

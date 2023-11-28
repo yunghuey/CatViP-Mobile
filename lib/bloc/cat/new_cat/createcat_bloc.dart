@@ -13,7 +13,7 @@ class CreateCatBloc extends Bloc<CreateCatEvents, CreateCatState>{
     on<CreateButtonPressed>((event, emit) async{
       emit(CreateCatLoadingState());
 
-      bool isCreated = await repo.createCat(event.catname, event.catdesc, event.dob, event.gender, event.imagebyte);
+      bool isCreated = await repo.createCat(event.cat);
       if (isCreated) {
         emit(CreateCatSuccessState());
       } else {

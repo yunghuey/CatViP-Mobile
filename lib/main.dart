@@ -6,6 +6,8 @@ import 'package:CatViP/bloc/authentication/logout/logout_bloc.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_state.dart';
 import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
 import 'package:CatViP/bloc/authentication/register/register_state.dart';
+import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
+import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_bloc.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
@@ -63,6 +65,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<UserProfileBloc>(
             create: (context) => UserProfileBloc(UserProfileInitState(), UserRepository()),
+        ),
+        BlocProvider<CatProfileBloc>(
+            create: (context) => CatProfileBloc(CatProfileInitState(), CatRepository())
         ),
       ],
         child: MaterialApp(

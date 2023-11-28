@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'package:CatViP/bloc/authentication/logout/logout_bloc.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_event.dart';
 import 'package:CatViP/bloc/authentication/logout/logout_state.dart';
+import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
+import 'package:CatViP/bloc/cat/catprofile_event.dart';
+import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_event.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
+import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/model/user/user_model.dart';
 import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
@@ -26,6 +30,7 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   late LogoutBloc logoutbloc;
   late UserProfileBloc userBloc;
+  late CatProfileBloc catBloc;
 
   List<Map<String, String>> listPost = [
     {
@@ -79,6 +84,8 @@ class _ProfileViewState extends State<ProfileView> {
     logoutbloc = BlocProvider.of<LogoutBloc>(context);
     userBloc = BlocProvider.of<UserProfileBloc>(context);
     userBloc.add(StartLoadProfile());
+    catBloc = BlocProvider.of<CatProfileBloc>(context);
+    catBloc.add(StartLoadCat());
     super.initState();
   }
   late final msg = BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -89,6 +96,8 @@ class _ProfileViewState extends State<ProfileView> {
         return Container();
       }
   );
+
+  late List<CatModel> cats;
   late UserModel user;
   String message = "Welcome";
   //  need to get all cat of this user and all post by this user
@@ -157,15 +166,37 @@ class _ProfileViewState extends State<ProfileView> {
             }
             else if (state is UserProfileLoadedState) {
               user = state.user;
-              // setState(() {
-              message = user.username ?? "Welcome";              // });
+              message = user.username ?? "Welcome";
               return SingleChildScrollView(
                 child: Column(
                   children: [
                     _userDetails(),
-                    // _buttons(),
-                    _getAllCats(),
-                    _getAllPosts(),
+                    BlocBuilder<CatProfileBloc, CatProfileState>(
+                      builder: (context, state) {
+                        if (state is CatProfileLoadingState) {
+                          return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                        } else if (state is CatProfileLoadedState) {
+                          cats = state.cats;
+                          print("get cat in frontend");
+                          print(cats.toString());
+                          return _getAllCats();
+                        } else {
+                          return Container(child: const Text("Add your own cat now!")); // Handle other cases
+                        }
+                      },
+                    ),
+                    BlocBuilder<CatProfileBloc, CatProfileState>(
+                      builder: (context, state) {
+                        if (state is CatProfileLoadingState) {
+                          return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                        } else if (state is CatProfileLoadedState) {
+                          return _getAllPosts();
+                        } else {
+                          return Container(); // Handle other cases
+                        }
+                      },
+                    ),
+                    // _getAllPosts(),
                   ],
                 ),
               );
@@ -178,7 +209,6 @@ class _ProfileViewState extends State<ProfileView> {
       bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
-
 
   Widget _profileImage(){
       return Container(
@@ -344,11 +374,11 @@ class _ProfileViewState extends State<ProfileView> {
       child: Container(
         height: 120,
         child: ListView.builder(
-          itemCount:listCat.length,
+          itemCount:cats.length,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            final cat = listCat[index];
+            final cat = cats[index];
             return Row(
               children: [
                 Column(
@@ -357,19 +387,21 @@ class _ProfileViewState extends State<ProfileView> {
                       padding: const EdgeInsets.all(5.0),
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context,MaterialPageRoute(builder: (context) => CatProfileView(),));
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => CatProfileView(currentcat: cats[index],fromOwner: true,)));
                         },
                         child: CircleAvatar(
                           backgroundColor: HexColor("#3c1e08"),
                           radius: 40,
                           child: CircleAvatar(
                             radius: 38,
-                            backgroundImage: ResizeImage(AssetImage(cat['image']!), width: 170),
+                            backgroundImage: cats[index].profileImage != ""
+                                ? MemoryImage(base64Decode(cats[index].profileImage))  as ImageProvider<Object>
+                                : AssetImage('assets/profileimage.png'),
                           ),
                         ),
                       ),
                     ),
-                    Text(cat['name']!),
+                    Text(cats[index].name),
                   ],
                 ),
               ],
