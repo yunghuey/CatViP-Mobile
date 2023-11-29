@@ -151,7 +151,6 @@ class AuthRepository{
         var response = await http.delete(url, headers: header,);
 
         if (response.statusCode == 200) {
-          print('logout success');
           pref.remove("token");
           return true;
         } else {

@@ -37,4 +37,8 @@ class APIConstant {
   static String get DeleteCatURL => "${APIConstant.URL}cat/DeleteCat/";
   static String get GetOneCatURL => "${APIConstant.URL}cat/GetCat/";
 
+  // expert module
+  static String get NewExpertURL => "${APIConstant.URL}Expert/ApplyAsExpert";
+  static String get GetAllSingleURL => "${APIConstant.URL}Expert/GetApplications";
+
 }

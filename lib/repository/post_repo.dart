@@ -54,10 +54,12 @@ class PostRepository{
   //Get Post
   Future<List<Post>> fetchPost() async {
     try {
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
       http.Response response = await http.get(
           Uri.parse(APIConstant.GetPostsURL),
       headers: {
-        'Authorization': 'Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIzIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRvbmciLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDYXQgRXhwZXJ0IiwiZXhwIjoxNzAxMTg1MjM0fQ.CF2zzn1755VKchHMhxMbMSLt9Votc_wCOIU9d7r3paQ',
+        'Authorization': 'Bearer ${token}',
        }
       );
 

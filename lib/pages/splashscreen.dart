@@ -39,7 +39,6 @@ class _SplashState extends State<Splash> {
   }
 
   Future<void> redirect() async {
-    print('in redirect');
     String hasToken = await checkToken();
     if (hasToken != "") {
       authBloc.add(GetRefreshToken());
