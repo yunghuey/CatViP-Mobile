@@ -7,3 +7,10 @@ class GetPostEvent extends Equatable{
 }
 
 class GetPostList extends GetPostEvent {}
+
+class StartLoadOwnPost extends GetPostEvent {}
+
+class StartLoadSingleCatPost extends GetPostEvent {
+  int catid;
+  StartLoadSingleCatPost({required this.catid});
+}

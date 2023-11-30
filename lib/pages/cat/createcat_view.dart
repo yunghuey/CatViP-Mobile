@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:CatViP/bloc/cat/new_cat/createcat_bloc.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_event.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_state.dart';
+import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -310,7 +311,7 @@ class _CreateCatViewState extends State<CreateCatView> {
       child: Column(
         children: <Widget>[
           Text(
-            "Choose Image.",
+            "Choose Image",
             style: TextStyle(
               fontSize: 20.0,
             ),
@@ -322,18 +323,18 @@ class _CreateCatViewState extends State<CreateCatView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                icon: Icon(Icons.camera),
+                icon: Icon(Icons.camera, color: HexColor("#3c1e08")),
                 onPressed: () {
                   getImage(ImageSource.camera);
                 },
-                label: Text("Camera"),
+                label: Text("Camera", style: TextStyle(color:HexColor("#3c1e08")),),
               ),
               TextButton.icon(
-                icon: Icon(Icons.image),
+                icon: Icon(Icons.image, color: HexColor("#3c1e08")),
                 onPressed: () {
                   getImage(ImageSource.gallery);
                 },
-                label: Text("Gallery"),
+                label: Text("Gallery", style: TextStyle(color:HexColor("#3c1e08")),),
               ),
             ],
           )
@@ -358,7 +359,7 @@ class _CreateCatViewState extends State<CreateCatView> {
               height: 250, // Set your desired height for the square box
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.brown,
+                  color: HexColor("#3c1e08"),
                   width: 2.0,
                 ),
               ),
@@ -423,13 +424,17 @@ class _CreateCatViewState extends State<CreateCatView> {
                   String base64String = base64Encode(Uint8List.fromList(imageData));
                   print(base64String);
                 //   continue create cat process
-                createBloc.add(CreateButtonPressed(
-                  catname: catnameController.text.trim(),
-                  catdesc: catdescController.text.trim(),
-                  dob: dateController.text,
-                  gender: int.parse(_gender.toString()),
-                  imagebyte: base64String,
-                ));
+                  bool gender_ = _gender == 1 ? true : false;
+                  CatModel cat = CatModel(
+                    id: 0,
+                    name: catnameController.text.trim(),
+                    desc: catdescController.text.trim(),
+                    dob: dateController.text,
+                    gender: gender_,
+                    profileImage: base64String
+                  );
+
+                createBloc.add(CreateButtonPressed(cat: cat));
                 }
               } else {
                 setState(() {

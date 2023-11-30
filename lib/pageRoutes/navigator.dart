@@ -1,6 +1,7 @@
 import 'package:CatViP/pages/home_page.dart';
 import 'package:CatViP/pages/post/new_post.dart';
-import 'package:CatViP/pages/user/usermenu_view.dart';
+import 'package:CatViP/pages/search/searchuser_view.dart';
+import 'package:CatViP/pages/user/profile_view.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/splashscreen.dart';
@@ -10,7 +11,8 @@ class MyNavigator {
   static const String secondRoute = '/home';
   static const String thirdRoute = '/newPost';
   static const String fourthRoute = '/shopping';
-  static const String fifthRoute = '/profile';
+  static const String userRoute = '/profile';
+  static const String searchRoute = '/search';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -22,8 +24,10 @@ class MyNavigator {
         return MaterialPageRoute(builder: (_) => NewPost());
       // case fourthRoute:
       //   return MaterialPageRoute(builder: (_) => Shopping());
-      case fifthRoute:
-        return MaterialPageRoute(builder: (_) => UserMenu());
+      case userRoute:
+        return MaterialPageRoute(builder: (_) => ProfileView());
+      case searchRoute:
+        return MaterialPageRoute(builder: (_) => SearchView());
       default:
         return MaterialPageRoute(builder: (_) => NotFoundScreen());
     }
