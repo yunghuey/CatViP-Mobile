@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:CatViP/pages/post/comment.dart';
 import 'package:CatViP/repository/post_repo.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/post/post.dart';
 
 import '../pageRoutes/bottom_navigation_bar.dart';
+import '../widgets.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,14 +25,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GetPostBloc _postBloc = GetPostBloc();
-  bool isFavorite = false;
+  int? selectedPostIndex;
+  late final int? postId;
+  final Widgets func = Widgets();
 
   @override
   void initState() {
     // TODO: implement initState
     _postBloc.add(GetPostList());
     super.initState();
-
   }
 
   @override
@@ -144,24 +146,24 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               SizedBox(height: 4.0),
-                                Center(
-                                  child: Container(
-                                    width: 400.0,
-                                    height: 400.0,
-                                    child: Image.memory(
-                                      base64Decode(post.postImages![0].image!),
-                                      fit: BoxFit.cover,
+                                      Center(
+                                      child: Container(
+                                        width: 400.0,
+                                        height: 400.0,
+                                        child: Image.memory(
+                                          base64Decode(post.postImages![0].image!),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
                               Row(
                                   children: [
                                     _FavoriteButton(),
                                     SizedBox(width: 4.0),
                                     IconButton(
-                                      onPressed: () {
-
-                                      },
+                                      onPressed: () => Navigator.push(context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Comments(postId: post.id!),)),
                                       icon: Icon(
                                       Icons.comment_bank_outlined,
                                       color: Colors.black,
@@ -217,7 +219,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                     InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => Comments(postId: post.id!)));
+                                      },
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(vertical: 4),
                                         child: post.commentCount! > 0 // Add your condition here
@@ -231,15 +235,17 @@ class _HomePageState extends State<HomePage> {
                                     Container(
                                       padding: const EdgeInsets.symmetric(vertical: 4),
                                       child: Text(
-                                        getFormattedDate(post.dateTime!),                                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                                        func.getFormattedDate(post.dateTime!),
+                                        style: const TextStyle(fontSize: 16, color: Colors.black),
                                       )
                                     ),
                                   ],
                                ),
                               ),
-                            ],
-                          ),
+                          ])
+
                     );
+
                   },
                 );
                 } else {
@@ -250,31 +256,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  String getFormattedDate(DateTime dateTime) {
-    final now = DateTime.now();
-
-    if (dateTime.year == now.year && dateTime.month == now.month && dateTime.day == now.day) {
-      // Date is the same as the local date, calculate time difference in hours and minutes
-      final timeDifference = now.difference(dateTime);
-
-      print('timeDifference.inDays: ${timeDifference.inDays}');
-
-      if (timeDifference.inHours > 0) {
-        // If the time difference is in hours, display hours
-        return "${timeDifference.inHours} ${timeDifference.inHours == 1 ? 'hour' : 'hours'} ago";
-      } else if (timeDifference.inMinutes > 0) {
-        // If the time difference is in minutes, display minutes
-        return "${timeDifference.inMinutes} ${timeDifference.inMinutes == 1 ? 'minute' : 'minutes'} ago";
-      } else {
-        // If the time difference is less than a minute, display 'just now'
-        return 'just now';
-      }
-    } else {
-      // Date is not the same as the local date, display only the date
-      return DateFormat('yyyy-MM-dd').format(dateTime);
-    }
   }
 
 

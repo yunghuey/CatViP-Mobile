@@ -14,3 +14,22 @@ class StartLoadSingleCatPost extends GetPostEvent {
   int catid;
   StartLoadSingleCatPost({required this.catid});
 }
+
+class GetPostComments extends GetPostEvent {
+  int postId;
+  GetPostComments({required this.postId});
+}
+
+// create new comment
+class StartNewComment extends GetPostEvent {}
+
+class PostCommentPressed extends GetPostEvent{
+  final String description;
+  final int postId;
+
+  PostCommentPressed({
+    required this.description,
+    required this.postId,
+  });
+
+}

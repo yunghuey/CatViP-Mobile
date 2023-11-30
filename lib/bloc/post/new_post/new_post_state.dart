@@ -1,3 +1,4 @@
+
 import 'package:equatable/equatable.dart';
 
 import '../../../model/post/postType.dart';
@@ -7,6 +8,7 @@ class NewPostState extends Equatable{
   List<Object> get props => [];
 }
 
+// Get Posts
 class NewPostInitState extends NewPostState {}
 
 class NewPostLoadingState extends NewPostState {}

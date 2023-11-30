@@ -12,7 +12,9 @@ class NewPostBloc extends Bloc<NewPostEvents, NewPostState>{
 
   PostRepository postRepo;
   PostTypeRepository postTypeRepo;
-  NewPostBloc(NewPostState initialState, this.postRepo, this.postTypeRepo):super(initialState){
+
+    NewPostBloc(NewPostState initialState, this.postRepo, this.postTypeRepo):super(initialState){
+
     on<StartNewPost>((event, emit){
       emit(NewPostInitState());
     });
