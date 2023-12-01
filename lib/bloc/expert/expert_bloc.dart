@@ -27,5 +27,16 @@ class ExpertBloc extends Bloc<ExpertEvent,ExpertState> {
         emit(EmptyFormState());
       }
     });
+
+    on<RevokeButtonPressed>((event, emit){
+      bool isRevoke = true;
+      // connection to api
+      if (isRevoke){
+        emit(RevokeSuccessState());
+      }
+      else {
+        emit(RevokeFailState());
+      }
+    });
   }
 }

@@ -12,3 +12,8 @@ class ApplyButtonPressed extends ExpertEvent{
   String document;
   ApplyButtonPressed({ required this.desc, required this.document });
 }
+
+class RevokeButtonPressed extends ExpertEvent {
+  int formid;
+  RevokeButtonPressed({ required this.formid});
+}

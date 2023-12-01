@@ -40,23 +40,39 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
         elevation: 0.0,
       ),
       body:
-      BlocBuilder<ExpertBloc, ExpertState>(
-        builder: (context, state){
-          if (state is ExpertLoadingState){
-            return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-          } else if (state is LoadedFormState){
-            formList = state.formList;
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  _applicationList(),
-                ],
-              ),
+      BlocListener<ExpertBloc, ExpertState>(
+        listener: (context, state){
+          if (state is RevokeFailState){
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Revoke failed. Please try again later"))
+            );
+          } else if (state is RevokeSuccessState){
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Application has been removed"))
             );
           }
-          return Container(child: Text("No application retrieved"),);
-        }
-      ),
+        },
+        child: BlocBuilder<ExpertBloc, ExpertState>(
+            builder: (context, state){
+              if (state is ExpertLoadingState){
+                return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+              } else if (state is LoadedFormState){
+                formList = state.formList;
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _applicationList(),
+                    ],
+                  ),
+                );
+              }
+              return Container(child: Text("No application retrieved"),);
+            }
+        ),
+      )
+
 
     );
   }
@@ -90,6 +106,7 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
                   ElevatedButton(
                       onPressed: (){
                         int formId = form.id;
+                        removeApplication(formId);
                       },
                       child: Text("revoke application",  style: TextStyle(color: HexColor("#3c1e08"))),
                       style: ButtonStyle(
@@ -105,13 +122,41 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
     );
   }
 
+  void removeApplication(int formId){
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Revoke application'),
+        content: const Text('Are you sure to remove this application?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+            //
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
   Future<void> createPdf(String base64String) async {
-    print(base64String);
-    var bytes = base64Decode(base64String);
-    final output = await getTemporaryDirectory();
-    final file = File("${output.path}/expert.pdf");
-    await file.writeAsBytes(bytes.buffer.asUint8List());
-    debugPrint("${output.path}/expert.pdf");
-    await OpenFilex.open("${output.path}/expert.pdf");
+    try{
+      print(base64String);
+      var bytes = base64Decode(base64String);
+      final output = await getTemporaryDirectory();
+      final file = File("${output.path}/expert.pdf");
+      await file.writeAsBytes(bytes.buffer.asUint8List());
+      debugPrint("${output.path}/expert.pdf");
+      await OpenFilex.open("${output.path}/expert.pdf");
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Your file is corrupted and unable to read. Please revoke the application and apply again."))
+      );
+    }
+
   }
 }

@@ -23,3 +23,7 @@ class LoadedFormState extends ExpertState {
 }
 
 class EmptyFormState extends ExpertState{}
+
+class RevokeSuccessState extends ExpertState {}
+
+class RevokeFailState extends ExpertState {}
