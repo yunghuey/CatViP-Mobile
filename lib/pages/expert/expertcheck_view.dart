@@ -46,10 +46,12 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
             return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
           } else if (state is LoadedFormState){
             formList = state.formList;
-            return Column(
-              children: [
-                _applicationList(),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  _applicationList(),
+                ],
+              ),
             );
           }
           return Container(child: Text("No application retrieved"),);
@@ -104,6 +106,7 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
   }
 
   Future<void> createPdf(String base64String) async {
+    print(base64String);
     var bytes = base64Decode(base64String);
     final output = await getTemporaryDirectory();
     final file = File("${output.path}/expert.pdf");
