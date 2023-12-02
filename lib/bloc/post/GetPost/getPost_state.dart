@@ -37,7 +37,8 @@ class GetPostCommentLoading extends GetPostState { }
 
 class GetPostCommentLoaded extends GetPostState {
   final List<PostComment> postComments;
-  GetPostCommentLoaded({required this.postComments});
+  const GetPostCommentLoaded({required this.postComments});
+
 }
 
 class GetPostCommentError extends GetPostState {
@@ -56,3 +57,15 @@ class NewCommentFailState extends GetPostState {
 }
 
 class NewCommentSuccessState extends GetPostState {}
+
+// update action post
+class ActionPostInitState extends GetPostState {}
+
+class ActionPostLoadingState extends GetPostState {}
+
+class ActionPostFailState extends GetPostState {
+  final String message;
+  ActionPostFailState({required this.message});
+}
+
+class ActionPostSuccessState extends GetPostState {}

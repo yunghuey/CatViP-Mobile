@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/model/post/postComment.dart';
 import 'package:CatViP/widgets.dart';
@@ -30,10 +32,15 @@ class _CommentsState extends State<Comments> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _postBloc.add(GetPostComments(postId: postId));
     super.initState();
 
+  }
+
+  @override
+  void dispose() {
+    _postBloc.close(); // Make sure to close the bloc when the widget is disposed
+    super.dispose();
   }
 
   @override
@@ -41,7 +48,6 @@ class _CommentsState extends State<Comments> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Comments'),
-
       ),
       body: CommentCard(),
       bottomNavigationBar: SafeArea(
@@ -54,6 +60,7 @@ class _CommentsState extends State<Comments> {
           child: Row(
             children: [
               CircleAvatar(
+                backgroundColor: Colors.transparent,
                 backgroundImage: AssetImage('assets/addImage.png'),
                   radius: 10,
               ),
@@ -78,9 +85,6 @@ class _CommentsState extends State<Comments> {
                         )
                     );
                     commentController.clear();
-                    setState(() {
-                      CommentCard();
-                    });
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -105,8 +109,8 @@ class _CommentsState extends State<Comments> {
   Widget CommentCard () {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16,),
-      child: BlocProvider.value(
-        value: _postBloc,
+      child: BlocProvider(
+        create: (context) => _postBloc,
         child: BlocBuilder<GetPostBloc,GetPostState>(
           builder: (context, state) {
           if (state is GetPostCommentError) {
@@ -122,14 +126,16 @@ class _CommentsState extends State<Comments> {
             child: CircularProgressIndicator(),
           );
           } else if (state is GetPostCommentLoaded) {
+            List<PostComment> reversedComments = List.from(state.postComments.reversed);
             return ListView.builder(
-                itemCount: state.postComments.length,
+                itemCount: reversedComments.length,
                 itemBuilder: (context, index) {
-                  PostComment postComment = state.postComments[index];
+                  PostComment postComment = reversedComments[index];
                   print("Post: ${postComment.toJson()}");
                   return Row(
                     children: [
                       CircleAvatar(
+                        backgroundColor: Colors.transparent,
                         backgroundImage: AssetImage('assets/addImage.png'),
                         radius: 10,
                       ),
@@ -177,7 +183,9 @@ class _CommentsState extends State<Comments> {
                 },
             );
           } else {
-            return Container();
+            return Container(
+              child: Text('Tak jadi bey'),
+            );
           }
         }
         ),

@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   int? selectedPostIndex;
   late final int? postId;
   final Widgets func = Widgets();
+  bool isFavorite = false;
 
   @override
   void initState() {
@@ -59,14 +60,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildListUser(){
+  Widget _buildListUser() {
     return Card(
       color: HexColor("#ecd9c9"),
       child: Container(
         padding: const EdgeInsets.all(20.0),
         child: BlocProvider(
           create: (context) => _postBloc,
-          child: BlocBuilder<GetPostBloc,GetPostState>(
+          child: BlocBuilder<GetPostBloc, GetPostState>(
             builder: (context, state) {
               if (state is GetPostError) {
                 return Center(
@@ -84,174 +85,197 @@ class _HomePageState extends State<HomePage> {
                 return ListView.builder(
                   itemCount: state.postList.length,
                   itemBuilder: (context, index) {
-                    Post post = state.postList[index];
+                    final Post post = state.postList[index];
                     print("Post: ${post.toJson()}");
                     return Container(
-                          color: HexColor("#ecd9c9"),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Display image
-                              if (post.postImages != null && post.postImages!.isNotEmpty)
-                                Container(
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 16,
-                                        backgroundColor: Colors.transparent,
-                                        backgroundImage: AssetImage('assets/addImage.png'),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 8
+                      color: HexColor("#ecd9c9"),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Display image
+                          if (post.postImages != null &&
+                              post.postImages!.isNotEmpty)
+                            Container(
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 16,
+                                    backgroundColor: Colors.transparent,
+                                    backgroundImage:
+                                    AssetImage('assets/addImage.png'),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'username',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text('username',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                        ],
                                       ),
-                                      IconButton(onPressed: (){
-                                        showDialog(context: context, builder: (context) => Dialog(
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => Dialog(
                                           child: ListView(
-                                            padding: const EdgeInsets.symmetric(vertical: 16,),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 16,
+                                            ),
                                             shrinkWrap: true,
                                             children: [
                                               'Report',
                                             ]
                                                 .map(
                                                   (e) => InkWell(
-                                                    onTap: (){},
-                                                    child: Container(
-                                                      padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
-                                                      child: Text(e),
-                                                    ),
-                                                   ),
-                                                 )
+                                                onTap: () {},
+                                                child: Container(
+                                                  padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 16),
+                                                  child: Text(e),
+                                                ),
+                                              ),
+                                            )
                                                 .toList(),
-                                              ),
-                                            ),
-                                        );
-                                      },
-                                          icon: const Icon(Icons.more_vert),),
-                                    ],
-                                  ),
-                                ),
-                              SizedBox(height: 4.0),
-                                      Center(
-                                      child: Container(
-                                        width: 400.0,
-                                        height: 400.0,
-                                        child: Image.memory(
-                                          base64Decode(post.postImages![0].image!),
-                                          fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                              Row(
-                                  children: [
-                                    _FavoriteButton(),
-                                    SizedBox(width: 4.0),
-                                    IconButton(
-                                      onPressed: () => Navigator.push(context,
-                                          MaterialPageRoute(
-                                            builder: (context) => Comments(postId: post.id!),)),
-                                      icon: Icon(
-                                      Icons.comment_bank_outlined,
-                                      color: Colors.black,
-                                      size: 24.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text (
-                                      "${post.likeCount.toString()} likes",
-                                      style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 18.0,
-                                      ),
-                               ),
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.only(
-                                  top: 8,
-                                ),
-                                child: RichText(
-                                  text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: post.id.toString(),
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                                fontSize: 16.0,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: ' ',
-                                            ),
-                                            TextSpan(
-                                            text: post.description.toString(),
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16.0,
-                                              ),
-                                              ),
-                                            ]
-                                  )
+                                      );
+                                    },
+                                    icon: const Icon(Icons.more_vert),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          SizedBox(height: 4.0),
+                          Center(
+                            child: Container(
+                              width: 400.0,
+                              height: 400.0,
+                              child: Image.memory(
+                                base64Decode(post.postImages![0].image!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              _FavoriteButton(postId: post.id!),
+                              SizedBox(width: 4.0),
+                              IconButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Comments(postId: post.id!),
                                   ),
                                 ),
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => Comments(postId: post.id!)));
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 4),
-                                        child: post.commentCount! > 0 // Add your condition here
-                                            ? Text(
-                                          'View all ${post.commentCount} comments',
-                                          style: const TextStyle(fontSize: 16, color: Colors.black),
-                                        )
-                                            : SizedBox.shrink(), // Use SizedBox.shrink() to conditionally hide the widget
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 4),
-                                      child: Text(
-                                        func.getFormattedDate(post.dateTime!),
-                                        style: const TextStyle(fontSize: 16, color: Colors.black),
-                                      )
-                                    ),
-                                  ],
-                               ),
+                                icon: Icon(
+                                  Icons.comment_bank_outlined,
+                                  color: Colors.black,
+                                  size: 24.0,
+                                ),
                               ),
-                          ])
-
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${post.likeCount.toString()} likes",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.only(
+                                    top: 8,
+                                  ),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: post.id.toString(),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' ',
+                                        ),
+                                        TextSpan(
+                                          text: post.description.toString(),
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Comments(postId: post.id!)),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4),
+                                    child: post.commentCount! > 0
+                                        ? Text(
+                                      'View all ${post.commentCount} comments',
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black),
+                                    )
+                                        : SizedBox.shrink(),
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4),
+                                  child: Text(
+                                    func.getFormattedDate(post.dateTime!),
+                                    style: const TextStyle(
+                                        fontSize: 16, color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     );
-
                   },
                 );
-                } else {
-                  return Container();
+              } else {
+                return Container();
               }
-            }
+            },
           ),
         ),
       ),
@@ -274,20 +298,43 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _FavoriteButton extends StatefulWidget {
+  final int postId;
+
+  const _FavoriteButton({Key? key, required this.postId}) : super(key: key);
+
   @override
-  _FavoriteButtonState createState() => _FavoriteButtonState();
+  _FavoriteButtonState createState() => _FavoriteButtonState(postId: postId);
 }
 
 class _FavoriteButtonState extends State<_FavoriteButton> {
   bool isFavorite = false;
+  final GetPostBloc _postBloc = GetPostBloc();
+  final int postId;
+
+  _FavoriteButtonState({required this.postId});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        setState(() {
-          isFavorite = !isFavorite;
-        });
+        if(isFavorite) {
+          _postBloc.add(UpdateActionPost(
+            postId: postId,
+            actionTypeId: 2,
+          ));
+          setState(() {
+            isFavorite = !isFavorite;
+          });
+        }
+        else if(!isFavorite) {
+          _postBloc.add(UpdateActionPost(
+            postId: postId,
+            actionTypeId: 1,
+          ));
+          setState(() {
+            isFavorite = !isFavorite;
+          });
+        }
       },
       icon: Icon(
         isFavorite ? Icons.favorite : Icons.favorite_border,

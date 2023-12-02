@@ -23,6 +23,20 @@ class GetPostComments extends GetPostEvent {
 // create new comment
 class StartNewComment extends GetPostEvent {}
 
+// update action post
+class StartActionPost extends GetPostEvent {}
+
+class UpdateActionPost extends GetPostEvent {
+
+  final int postId;
+  final int actionTypeId;
+
+  UpdateActionPost({
+    required this.postId,
+    required this.actionTypeId,
+  });
+}
+
 class PostCommentPressed extends GetPostEvent{
   final String description;
   final int postId;

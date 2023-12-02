@@ -201,4 +201,41 @@ class PostRepository{
     }
   }
 
+  // update action post
+  Future<bool> actionPost(int postId, int actionTypeId) async {
+
+    var pref = await SharedPreferences.getInstance();
+    String? token = pref.getString("token");
+    try {
+      var url = Uri.parse(APIConstant.ActionPostURL);
+
+      // to serialize the data Map to JSON
+      var body = json.encode(
+          {
+            'postId': postId,
+            'actionTypeId': actionTypeId,
+          }
+      );
+
+      var response = await http.put(url,
+          headers:
+          {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token}",
+          },
+          body: body
+      );
+
+      if (response.statusCode == 200) {
+        String data =  response.body;
+        pref.setString("message", data);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
 }
