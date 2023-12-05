@@ -19,6 +19,8 @@ import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/cat/createcat_view.dart';
 import 'package:CatViP/pages/expert/expertIntro_view.dart';
+import 'package:CatViP/pages/expert/expertcheck_view.dart';
+import 'package:CatViP/pages/expert/expertform_view.dart';
 import 'package:CatViP/pages/user/editpost_view.dart';
 import 'package:CatViP/pages/user/editprofile_view.dart';
 import 'package:CatViP/repository/user_repo.dart';
@@ -148,7 +150,6 @@ class _ProfileViewState extends State<ProfileView> {
                         } else if (state is CatProfileLoadedState) {
                           cats = state.cats;
                           print("get cat in frontend");
-                          print(cats.toString());
                           return _getAllCats();
                         } else {
                           return Container(child: const Text("Add your own cat now!")); // Handle other cases
@@ -237,9 +238,14 @@ class _ProfileViewState extends State<ProfileView> {
             // need an API to check if this user is Applied + Expert
             title: Text(expertMsg),
             onTap: (){
-                if (user.isExpert!){
+                if (!user.isExpert!){
                   // go to introduction page and then apply page
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ExpertIntro()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ExpertCheckView())).then(
+                      (result) { userBloc.add(StartLoadProfile());}
+                  );
+                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>ExpertFormView())).then(
+                  //         (result) { userBloc.add(StartLoadProfile());}
+                  // );
                 } else {
                 //   check status
                 }
@@ -376,12 +382,8 @@ class _ProfileViewState extends State<ProfileView> {
                               context,
                               MaterialPageRoute(builder: (context) => CatProfileView(currentcat: cats[index],fromOwner: true,)))
                               .then((value) {
-                                print("value in catprofileview from Profile ${value}");
-                                // if (value == true){
                                   catBloc.add(StartLoadCat());
                                   postBloc.add(StartLoadOwnPost());
-
-                            // }
                           });
                         },
                         child: CircleAvatar(

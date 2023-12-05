@@ -10,6 +10,8 @@ import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
 import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_bloc.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_state.dart';
+import 'package:CatViP/bloc/expert/expert_bloc.dart';
+import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
@@ -22,6 +24,7 @@ import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:CatViP/repository/cat_repo.dart';
+import 'package:CatViP/repository/expert_repo.dart';
 import 'package:CatViP/repository/postType_repo.dart';
 import 'package:CatViP/repository/post_repo.dart';
 import 'package:CatViP/repository/user_repo.dart';
@@ -76,6 +79,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<CatProfileBloc>(
             create: (context) => CatProfileBloc(CatProfileInitState(), CatRepository())
         ),
+        BlocProvider<ExpertBloc>(
+          create: (context) => ExpertBloc(ExpertProfileInitState(), ExpertRepository()),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -101,18 +107,8 @@ class MyApp extends StatelessWidget {
             )
         ),
         home: Splash(),
-        //home: HomePage(),
-
-        //    need to change into splash screen
       ),
 
     );
   }
 }
-// dont delete by yung huey
-// return MaterialApp(
-//   routes: {
-//     '/': (context) => UI_classname(),
-//     '/user' : (context) => profile_classname(),
-//   },
-// );

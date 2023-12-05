@@ -20,7 +20,6 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
     });
 
     on<GetRefreshToken>((event, emit) async{
-      print('in bloc');
       bool getNewToken = await repo.refreshToken();
       if (getNewToken){
         emit(RefreshTokenSuccess());
