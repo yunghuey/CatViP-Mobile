@@ -21,6 +21,7 @@ import 'package:CatViP/pages/cat/createcat_view.dart';
 import 'package:CatViP/pages/expert/expertIntro_view.dart';
 import 'package:CatViP/pages/expert/expertcheck_view.dart';
 import 'package:CatViP/pages/expert/expertform_view.dart';
+import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:CatViP/pages/user/editpost_view.dart';
 import 'package:CatViP/pages/user/editprofile_view.dart';
 import 'package:CatViP/repository/user_repo.dart';
@@ -229,6 +230,13 @@ class _ProfileViewState extends State<ProfileView> {
             title: Text("Register Cat"),
             onTap: (){
               Navigator.push(context,MaterialPageRoute(builder: (context) => CreateCatView(),));
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.remove_red_eye),
+            title: Text("View profile"),
+            onTap: (){
+              Navigator.push(context,MaterialPageRoute(builder: (context) => SearchView(),));
             },
           ),
           ListTile(
