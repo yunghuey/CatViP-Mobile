@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:CatViP/repository/APIConstant.dart';
 import '../model/post/post.dart';
+import '../model/post/postComment.dart';
 
 class PostRepository{
 
@@ -54,10 +55,12 @@ class PostRepository{
   //Get Post
   Future<List<Post>> fetchPost() async {
     try {
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
       http.Response response = await http.get(
           Uri.parse(APIConstant.GetPostsURL),
       headers: {
-        'Authorization': 'Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIzIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRvbmciLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDYXQgRXhwZXJ0IiwiZXhwIjoxNzAxMTg1MjM0fQ.CF2zzn1755VKchHMhxMbMSLt9Votc_wCOIU9d7r3paQ',
+        'Authorization': 'Bearer ${token}',
        }
       );
 
@@ -131,6 +134,107 @@ class PostRepository{
       print("error in get own post");
       print(e.toString());
       return [];
+    }
+  }
+
+  // get post comments
+  Future<List<PostComment>> fetchPostComments(int postId) async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.GetPostCommentsURL + "?postId=" + postId.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200){
+        List<dynamic> jsonData = json.decode(response.body);
+
+        // Assuming the JSON data is a List of posts
+        List<PostComment> postComments = jsonData.map((e) => PostComment.fromJson(e)).toList();
+        print("post: ${postComments.toString}");
+        return postComments;
+      }
+      return [];
+    } catch (e){
+      print("error in get own post");
+      print(e.toString());
+      return [];
+    }
+  }
+
+  // New Post Comment
+  Future<bool> newComment(String description,int postId) async {
+
+    var pref = await SharedPreferences.getInstance();
+    String? token = pref.getString("token");
+    try {
+      var url = Uri.parse(APIConstant.NewCommentURL);
+
+      // to serialize the data Map to JSON
+      var body = json.encode(
+          {
+            'description': description,
+            'postId': postId,
+          }
+          );
+
+      var response = await http.post(url,
+          headers:
+          {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token}",
+          },
+          body: body
+      );
+
+      if (response.statusCode == 200) {
+        String data =  response.body;
+        pref.setString("message", data);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  // update action post
+  Future<bool> actionPost(int postId, int actionTypeId) async {
+
+    var pref = await SharedPreferences.getInstance();
+    String? token = pref.getString("token");
+    try {
+      var url = Uri.parse(APIConstant.ActionPostURL);
+
+      // to serialize the data Map to JSON
+      var body = json.encode(
+          {
+            'postId': postId,
+            'actionTypeId': actionTypeId,
+          }
+      );
+
+      var response = await http.put(url,
+          headers:
+          {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token}",
+          },
+          body: body
+      );
+
+      if (response.statusCode == 200) {
+        String data =  response.body;
+        pref.setString("message", data);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
     }
   }
 

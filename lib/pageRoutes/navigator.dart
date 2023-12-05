@@ -8,8 +8,8 @@ import '../pages/splashscreen.dart';
 
 class MyNavigator {
   static const String initialRoute = '/';
-  static const String secondRoute = '/home';
-  static const String thirdRoute = '/newPost';
+  static const String homeRoute = '/home';
+  static const String addRoute = '/newPost';
   static const String fourthRoute = '/shopping';
   static const String userRoute = '/profile';
   static const String searchRoute = '/search';
@@ -18,9 +18,9 @@ class MyNavigator {
     switch (settings.name) {
       case initialRoute:
         return MaterialPageRoute(builder: (_) => Splash());
-      case secondRoute:
+      case homeRoute:
         return MaterialPageRoute(builder: (_) => HomePage());
-      case thirdRoute:
+      case addRoute:
         return MaterialPageRoute(builder: (_) => NewPost());
       // case fourthRoute:
       //   return MaterialPageRoute(builder: (_) => Shopping());

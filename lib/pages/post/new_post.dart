@@ -1,11 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data'; // Add this import
+import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
+import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import '../../bloc/post/new_post/new_post_event.dart';
+import '../../bloc/post/new_post/new_post_state.dart';
+import '../../model/post/postType.dart';
 import '../../pageRoutes/bottom_navigation_bar.dart';
 
 class NewPost extends StatefulWidget {
@@ -19,7 +25,13 @@ class _NewPostState extends State<NewPost> {
 
   //Controllers for input
   TextEditingController captionController = TextEditingController();
+  TextEditingController postTypeController = TextEditingController();
+  TextEditingController catIdController = TextEditingController();
 
+  List<PostType> postTypes = [];
+  final _formKey = GlobalKey<FormState>();
+  late NewPostBloc createBloc;
+  PostType? selectedPostType;
   File? image;
   final _picker = ImagePicker();
   bool showSpinner = false;
@@ -35,6 +47,8 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
+
+
   Future<String?> _getImageBase64(File imageFile) async {
     try {
       List<int> imageBytes = await imageFile.readAsBytes();
@@ -48,6 +62,25 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
+  late var msg = Container();
+  late final status = BlocBuilder<NewPostBloc, NewPostState>(
+    builder: (context, state){
+      if (state is NewPostLoadingState){
+        return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+      }
+      return Container();
+    },
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    createBloc = BlocProvider.of<NewPostBloc>(context);
+    if (postTypes.isEmpty) {
+      createBloc.add(GetPostTypes());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -55,8 +88,34 @@ class _NewPostState extends State<NewPost> {
       child: Scaffold(
         appBar: AppBar(
           title: Text("Add post"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+            },
+          ),
         ),
-        body: SingleChildScrollView(
+        body:  BlocListener<NewPostBloc, NewPostState>(
+          // ignore: curly_braces_in_flow_control_structures
+            listener: (context, state) {
+              if (state is NewPostSuccessState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Successfully Post'))
+                ); //   navigate to View All Cat
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              }
+              else if (state is NewPostFailState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message))
+                );
+              }
+            },
+        child: SingleChildScrollView(
           child: Center(
             child: Column(
               children: [
@@ -72,6 +131,14 @@ class _NewPostState extends State<NewPost> {
                       SizedBox(
                         height: 8.0,
                       ),
+                      postType(),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      catId(),
+                      SizedBox(
+                        height: 8.0,
+                      ),
                       postButton(),
                     ],
                   ),
@@ -80,8 +147,10 @@ class _NewPostState extends State<NewPost> {
             ),
           ),
         ),
+      ),
         bottomNavigationBar: CustomBottomNavigationBar(),
       ),
+
     );
   }
 
@@ -114,6 +183,7 @@ class _NewPostState extends State<NewPost> {
                 },
                 label: Text("Camera"),
               ),
+              SizedBox(width: 20.0,),
               TextButton.icon(
                 icon: Icon(Icons.image),
                 onPressed: () {
@@ -144,7 +214,7 @@ class _NewPostState extends State<NewPost> {
               height: 300, // Set your desired height for the square box
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.teal,
+                  color: Colors.brown,
                   width: 2.0,
                 ),
               ),
@@ -183,38 +253,12 @@ class _NewPostState extends State<NewPost> {
               },
               child: Icon(
                 Icons.camera_alt,
-                color: Colors.teal,
+                color: Colors.brown,
                 size: 28.0,
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget caption() {
-    return Container(
-      child: TextFormField(
-        controller: captionController,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.teal,
-              )),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.orange,
-                width: 2,
-              )),
-          prefixIcon: Icon(
-            Icons.closed_caption,
-            color: Colors.green,
-          ),
-          labelText: "Caption",
-          helperText: "",
-          hintText: "Write a caption.",
-        ),
       ),
     );
   }
@@ -226,20 +270,25 @@ class _NewPostState extends State<NewPost> {
         width: 400.0,
         height: 55.0,
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             print(captionController.text);
-            /*
-            print(pwdController.text);
-            if (usernameController.text != "" && pwdController.text != "" ){
-              authBloc.add(LoginButtonPressed(
-                username: usernameController.text,
-                password: pwdController.text,
-              ));
-            } else {
-              authBloc.add(EmptyField());
-            }
+            //if(_formKey.currentState!.validate()){
+              if (image != null) {
+                String? imageData = await _getImageBase64(image!);
+                print(selectedPostType?.id);
 
-             */
+                createBloc.add(PostButtonPressed(
+                  description: captionController.text.trim(),
+                  postTypeId: selectedPostType?.id ?? 0,
+                  image: imageData,
+                  catId: int.parse(catIdController.text.trim()),
+                ));
+              }
+              else {
+                print("image is null");
+              }
+
+            //}
           },
 
           style: ButtonStyle(
@@ -253,6 +302,97 @@ class _NewPostState extends State<NewPost> {
             padding: EdgeInsets.all(12.0),
             child: Text('POST', style: TextStyle(fontSize: 16),),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget caption() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: TextFormField(
+        controller: captionController,
+        decoration:  InputDecoration(
+            labelText: 'Caption',
+            labelStyle: TextStyle(color: HexColor("#3c1e08")),
+            focusColor: HexColor("#3c1e08"),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: HexColor("#a4a4a4")),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color:  HexColor("#3c1e08")),
+            )
+        ),
+      ),
+    );
+  }
+
+  Widget postType() {
+    //print('PostTypes: $postTypes');
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: BlocListener<NewPostBloc, NewPostState>(
+        listener: (context, state) {
+          if (state is GetPostTypeLoading) {
+            // You can perform side-effects here if needed
+          } else if (state is GetPostTypeError) {
+            // You can perform side-effects here if needed
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error: ${state.error}'),
+              ),
+            );
+          } else if (state is GetPostTypeLoaded) {
+            // Use the fetched data to populate the drop-down menu
+            postTypes = state.postTypes;
+            print("success");// Update the postTypes list
+            // You can perform side-effects here if needed
+          }
+        },
+        child: DropdownButtonFormField<PostType>(
+          value: selectedPostType, // Replace with the selected PostType variable
+          onChanged: (value) {
+            setState(() {
+              selectedPostType = value;
+            });
+          },
+          items: postTypes.map((postType) {
+            return DropdownMenuItem<PostType>(
+              value: postType,
+              child: Text(postType.name! ?? "no data"), // Replace with the actual field you want to display
+            );
+          }).toList(),
+          decoration: InputDecoration(
+            labelText: 'PostType',
+            labelStyle: TextStyle(color: HexColor("#3c1e08")),
+            focusColor: HexColor("#3c1e08"),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: HexColor("#a4a4a4")),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: HexColor("#3c1e08")),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget catId() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: TextFormField(
+        controller: catIdController,
+        decoration:  InputDecoration(
+            labelText: 'Cat Id',
+            labelStyle: TextStyle(color: HexColor("#3c1e08")),
+            focusColor: HexColor("#3c1e08"),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: HexColor("#a4a4a4")),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color:  HexColor("#3c1e08")),
+            )
         ),
       ),
     );

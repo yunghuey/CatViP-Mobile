@@ -19,6 +19,7 @@ import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/cat/createcat_view.dart';
 import 'package:CatViP/pages/expert/expertIntro_view.dart';
+import 'package:CatViP/pages/user/editpost_view.dart';
 import 'package:CatViP/pages/user/editprofile_view.dart';
 import 'package:CatViP/repository/user_repo.dart';
 import 'package:flutter/material.dart';
@@ -425,6 +426,7 @@ class _ProfileViewState extends State<ProfileView> {
           //   handle one image
           //   new page
           //   wait for wafir's code
+            Navigator.push(context, MaterialPageRoute(builder: (context) => EditPost(currentPost: post)));
           },
           child: Container(
             color: Colors.grey,
