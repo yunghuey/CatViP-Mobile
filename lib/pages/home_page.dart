@@ -13,7 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/post/post.dart';
 
 import '../pageRoutes/bottom_navigation_bar.dart';
-import '../widgets.dart';
+import '../widgets/widgets.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -48,14 +49,14 @@ class _HomePageState extends State<HomePage> {
           title: Text('CatViP'),
           actions: [
             IconButton(
-                onPressed: (){},
-                icon: const Icon(Icons.messenger_outline),
-                color: Colors.white,
+              onPressed: (){},
+              icon: const Icon(Icons.messenger_outline),
+              color: Colors.white,
             ),
           ],
         ),
         body: _buildListUser(),
-          bottomNavigationBar: CustomBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }
@@ -170,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Row(
                             children: [
-                              _FavoriteButton(postId: post.id!),
+                              _FavoriteButton(postId: post.id!, actionTypeId: post.currentUserAction!),
                               SizedBox(width: 4.0),
                               IconButton(
                                 onPressed: () => Navigator.push(
@@ -299,48 +300,41 @@ class _HomePageState extends State<HomePage> {
 
 class _FavoriteButton extends StatefulWidget {
   final int postId;
+  final int actionTypeId;
 
-  const _FavoriteButton({Key? key, required this.postId}) : super(key: key);
+  const _FavoriteButton({Key? key, required this.postId, required this.actionTypeId}) : super(key: key);
 
   @override
-  _FavoriteButtonState createState() => _FavoriteButtonState(postId: postId);
+  _FavoriteButtonState createState() => _FavoriteButtonState(postId: postId, actionTypeId:actionTypeId);
 }
 
 class _FavoriteButtonState extends State<_FavoriteButton> {
   bool isFavorite = false;
   final GetPostBloc _postBloc = GetPostBloc();
   final int postId;
+  final int actionTypeId;
 
-  _FavoriteButtonState({required this.postId});
+  _FavoriteButtonState({required this.postId,required this.actionTypeId});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        if(isFavorite) {
-          _postBloc.add(UpdateActionPost(
-            postId: postId,
-            actionTypeId: 2,
-          ));
-          setState(() {
-            isFavorite = !isFavorite;
-          });
-        }
-        else if(!isFavorite) {
-          _postBloc.add(UpdateActionPost(
-            postId: postId,
-            actionTypeId: 1,
-          ));
-          setState(() {
-            isFavorite = !isFavorite;
-          });
-        }
-      },
-      icon: Icon(
-        isFavorite ? Icons.favorite : Icons.favorite_border,
-        color: Colors.black,
-        size: 24.0,
-      ),
+      int newActionTypeId = isFavorite ? 2 : 1;
+      _postBloc.add(UpdateActionPost(
+        postId: postId!,
+        actionTypeId: newActionTypeId,
+      ));
+      setState(() {
+        isFavorite = !isFavorite;
+      });
+    },
+    icon: Icon(
+    isFavorite && actionTypeId == 1
+    ? Icons.favorite
+        : Icons.favorite_border,
+    color: Colors.black,
+    )
     );
   }
 }

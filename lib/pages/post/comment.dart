@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/model/post/postComment.dart';
-import 'package:CatViP/widgets.dart';
+import 'package:CatViP/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -184,7 +184,7 @@ class _CommentsState extends State<Comments> {
             );
           } else {
             return Container(
-              child: Text('Tak jadi bey'),
+
             );
           }
         }

@@ -64,7 +64,7 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
         }
       } catch (e) {
         emit(GetPostCommentError(
-            error: "Failed to fetch data in your device online"));
+            error: "Be the first to comment!"));
       }
     });
 
@@ -76,6 +76,7 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
     on<PostCommentPressed>((event, emit) async {
       emit(NewCommentLoadingState());
       try {
+
         // Attempt to post a new comment
         bool isCreated = await postRepository.newComment(
             event.description, event.postId);
@@ -88,6 +89,14 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
           // Update the state with the new list of comments
           emit(NewCommentSuccessState());
           emit(GetPostCommentLoaded(postComments: updatedCommentList));
+        }else if(event.description == ""){
+            final List<PostComment> updatedCommentList = await postRepository
+                .fetchPostComments(event.postId);
+            print(event.postId);
+            print("test ${event.description}");
+            // Update the state with the new list of comments
+            emit(NewCommentSuccessState());
+            emit(GetPostCommentLoaded(postComments: updatedCommentList));
         } else {
           emit(NewCommentFailState(message: "Failed to create comment"));
         }
@@ -103,11 +112,11 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
     });
 
     on<UpdateActionPost>((event, emit) async {
-      emit(ActionPostLoadingState());
+      //emit(ActionPostLoadingState());
       try {
         // Attempt to post a new comment
         bool isUpdated = await postRepository.actionPost(event.postId, event.actionTypeId);
-
+/*
         print(event.postId);
         print(event.actionTypeId);
         print(isUpdated);
@@ -117,7 +126,7 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
 
         } else {
           emit(ActionPostFailState(message: "Failed to update action"));
-        }
+        }*/
       } catch (e) {
         // Handle any potential errors during the process
         emit(ActionPostFailState(message: "Failed to update action"));

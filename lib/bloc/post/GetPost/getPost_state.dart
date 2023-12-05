@@ -56,6 +56,11 @@ class NewCommentFailState extends GetPostState {
   NewCommentFailState({required this.message});
 }
 
+class NewCommentIsNull extends GetPostState {
+  final String message;
+  NewCommentIsNull({required this.message});
+}
+
 class NewCommentSuccessState extends GetPostState {}
 
 // update action post
