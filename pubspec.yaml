@@ -80,14 +80,14 @@ flutter:
   assets:
     - assets/logo.png
     - assets/Dinosaur.png
-    - assets/hk1.jpg
-    - assets/hk2.jpg
-    - assets/mountain.jpg
-    - assets/sunset.jpg
-    - assets/meow.jpg
-    - assets/profileimage.png
-    - assets/catprofileimg.png
-    - assets/expertIcon.jpg
+    #- assets/hk1.jpg
+    #- assets/hk2.jpg
+    #- assets/mountain.jpg
+    #- assets/sunset.jpg
+    #- assets/meow.jpg
+    #- assets/profileimage.png
+    #- assets/catprofileimg.png
+    #- assets/expertIcon.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

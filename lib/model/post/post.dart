@@ -48,7 +48,7 @@ class Post {
 
     return Post(
       error: json["error"],
-      id: json["id"],
+      id: json["id"],  // id : 1
       description: json["description"],
       dateTime: DateTime.parse(json["dateTime"]),
       userId: json["userId"],

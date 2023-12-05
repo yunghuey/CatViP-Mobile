@@ -25,12 +25,16 @@ import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:CatViP/repository/cat_repo.dart';
 import 'package:CatViP/repository/expert_repo.dart';
+import 'package:CatViP/repository/postType_repo.dart';
 import 'package:CatViP/repository/post_repo.dart';
 import 'package:CatViP/repository/user_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:go_router/go_router.dart';
+
+import 'bloc/post/new_post/new_post_bloc.dart';
+import 'bloc/post/new_post/new_post_state.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,6 +64,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<GetPostBloc>(
           create: (context) => GetPostBloc(),
         ),
+        BlocProvider<NewPostBloc>(
+        create: (context) => NewPostBloc(NewPostInitState(), PostRepository(), PostTypeRepository()),
+        ),
         BlocProvider<LogoutBloc>(
           create: (context) => LogoutBloc(LogoutInitState(), AuthRepository()),
         ),
@@ -67,7 +74,7 @@ class MyApp extends StatelessWidget {
           create: (context) => CreateCatBloc(CreateCatInitState(), CatRepository()),
         ),
         BlocProvider<UserProfileBloc>(
-            create: (context) => UserProfileBloc(UserProfileInitState(), UserRepository()),
+          create: (context) => UserProfileBloc(UserProfileInitState(), UserRepository()),
         ),
         BlocProvider<CatProfileBloc>(
             create: (context) => CatProfileBloc(CatProfileInitState(), CatRepository())
@@ -76,42 +83,32 @@ class MyApp extends StatelessWidget {
           create: (context) => ExpertBloc(ExpertProfileInitState(), ExpertRepository()),
         ),
       ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: title,
-          initialRoute: MyNavigator.initialRoute,
-          onGenerateRoute: MyNavigator.generateRoute,
-          theme: ThemeData(
-              scaffoldBackgroundColor: HexColor("#ecd9c9"),
-              fontFamily: 'Times New Roman',
-              textTheme: TextTheme(
-                  bodyMedium: TextStyle(
-                    color: HexColor("#3c1e08"),
-                    fontSize: 13,
-                  ),
-                  bodyLarge: TextStyle(
-                    color: HexColor("#3c1e08"),
-                    fontSize: 23,
-                  )
-              ),
-              appBarTheme: AppBarTheme(
-                iconTheme: IconThemeData(color: HexColor('#3c1e08')),
-                color: HexColor('#3c1e08'),
-              )
-          ),
-          home: Splash(),
-          //home: HomePage(),
-
-          //    need to change into splash screen
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: title,
+        initialRoute: MyNavigator.initialRoute,
+        onGenerateRoute: MyNavigator.generateRoute,
+        theme: ThemeData(
+            scaffoldBackgroundColor: HexColor("#ecd9c9"),
+            fontFamily: 'Times New Roman',
+            textTheme: TextTheme(
+                bodyMedium: TextStyle(
+                  color: HexColor("#3c1e08"),
+                  fontSize: 13,
+                ),
+                bodyLarge: TextStyle(
+                  color: HexColor("#3c1e08"),
+                  fontSize: 23,
+                )
+            ),
+            appBarTheme: AppBarTheme(
+              iconTheme: IconThemeData(color: HexColor('#3c1e08')),
+              color: HexColor('#3c1e08'),
+            )
         ),
+        home: Splash(),
+      ),
 
     );
   }
 }
-// dont delete by yung huey
-// return MaterialApp(
-//   routes: {
-//     '/': (context) => UI_classname(),
-//     '/user' : (context) => profile_classname(),
-//   },
-// );
