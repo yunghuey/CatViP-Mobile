@@ -46,11 +46,15 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           //flexibleSpace: _logoImage(),
-          title: Text('CatViP'),
+          title: Text('CatViP',style: Theme.of(context).textTheme.bodyLarge),
+          backgroundColor: HexColor("#ecd9c9"),
+          bottomOpacity: 0.0,
+          elevation: 0.0,
+          automaticallyImplyLeading: false,
           actions: [
             IconButton(
               onPressed: (){},
-              icon: const Icon(Icons.messenger_outline),
+              icon: Icon(Icons.messenger_outline, color: HexColor("#3c1e08"),),
               color: Colors.white,
             ),
           ],

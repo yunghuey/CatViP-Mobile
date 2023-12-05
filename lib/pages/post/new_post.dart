@@ -87,10 +87,14 @@ class _NewPostState extends State<NewPost> {
       inAsyncCall: showSpinner,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Add post"),
+          title: Text("Add post", style: Theme.of(context).textTheme.bodyLarge),
+          backgroundColor: HexColor("#ecd9c9"),
+          bottomOpacity: 0.0,
+          elevation: 0.0,
+          automaticallyImplyLeading: false,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            color: Colors.white,
+            color: HexColor("#3c1e08"),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
             },
