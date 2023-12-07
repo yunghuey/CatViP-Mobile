@@ -98,7 +98,13 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
                       Text("Document: "),
                       TextButton(onPressed: (){
                         createPdf(form.document);
-                      }, child: Text("View document",style: TextStyle(color: HexColor("#3c1e08"))))
+                      }, child: Text("View document",
+                          style: TextStyle(
+                          color: HexColor("#3c1e08"),
+                          decoration: TextDecoration.underline,
+                          )
+                        )
+                      )
                     ],
                   ),
                   Text("Description: ${form.description}"),

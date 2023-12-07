@@ -69,7 +69,7 @@ class _ProfileViewState extends State<ProfileView> {
   String message = "Welcome";
   final String applyExpert = "Apply as Expert";
   final String checkExpert = "Check application status";
-  final String viewExpert = "View application";
+  final String viewExpert = "View application status";
   String expertMsg = "Apply as Expert";
 
   //  need to get all cat of this user and all post by this user
