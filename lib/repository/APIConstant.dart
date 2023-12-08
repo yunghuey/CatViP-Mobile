@@ -28,6 +28,7 @@ class APIConstant {
    static String get GetPostCommentsURL => "${APIConstant.URL}post/getpostcomments";
    static String get NewCommentURL => "${APIConstant.URL}post/createcomment";
    static String get ActionPostURL => "${APIConstant.URL}post/ActPost";
+   static String get EditPostURL => "${APIConstant.URL}post/editpost/";
 
    // cat module
    static String get NewCatURL => "${APIConstant.URL}cat/StoreCat";

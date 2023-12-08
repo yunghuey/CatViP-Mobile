@@ -88,13 +88,6 @@ class _NewPostState extends State<NewPost> {
       child: Scaffold(
         appBar: AppBar(
           title: Text("Add post"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.white,
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-            },
-          ),
         ),
         body:  BlocListener<NewPostBloc, NewPostState>(
           // ignore: curly_braces_in_flow_control_structures

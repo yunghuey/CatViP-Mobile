@@ -15,6 +15,7 @@ class PostRepository{
                         String? image, int catId ) async {
 
     var pref = await SharedPreferences.getInstance();
+    String? token = pref.getString("token");
     try {
       var url = Uri.parse(APIConstant.NewPostURL);
 
@@ -35,8 +36,12 @@ class PostRepository{
         ]
       });
 
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
       var response = await http.post(url,
-          headers: {"Content-Type": "application/json"},
+          headers: header,
           body: body
       );
 
@@ -181,6 +186,42 @@ class PostRepository{
           );
 
       var response = await http.post(url,
+          headers:
+          {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token}",
+          },
+          body: body
+      );
+
+      if (response.statusCode == 200) {
+        String data =  response.body;
+        pref.setString("message", data);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  // Edit Post
+  Future<bool> editPost(String description,int postId) async {
+
+    var pref = await SharedPreferences.getInstance();
+    String? token = pref.getString("token");
+    try {
+      var url = Uri.parse(APIConstant.EditPostURL + postId.toString());
+
+      // to serialize the data Map to JSON
+      var body = json.encode(
+          {
+            'description': description,
+          }
+      );
+
+      var response = await http.put(url,
           headers:
           {
             "Content-Type": "application/json",

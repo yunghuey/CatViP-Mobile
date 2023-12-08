@@ -30,6 +30,8 @@ class _HomePageState extends State<HomePage> {
   late final int? postId;
   final Widgets func = Widgets();
   bool isFavorite = false;
+  bool thumbsUpSelected = false;
+  bool thumbsDownSelected = false;
 
   @override
   void initState() {
@@ -93,7 +95,6 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Display image
                           if (post.postImages != null &&
                               post.postImages!.isNotEmpty)
                             Container(
@@ -171,6 +172,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Row(
                             children: [
+                              //postBar(post.id!),
                               _FavoriteButton(postId: post.id!, actionTypeId: post.currentUserAction!),
                               SizedBox(width: 4.0),
                               IconButton(
@@ -313,28 +315,63 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
   final GetPostBloc _postBloc = GetPostBloc();
   final int postId;
   final int actionTypeId;
+  bool thumbsUpSelected = false;
+  bool thumbsDownSelected = false;
 
   _FavoriteButtonState({required this.postId,required this.actionTypeId});
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-      int newActionTypeId = isFavorite ? 2 : 1;
-      _postBloc.add(UpdateActionPost(
-        postId: postId!,
-        actionTypeId: newActionTypeId,
-      ));
-      setState(() {
-        isFavorite = !isFavorite;
-      });
-    },
-    icon: Icon(
-    isFavorite && actionTypeId == 1
-    ? Icons.favorite
-        : Icons.favorite_border,
-    color: Colors.black,
-    )
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () {
+            setState(() {
+              thumbsUpSelected = !thumbsUpSelected;
+              if (thumbsUpSelected) {
+                thumbsDownSelected = false;
+              }
+            });
+
+            // Update the action type for the specific post
+            if(thumbsUpSelected == true) {
+              int newActionTypeId = 1;
+              _postBloc.add(UpdateActionPost(
+                postId: postId,
+                actionTypeId: newActionTypeId,
+              ));
+            }
+          },
+          icon: Icon(
+            thumbsUpSelected ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+            color: thumbsUpSelected ? Colors.blue : Colors.black,
+            size: 24.0,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              thumbsDownSelected = !thumbsDownSelected;
+              if (thumbsDownSelected) {
+                thumbsUpSelected = false;
+              }
+            });
+
+            // Update the action type for the specific post
+            if(thumbsDownSelected == true) {
+              _postBloc.add(UpdateActionPost(
+                postId: postId,
+                actionTypeId: 2,
+              ));
+            }
+          },
+          icon: Icon(
+            thumbsDownSelected ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
+            color: thumbsDownSelected ? Colors.red : Colors.black,
+            size: 24.0,
+          ),
+        ),
+      ],
     );
   }
 }

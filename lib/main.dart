@@ -30,6 +30,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:go_router/go_router.dart';
 
+import 'bloc/post/EditPost/editPost_bloc.dart';
+import 'bloc/post/EditPost/editPost_state.dart';
 import 'bloc/post/new_post/new_post_bloc.dart';
 import 'bloc/post/new_post/new_post_state.dart';
 
@@ -75,6 +77,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<CatProfileBloc>(
             create: (context) => CatProfileBloc(CatProfileInitState(), CatRepository())
+        ),
+        BlocProvider<EditPostBloc>(
+            create: (context) => EditPostBloc(EditPostInitState(), PostRepository())
         ),
       ],
       child: MaterialApp(

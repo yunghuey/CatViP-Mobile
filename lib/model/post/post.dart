@@ -23,6 +23,10 @@ class Post {
     required this.error,
   });
 
+  Post.edit({
+    required this.id,
+    required this.description,
+  });
   // 2- Create the protperties
   int? id;
   String? description, error;
