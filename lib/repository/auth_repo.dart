@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository{
 
-  Future<bool> login(String username, String password) async {
+  Future<int> login(String username, String password) async {
     var pref = await SharedPreferences.getInstance();
     try {
       var url = Uri.parse(APIConstant.LoginURL);
@@ -25,12 +25,12 @@ class AuthRepository{
       if (response.statusCode == 200) {
           String data =  response.body;
           pref.setString("token", data);
-          return true;
+          return 1;
       }
-      return false;
+      return 0;
     } catch (e) {
       print(e.toString());
-      return false;
+      return 2;
     }
   }
 
@@ -151,7 +151,6 @@ class AuthRepository{
         var response = await http.delete(url, headers: header,);
 
         if (response.statusCode == 200) {
-          print('logout success');
           pref.remove("token");
           return true;
         } else {

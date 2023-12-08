@@ -52,13 +52,14 @@ class _CatProfileViewState extends State<CatProfileView> {
         elevation: 0.0,
         actions: [
           IconButton(
-            icon: Icon(Icons.edit, color: HexColor("#3c1e08"),),
+            icon: Icon(Icons.menu, color: HexColor("#3c1e08"),),
             onPressed: (){
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context)=>EditCatView(currentCat: widget.currentcat))
-              ).then((value) {
-                  catBloc.add(ReloadOneCatEvent(catid: value));
-              });
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context){
+                  return _menu();
+                },
+              );
             },
           )
         ],
@@ -99,6 +100,36 @@ class _CatProfileViewState extends State<CatProfileView> {
           }
         }
       ),
+    );
+  }
+
+  Widget _menu(){
+    return Container(
+    color: HexColor("#ecd9c9"),
+    padding: EdgeInsets.only(bottom: 20),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          leading: Icon(Icons.edit),
+          title: Text("Edit Cat"),
+          onTap: (){
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context)=>EditCatView(currentCat: widget.currentcat))
+            ).then((value) {
+              catBloc.add(ReloadOneCatEvent(catid: value));
+            });
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.add_alert_outlined),
+          title: Text("Report missing"),
+          onTap: (){
+            // Navigator.push(context,MaterialPageRoute(builder: (context) => SearchView(),));
+          },
+        ),
+      ],
+    )
     );
   }
 

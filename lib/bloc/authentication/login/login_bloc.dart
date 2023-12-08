@@ -20,7 +20,6 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
     });
 
     on<GetRefreshToken>((event, emit) async{
-      print('in bloc');
       bool getNewToken = await repo.refreshToken();
       if (getNewToken){
         emit(RefreshTokenSuccess());
@@ -32,15 +31,17 @@ class AuthBloc extends Bloc<AuthEvents, AuthState>{
     on<LoginButtonPressed>((event, emit) async {
       emit(LoginLoadingState());
       
-      bool isValidLogin = await repo.login(event.username, event.password);
+      int isValidLogin = await repo.login(event.username, event.password);
       print(isValidLogin);
-      if (isValidLogin)
+      if (isValidLogin == 1)
       {
         emit(UserLoginSuccessState());
       }
-      else
+      else if (isValidLogin == 0)
       {
         emit(LoginErrorState(message: "Invalid username or password"));
+      } else if (isValidLogin == 2){
+        emit(LoginErrorState(message: "Unable to connect with server. Please try again later."));
       }
     });
 

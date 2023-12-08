@@ -23,7 +23,6 @@ class UserRepository{
         if (response.statusCode == 200){
           var value = response.body;
           var jsonValue = json.decode(value);
-          print("receive 200");
           print(jsonValue.toString());
           user_data =  UserModel.fromJson(jsonValue);
           return user_data;
