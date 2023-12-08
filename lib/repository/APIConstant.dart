@@ -4,11 +4,11 @@ class APIConstant {
   // static const String URL = "http://10.131.76.30:7015/api/";
 
    //wafir's Melaka IP
-   static const String URL = "http://192.168.0.126:7015/api/";
+   // static const String URL = "http://192.168.0.126:7015/api/";
 
 
   // yung huey IP
-  //static const String URL = "http://192.168.137.1:7015/api/";
+   static const String URL = "http://192.168.137.1:7015/api/";
 
   // auth module
   static String get LoginURL => "${APIConstant.URL}Auth/login";
@@ -29,9 +29,10 @@ class APIConstant {
    static String get NewCommentURL => "${APIConstant.URL}post/createcomment";
    static String get ActionPostURL => "${APIConstant.URL}post/ActPost";
 
-  // expert module
-  static String get NewExpertURL => "${APIConstant.URL}Expert/ApplyAsExpert";
-  static String get GetAllSingleURL => "${APIConstant.URL}Expert/GetApplications";
+   // expert module
+   static String get NewExpertURL => "${APIConstant.URL}Expert/ApplyAsExpert";
+   static String get GetApplicationURL => "${APIConstant.URL}Expert/GetLastestApplication";
+   static String get RevokeApplicationURL => "${APIConstant.URL}Expert/RevokeApplication/";
 
    // cat module
    static String get NewCatURL => "${APIConstant.URL}cat/StoreCat";

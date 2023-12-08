@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_event.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
+import 'package:CatViP/pages/user/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -68,12 +69,12 @@ class _ExpertFormViewState extends State<ExpertFormView> {
       BlocListener<ExpertBloc,ExpertState>(
         listener: (context, state){
           if (state is AppliedSuccessState){
-            Navigator.popUntil(context, (route) => Navigator.of(context).canPop());
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content:
               Text("Your application has been submitted."
                   " It needs a two working days to process."))
             );
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileView()));
           } else if (state is AppliedFailState){
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message))

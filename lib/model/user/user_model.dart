@@ -15,6 +15,7 @@ class UserModel {
   int? following;
   bool? isExpert;
   int? expertTips;
+  int? validToApply;
 
   UserModel({
     required this.username,
@@ -31,6 +32,7 @@ class UserModel {
     this.following,
     this.isExpert,
     this.expertTips,
+    this.validToApply,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
