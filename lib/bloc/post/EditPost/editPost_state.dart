@@ -1,7 +1,4 @@
-
 import 'package:equatable/equatable.dart';
-
-import '../../../model/post/postType.dart';
 
 class EditPostState extends Equatable{
   @override

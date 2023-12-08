@@ -12,6 +12,7 @@ class PostComment {
     required this.description,
     required this.dateTime,
     required this.username,
+    required this.profileImage,
     required this.error,
   });
 
@@ -20,7 +21,9 @@ class PostComment {
   String? description;
   String? dateTime;
   String? username;
+  String? profileImage;
   String? error;
+
 
   factory PostComment.fromJson(Map<String, dynamic> json) {
     print("JSON Data: $json");
@@ -31,6 +34,7 @@ class PostComment {
       description: json["description"],
       dateTime: json["dateTime"],
       username: json["username"],
+      profileImage: json["profileImage"],
     );
 
   }

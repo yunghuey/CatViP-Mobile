@@ -14,6 +14,7 @@ import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
+import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/pageRoutes/navigator.dart';
@@ -33,6 +34,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:go_router/go_router.dart';
 
+import 'bloc/post/DeletePost/deletePost_bloc.dart';
+import 'bloc/post/DeletePost/deletePost_state.dart';
+import 'bloc/post/EditPost/editPost_bloc.dart';
+import 'bloc/post/EditPost/editPost_state.dart';
+import 'bloc/post/OwnCats/ownCats_state.dart';
 import 'bloc/post/new_post/new_post_bloc.dart';
 import 'bloc/post/new_post/new_post_state.dart';
 
@@ -65,7 +71,7 @@ class MyApp extends StatelessWidget {
           create: (context) => GetPostBloc(),
         ),
         BlocProvider<NewPostBloc>(
-        create: (context) => NewPostBloc(NewPostInitState(), PostRepository(), PostTypeRepository()),
+        create: (context) => NewPostBloc(NewPostInitState(), PostRepository(), PostTypeRepository(), CatRepository()),
         ),
         BlocProvider<LogoutBloc>(
           create: (context) => LogoutBloc(LogoutInitState(), AuthRepository()),
@@ -81,6 +87,15 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ExpertBloc>(
           create: (context) => ExpertBloc(ExpertProfileInitState(), ExpertRepository()),
+        ),
+        BlocProvider<OwnCatsBloc>(
+          create: (context) => OwnCatsBloc(GetOwnCatsInitial(), CatRepository()),
+        ),
+        BlocProvider<EditPostBloc>(
+          create: (context) => EditPostBloc(EditPostInitState(), PostRepository()),
+        ),
+        BlocProvider<DeletePostBloc>(
+          create: (context) => DeletePostBloc(DeletePostInitState(), PostRepository()),
         ),
       ],
       child: MaterialApp(

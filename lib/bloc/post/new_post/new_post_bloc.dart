@@ -1,4 +1,5 @@
 
+import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/model/post/postType.dart';
 import 'package:CatViP/repository/cat_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +13,9 @@ class NewPostBloc extends Bloc<NewPostEvents, NewPostState>{
 
   PostRepository postRepo;
   PostTypeRepository postTypeRepo;
+  CatRepository catRepo;
 
-    NewPostBloc(NewPostState initialState, this.postRepo, this.postTypeRepo):super(initialState){
+    NewPostBloc(NewPostState initialState, this.postRepo, this.postTypeRepo, this.catRepo):super(initialState){
 
     on<StartNewPost>((event, emit){
       emit(NewPostInitState());
@@ -30,6 +32,7 @@ class NewPostBloc extends Bloc<NewPostEvents, NewPostState>{
       }
     });
 
+    // Get Post Types
     on<GetPostTypes>((event, emit) async {
       try {
         emit(GetPostTypeLoading());
@@ -45,6 +48,8 @@ class NewPostBloc extends Bloc<NewPostEvents, NewPostState>{
             error: "Failed to fetch data in your device online"));
       }
     });
+
+
 
 
   }

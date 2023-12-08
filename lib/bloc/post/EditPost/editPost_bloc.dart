@@ -1,9 +1,4 @@
-
-import 'package:CatViP/model/post/postType.dart';
-import 'package:CatViP/repository/cat_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
-import '../../../repository/postType_repo.dart';
 import '../../../repository/post_repo.dart';
 import 'editPost_event.dart';
 import 'editPost_state.dart';

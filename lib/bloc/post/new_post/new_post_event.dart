@@ -26,3 +26,5 @@ class PostButtonPressed extends NewPostEvents{
 }
 
 class GetPostTypes extends NewPostEvents {}
+
+

@@ -21,6 +21,7 @@ import 'package:CatViP/pages/cat/createcat_view.dart';
 import 'package:CatViP/pages/expert/expertIntro_view.dart';
 import 'package:CatViP/pages/expert/expertcheck_view.dart';
 import 'package:CatViP/pages/expert/expertform_view.dart';
+import 'package:CatViP/pages/post/own_post.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:CatViP/pages/user/editpost_view.dart';
 import 'package:CatViP/pages/user/editprofile_view.dart';
@@ -436,7 +437,9 @@ class _ProfileViewState extends State<ProfileView> {
           //   handle one image
           //   new page
           //   wait for wafir's code
-            Navigator.push(context, MaterialPageRoute(builder: (context) => EditPost(currentPost: post)));
+
+            Navigator.push(context, MaterialPageRoute(builder: (context) => OwnPosts()));
+
           },
           child: Container(
             color: Colors.grey,

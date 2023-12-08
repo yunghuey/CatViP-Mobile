@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../bloc/post/EditPost/editPost_bloc.dart';
 import '../../bloc/post/EditPost/editPost_state.dart';
+import '../post/own_post.dart';
 
 class EditPost extends StatefulWidget {
 
@@ -66,8 +67,12 @@ class _EditPostState extends State<EditPost> {
     return BlocListener<EditPostBloc, EditPostState>(
       listener: (context, state) {
         if (state is EditPostSuccessState) {
-          Navigator.pop(context);
           print('Post edited successfully');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => OwnPosts()),
+          );
+
         } else if (state is EditPostFailState) {
           print('Failed to save post');
         }
@@ -88,6 +93,7 @@ class _EditPostState extends State<EditPost> {
                     postId: id,
                   ),
                 );
+                OwnPosts.ownPostsKey.currentState?.refreshPosts();
               },
               child: Text(
                 'Save',

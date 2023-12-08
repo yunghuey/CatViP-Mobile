@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/model/post/postComment.dart';
 import 'package:CatViP/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 import '../../bloc/post/GetPost/getPost_bloc.dart';
 import '../../bloc/post/GetPost/getPost_state.dart';
@@ -47,7 +49,8 @@ class _CommentsState extends State<Comments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Comments'),
+        title: Text("Comments", style: Theme.of(context).textTheme.bodyLarge),
+        backgroundColor: HexColor("#ecd9c9"),
       ),
       body: CommentCard(),
       bottomNavigationBar: SafeArea(
@@ -136,8 +139,10 @@ class _CommentsState extends State<Comments> {
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.transparent,
-                        backgroundImage: AssetImage('assets/addImage.png'),
-                        radius: 10,
+                        backgroundImage: postComment.profileImage != ""
+                            ? Image.memory(base64Decode(postComment.profileImage!)).image
+                            : AssetImage('assets/addImage.png'),
+                        radius: 20,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 16,),

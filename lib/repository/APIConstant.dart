@@ -29,8 +29,10 @@ class APIConstant {
    static String get NewCommentURL => "${APIConstant.URL}post/createcomment";
    static String get ActionPostURL => "${APIConstant.URL}post/ActPost";
    static String get EditPostURL => "${APIConstant.URL}post/editpost/";
+   static String get DeletePostURL => "${APIConstant.URL}post/deletepost/";
 
-  // expert module
+
+   // expert module
   static String get NewExpertURL => "${APIConstant.URL}Expert/ApplyAsExpert";
   static String get GetAllSingleURL => "${APIConstant.URL}Expert/GetApplications";
 

@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data'; // Add this import
+import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
+import 'package:CatViP/bloc/post/OwnCats/ownCats_event.dart';
+import 'package:CatViP/bloc/post/OwnCats/ownCats_state.dart';
 import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +14,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../../bloc/post/new_post/new_post_event.dart';
 import '../../bloc/post/new_post/new_post_state.dart';
+import '../../model/cat/cat_model.dart';
 import '../../model/post/postType.dart';
 import '../../pageRoutes/bottom_navigation_bar.dart';
 
@@ -29,9 +33,12 @@ class _NewPostState extends State<NewPost> {
   TextEditingController catIdController = TextEditingController();
 
   List<PostType> postTypes = [];
+  List<CatModel> cats = [];
   final _formKey = GlobalKey<FormState>();
   late NewPostBloc createBloc;
+  late OwnCatsBloc catBloc;
   PostType? selectedPostType;
+  int? selectedCatId;
   File? image;
   final _picker = ImagePicker();
   bool showSpinner = false;
@@ -79,6 +86,7 @@ class _NewPostState extends State<NewPost> {
     if (postTypes.isEmpty) {
       createBloc.add(GetPostTypes());
     }
+    catBloc = BlocProvider.of<OwnCatsBloc>(context);
   }
 
   @override
@@ -139,7 +147,7 @@ class _NewPostState extends State<NewPost> {
                       SizedBox(
                         height: 8.0,
                       ),
-                      catId(),
+                      OwnCats(),
                       SizedBox(
                         height: 8.0,
                       ),
@@ -285,7 +293,7 @@ class _NewPostState extends State<NewPost> {
                   description: captionController.text.trim(),
                   postTypeId: selectedPostType?.id ?? 0,
                   image: imageData,
-                  catId: int.parse(catIdController.text.trim()),
+                  catId: selectedCatId ?? 0,
                 ));
               }
               else {
@@ -382,21 +390,55 @@ class _NewPostState extends State<NewPost> {
     );
   }
 
-  Widget catId() {
+  Widget OwnCats() {
+    //print('PostTypes: $postTypes');
+    catBloc.add(GetOwnCats());
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
-      child: TextFormField(
-        controller: catIdController,
-        decoration:  InputDecoration(
-            labelText: 'Cat Id',
+      child: BlocListener<OwnCatsBloc, OwnCatsState>(
+        listener: (context, state) {
+          if (state is GetOwnCatsLoading) {
+            // You can perform side-effects here if needed
+          } else if (state is GetOwnCatsError) {
+            // You can perform side-effects here if needed
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error: ${state.error}'),
+              ),
+            );
+          } else if (state is GetOwnCatsLoaded) {
+            // Use the fetched data to populate the drop-down menu
+            cats = state.cats;
+            print("success");// Update the OwnCats list
+            // You can perform side-effects here if needed
+          }else{
+            print('tak jadi bey');
+          }
+        },
+        child: DropdownButtonFormField<int>(
+          value: selectedCatId, // Replace with the selected cat variable
+          onChanged: (value) {
+            setState(() {
+              selectedCatId = value;
+            });
+          },
+          items: cats.map((cat) {
+            return DropdownMenuItem<int>(
+              value: cat.id,
+              child: Text(cat.name! ?? "no data"), // Replace with the actual field you want to display
+            );
+          }).toList(),
+          decoration: InputDecoration(
+            labelText: 'Cat',
             labelStyle: TextStyle(color: HexColor("#3c1e08")),
             focusColor: HexColor("#3c1e08"),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: HexColor("#a4a4a4")),
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color:  HexColor("#3c1e08")),
-            )
+              borderSide: BorderSide(color: HexColor("#3c1e08")),
+            ),
+          ),
         ),
       ),
     );
