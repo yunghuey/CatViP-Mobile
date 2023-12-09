@@ -166,11 +166,15 @@ class _HomePageState extends State<HomePage> {
                                 postId: post.id!,
                                 actionTypeId: post.currentUserAction!,
                                 onFavoriteChanged: (bool isThumbsUpSelected) {
-                                  setState(() {
-                                    post.likeCount = post.likeCount! + (isThumbsUpSelected ? 1 : -1);
-                                    hasBeenLiked = true;
-                                  });
-                                  print('Is Thumbs Up Selected: $isThumbsUpSelected');
+                                  if(post.likeCount != 0 || isThumbsUpSelected) {
+                                    setState(() {
+                                      post.likeCount = post.likeCount! +
+                                          (isThumbsUpSelected ? 1 : -1);
+                                      hasBeenLiked = true;
+                                    });
+                                  }else{
+                                    print('Is Thumbs Up Selected: $isThumbsUpSelected');
+                                  }
                                 },
                               ),
                               SizedBox(width: 4.0),
@@ -361,10 +365,8 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
               ));
               onFavoriteChanged(thumbsUpSelected);
             } else if(thumbsUpSelected == false) {
-              int newActionTypeId = 2;
-              _postBloc.add(UpdateActionPost(
-                postId: postId,
-                actionTypeId: newActionTypeId,
+              _postBloc.add(DeleteActionPost(
+                  postId: postId
               ));
               onFavoriteChanged(thumbsUpSelected);
             }
@@ -391,6 +393,11 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
                 actionTypeId: 2,
               ));
               onFavoriteChanged(thumbsUpSelected);
+            }else{
+              _postBloc.add(DeleteActionPost(
+                  postId: postId
+              ));
+              //onFavoriteChanged(thumbsUpSelected);
             }
           },
           icon: Icon(

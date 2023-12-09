@@ -173,6 +173,31 @@ class PostRepository{
     }
   }
 
+  // delete action post
+  Future<bool> deleteActPost(int postId) async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.DeleteActionPostURL + postId.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.delete(url, headers: header);
+      if (response.statusCode == 200){
+
+        return true;
+      }else{
+        return false;
+      }
+
+    } catch (e){
+      print("error to delete action post");
+      print(e.toString());
+      return false;
+    }
+  }
+
   // get post comments
   Future<List<PostComment>> fetchPostComments(int postId) async{
     try{

@@ -23,6 +23,16 @@ class GetPostComments extends GetPostEvent {
 // create new comment
 class StartNewComment extends GetPostEvent {}
 
+class PostCommentPressed extends GetPostEvent{
+  final String description;
+  final int postId;
+
+  PostCommentPressed({
+    required this.description,
+    required this.postId,
+  });
+}
+
 // update action post
 class StartActionPost extends GetPostEvent {}
 
@@ -37,13 +47,15 @@ class UpdateActionPost extends GetPostEvent {
   });
 }
 
-class PostCommentPressed extends GetPostEvent{
-  final String description;
+// delete action post
+class StartDeleteActionPost extends GetPostEvent {}
+
+class DeleteActionPost extends GetPostEvent {
+
   final int postId;
 
-  PostCommentPressed({
-    required this.description,
+  DeleteActionPost({
     required this.postId,
   });
-
 }
+
