@@ -1,6 +1,7 @@
 
 import 'package:equatable/equatable.dart';
 
+import '../../../model/cat/cat_model.dart';
 import '../../../model/post/postType.dart';
 
 class NewPostState extends Equatable{
@@ -34,3 +35,4 @@ class GetPostTypeError extends NewPostState {
   final String? error;
   GetPostTypeError({required this.error});
 }
+
