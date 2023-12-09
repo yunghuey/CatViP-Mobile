@@ -74,3 +74,15 @@ class ActionPostFailState extends GetPostState {
 }
 
 class ActionPostSuccessState extends GetPostState {}
+
+// delete action post
+class DeleteActionPostInitState extends GetPostState {}
+
+class DeleteActionPostLoadingState extends GetPostState {}
+
+class DeleteActionPostFailState extends GetPostState {
+  final String message;
+  DeleteActionPostFailState({required this.message});
+}
+
+class DeleteActionPostSuccessState extends GetPostState {}
