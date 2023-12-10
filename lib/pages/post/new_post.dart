@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../bloc/post/new_post/new_post_event.dart';
 import '../../bloc/post/new_post/new_post_state.dart';
@@ -42,6 +43,7 @@ class _NewPostState extends State<NewPost> {
   File? image;
   final _picker = ImagePicker();
   bool showSpinner = false;
+  late final String message;
 
   Future<void> getImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
@@ -52,6 +54,14 @@ class _NewPostState extends State<NewPost> {
     } else {
       print("No Image Selected");
     }
+  }
+
+  Future<String> getMessage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String message = prefs.getString('message') ?? '';
+
+    return message;
   }
 
 
@@ -122,9 +132,11 @@ class _NewPostState extends State<NewPost> {
                 );
               }
               else if (state is NewPostFailState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.message))
-                );
+                getMessage().then((message) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message))
+                  );
+                });
               }
             },
         child: SingleChildScrollView(

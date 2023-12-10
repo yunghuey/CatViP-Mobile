@@ -50,6 +50,12 @@ class PostRepository{
         pref.setString("message", data);
         return true;
       }
+      else if (response.statusCode == 400) {
+        String data =  response.body;
+        pref.setString("message", data);
+        print(data.toString());
+        return false;
+      }
       return false;
     } catch (e) {
       print(e.toString());
