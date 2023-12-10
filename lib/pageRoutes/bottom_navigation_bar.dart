@@ -13,42 +13,33 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   int _currentIndex = 0;
 
   void _onItemTapped(int index) {
-
-    setState(() {
-      _currentIndex = index;
-    });
-
     // You can add specific actions for each tab here
     switch (index) {
       case 0:
       // Home button clicked
         print('Home button clicked');
-        //Navigator.pushNamed(context, MyNavigator.initialRoute);
         Navigator.pushReplacementNamed(context, MyNavigator.homeRoute);
         break;
       case 1:
       // Add button clicked
         print('Add button clicked');
-        //Navigator.pushNamed(context, MyNavigator.secondRoute);
-        Navigator.pushNamed(context, MyNavigator.searchRoute);
+        Navigator.pushReplacementNamed(context, MyNavigator.searchRoute);
         break;
       case 2:
       // Shop button clicked
-      // Add button clicked
-        print('Add button clicked');
-        //Navigator.pushNamed(context, MyNavigator.secondRoute);
-        Navigator.pushNamed(context, MyNavigator.addRoute);
+        print('Shop button clicked');
+        Navigator.pushReplacementNamed(context, MyNavigator.addRoute);
         break;
       case 3:
-        print('Shop button clicked');
+        print('Report button clicked');
+        Navigator.pushReplacementNamed(context, MyNavigator.reportRoute);
         break;
       case 4:
-        // Profile button clicked
+      // Profile button clicked
         print('Profile button clicked');
         Navigator.pushReplacementNamed(context, MyNavigator.userRoute);
         break;
     }
-
   }
 
   @override
@@ -73,7 +64,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           backgroundColor: Colors.black,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shop),
+          icon: Icon(Icons.list_alt),
           label: 'Shop',
           backgroundColor: Colors.black,
         ),

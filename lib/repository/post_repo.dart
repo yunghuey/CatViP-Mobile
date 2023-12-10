@@ -29,12 +29,9 @@ class PostRepository{
             'isBloodyContent': false
           }
         ],
-        'mentionedCats': [
-          {
-            'catId': catId
-          }
-        ]
+        'mentionedCats': catId != 0 ? [{'catId': catId}] : []
       });
+      print(body);
 
       var header = {
         "Content-Type": "application/json",
@@ -163,6 +160,43 @@ class PostRepository{
 
         return true;
       }else{
+        return false;
+      }
+
+    } catch (e){
+      print("error to delete post");
+      print(e.toString());
+      return false;
+    }
+  }
+
+  // report post
+  Future<bool> reportPost(int postId, String description) async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.ReportPostURL);
+
+      // to serialize the data Map to JSON
+      var body = json.encode(
+          {
+            'postId': postId,
+            'description': description,
+          }
+      );
+
+      var response = await http.post(url,
+          headers:
+          {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token}",
+          },
+          body: body
+      );
+      if (response.statusCode == 200){
+        return true;
+      }else{
+        print(response.body);
         return false;
       }
 

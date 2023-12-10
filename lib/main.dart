@@ -14,8 +14,6 @@ import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
-import 'package:CatViP/bloc/user/relation_bloc.dart';
-import 'package:CatViP/bloc/user/relation_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/pageRoutes/navigator.dart';
@@ -34,6 +32,8 @@ import 'bloc/post/DeletePost/deletePost_state.dart';
 import 'bloc/post/EditPost/editPost_bloc.dart';
 import 'bloc/post/EditPost/editPost_state.dart';
 import 'bloc/post/OwnCats/ownCats_state.dart';
+import 'bloc/post/ReportPost/reportPost_bloc.dart';
+import 'bloc/post/ReportPost/reportPost_state.dart';
 import 'bloc/post/new_post/new_post_bloc.dart';
 import 'bloc/post/new_post/new_post_state.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -85,7 +85,7 @@ class MyApp extends StatelessWidget {
           create: (context) => CreateCatBloc(CreateCatInitState(), CatRepository()),
         ),
         BlocProvider<UserProfileBloc>(
-          create: (context) => UserProfileBloc(UserProfileInitState(), UserRepository(), ExpertRepository()),
+          create: (context) => UserProfileBloc(UserProfileInitState(), UserRepository()),
         ),
         BlocProvider<CatProfileBloc>(
             create: (context) => CatProfileBloc(CatProfileInitState(), CatRepository())
@@ -102,8 +102,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<DeletePostBloc>(
           create: (context) => DeletePostBloc(DeletePostInitState(), PostRepository()),
         ),
-        BlocProvider<RelationBloc>(
-          create: (context) => RelationBloc(RelationInitState(), UserRepository()),
+        BlocProvider<ReportPostBloc>(
+          create: (context) => ReportPostBloc(ReportPostInitState(), PostRepository()),
         ),
       ],
       child: MaterialApp(

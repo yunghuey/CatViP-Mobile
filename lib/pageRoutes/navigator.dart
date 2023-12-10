@@ -4,6 +4,7 @@ import 'package:CatViP/pages/search/searchtab_view.dart';
 import 'package:CatViP/pages/user/profile_view.dart';
 import 'package:flutter/material.dart';
 
+import '../pages/report/newReport.dart';
 import '../pages/splashscreen.dart';
 
 class MyNavigator {
@@ -13,6 +14,7 @@ class MyNavigator {
   static const String fourthRoute = '/shopping';
   static const String userRoute = '/profile';
   static const String searchRoute = '/search';
+  static const String reportRoute = '/report';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -22,8 +24,8 @@ class MyNavigator {
         return MaterialPageRoute(builder: (_) => HomePage());
       case addRoute:
         return MaterialPageRoute(builder: (_) => NewPost());
-      // case fourthRoute:
-      //   return MaterialPageRoute(builder: (_) => Shopping());
+       case reportRoute:
+         return MaterialPageRoute(builder: (_) => NewReport());
       case userRoute:
         return MaterialPageRoute(builder: (_) => ProfileView());
       case searchRoute:
