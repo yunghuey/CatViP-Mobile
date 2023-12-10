@@ -118,6 +118,7 @@ class UserRepository{
         var response = await http.get(url, headers: header);
         if (response.statusCode == 200) {
           var result = jsonDecode(response.body);
+          print("search user profile: ${result}");
           return UserModel.fromJson(result);
         }
       }
@@ -144,7 +145,11 @@ class UserRepository{
         } else if (response.statusCode == 400){
           return 0;
         }
+
+
+        print("Follow user error: ${response.statusCode}: ${response.body}");
       }
+
       return 3;
     } catch (e) {
       print("Error in following user ${e.toString()}");
@@ -162,12 +167,13 @@ class UserRepository{
           "Content-Type": "application/json",
           "Authorization": "Bearer ${token}"
         };
-        var response = await http.post(url, headers: header);
+        var response = await http.delete(url, headers: header);
         if (response.statusCode == 200) {
           return 1;
         } else if (response.statusCode == 400){
           return 0;
         }
+        print("Unfollow user error: ${response.statusCode}: ${response.body}");
       }
       return 3;
     } catch (e) {

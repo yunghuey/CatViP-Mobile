@@ -16,6 +16,7 @@ class UserModel {
   bool? isExpert;
   int? expertTips;
   int? id;
+  bool? isFollowed;
 
   UserModel({
     required this.username,
@@ -33,6 +34,7 @@ class UserModel {
     this.isExpert,
     this.expertTips,
     this.id,
+    this.isFollowed,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class UserModel {
       isExpert: json["isExpert"],
       expertTips: json["expertTips"],
       id: json["id"],
+      isFollowed: json["isFollowed"],
     );
   }
 }
