@@ -15,6 +15,7 @@ class UserModel {
   int? following;
   bool? isExpert;
   int? expertTips;
+  int? validToApply;
   int? id;
   bool? isFollowed;
 
@@ -33,6 +34,7 @@ class UserModel {
     this.following,
     this.isExpert,
     this.expertTips,
+    this.validToApply,
     this.id,
     this.isFollowed,
   });

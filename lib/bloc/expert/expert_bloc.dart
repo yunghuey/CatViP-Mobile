@@ -20,16 +20,16 @@ class ExpertBloc extends Bloc<ExpertEvent,ExpertState> {
 
     on<LoadExpertApplicationEvent>((event, emit) async{
       emit(ExpertLoadingState());
-      List<ExpertApplyModel> formList = await repo.getAllMyApplication();
-      if (formList != []){
-        emit(LoadedFormState(formList: formList));
+      ExpertApplyModel? formList = await repo.getAllMyApplication();
+      if (formList != null){
+        emit(LoadedFormState(form: formList));
       } else {
         emit(EmptyFormState());
       }
     });
 
-    on<RevokeButtonPressed>((event, emit){
-      bool isRevoke = true;
+    on<RevokeButtonPressed>((event, emit) async{
+      bool isRevoke = await repo.revokeApplication(event.formid);
       // connection to api
       if (isRevoke){
         emit(RevokeSuccessState());
