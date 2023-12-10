@@ -31,6 +31,8 @@ class APIConstant {
    static String get DeleteActionPostURL => "${APIConstant.URL}post/deleteactpost/";
    static String get EditPostURL => "${APIConstant.URL}post/editpost/";
    static String get DeletePostURL => "${APIConstant.URL}post/deletepost/";
+   static String get ReportPostURL => "${APIConstant.URL}post/reportpost";
+
 
 
    // expert module

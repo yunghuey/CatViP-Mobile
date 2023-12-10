@@ -24,8 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.catvip"
-    //compileSdkVersion flutter.compileSdkVersion
-    compileSdkVersion 33
+    compileSdkVersion flutter.compileSdkVersion
+    //compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {

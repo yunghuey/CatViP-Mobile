@@ -32,6 +32,8 @@ import 'bloc/post/DeletePost/deletePost_state.dart';
 import 'bloc/post/EditPost/editPost_bloc.dart';
 import 'bloc/post/EditPost/editPost_state.dart';
 import 'bloc/post/OwnCats/ownCats_state.dart';
+import 'bloc/post/ReportPost/reportPost_bloc.dart';
+import 'bloc/post/ReportPost/reportPost_state.dart';
 import 'bloc/post/new_post/new_post_bloc.dart';
 import 'bloc/post/new_post/new_post_state.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -99,6 +101,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<DeletePostBloc>(
           create: (context) => DeletePostBloc(DeletePostInitState(), PostRepository()),
+        ),
+        BlocProvider<ReportPostBloc>(
+          create: (context) => ReportPostBloc(ReportPostInitState(), PostRepository()),
         ),
       ],
       child: MaterialApp(

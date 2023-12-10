@@ -19,14 +19,14 @@ import '../../model/cat/cat_model.dart';
 import '../../model/post/postType.dart';
 import '../../pageRoutes/bottom_navigation_bar.dart';
 
-class NewPost extends StatefulWidget {
-  const NewPost({Key? key}) : super(key: key);
+class NewReport extends StatefulWidget {
+  const NewReport({Key? key}) : super(key: key);
 
   @override
-  State<NewPost> createState() => _NewPostState();
+  State<NewReport> createState() => _NewReportState();
 }
 
-class _NewPostState extends State<NewPost> {
+class _NewReportState extends State<NewReport> {
 
   //Controllers for input
   TextEditingController captionController = TextEditingController();
@@ -104,7 +104,7 @@ class _NewPostState extends State<NewPost> {
       inAsyncCall: showSpinner,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Add post", style: Theme.of(context).textTheme.bodyLarge),
+          title: Text("Repost Case", style: Theme.of(context).textTheme.bodyLarge),
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
@@ -119,58 +119,58 @@ class _NewPostState extends State<NewPost> {
         ),
         body:  BlocListener<NewPostBloc, NewPostState>(
           // ignore: curly_braces_in_flow_control_structures
-            listener: (context, state) {
-              if (state is NewPostSuccessState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Successfully Post'))
-                ); //   navigate to View All Cat
+          listener: (context, state) {
+            if (state is NewPostSuccessState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Successfully Post'))
+              ); //   navigate to View All Cat
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            }
+            else if (state is NewPostFailState) {
+              getMessage().then((message) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(message))
                 );
-              }
-              else if (state is NewPostFailState) {
-                getMessage().then((message) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(message))
-                  );
-                });
-              }
-            },
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Column(
-                    children: <Widget>[
-                      insertImage(context),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      caption(),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      postType(),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      OwnCats(),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      postButton(),
-                    ],
+              });
+            }
+          },
+          child: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: Column(
+                      children: <Widget>[
+                        insertImage(context),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        caption(),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        postType(),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        OwnCats(),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        postButton(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
         bottomNavigationBar: CustomBottomNavigationBar(),
       ),
 
@@ -296,26 +296,26 @@ class _NewPostState extends State<NewPost> {
           onPressed: () async {
             print(captionController.text);
             //if(_formKey.currentState!.validate()){
-              if (image != null) {
-                String? imageData = await _getImageBase64(image!);
-                print(selectedPostType?.id);
+            if (image != null) {
+              String? imageData = await _getImageBase64(image!);
+              print(selectedPostType?.id);
 
-                createBloc.add(PostButtonPressed(
-                  description: captionController.text.trim(),
-                  postTypeId: selectedPostType?.id ?? 0,
-                  image: imageData ?? '',
-                  catId: selectedCatId ?? 0,
-                ));
-              }
-              else {
-                print("image is null");
-                createBloc.add(PostButtonPressed(
-                  description: captionController.text.trim(),
-                  postTypeId: selectedPostType?.id ?? 0,
-                  image: '',
-                  catId: selectedCatId ?? 0,
-                ));
-              }
+              createBloc.add(PostButtonPressed(
+                description: captionController.text.trim(),
+                postTypeId: selectedPostType?.id ?? 0,
+                image: imageData ?? '',
+                catId: selectedCatId ?? 0,
+              ));
+            }
+            else {
+              print("image is null");
+              createBloc.add(PostButtonPressed(
+                description: captionController.text.trim(),
+                postTypeId: selectedPostType?.id ?? 0,
+                image: '',
+                catId: selectedCatId ?? 0,
+              ));
+            }
 
             //}
           },
@@ -342,7 +342,7 @@ class _NewPostState extends State<NewPost> {
       child: TextFormField(
         controller: captionController,
         decoration:  InputDecoration(
-            labelText: 'Caption',
+            labelText: 'Description',
             labelStyle: TextStyle(color: HexColor("#3c1e08")),
             focusColor: HexColor("#3c1e08"),
             enabledBorder: UnderlineInputBorder(

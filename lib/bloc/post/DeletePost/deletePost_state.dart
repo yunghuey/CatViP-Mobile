@@ -5,7 +5,7 @@ class DeletePostState extends Equatable{
   List<Object> get props => [];
 }
 
-// Edit Posts
+// Delete Posts
 class DeletePostInitState extends DeletePostState {}
 
 class DeletePostLoadingState extends DeletePostState {}
