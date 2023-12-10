@@ -188,9 +188,10 @@ class _NewPostState extends State<NewPost> {
       child: Column(
         children: <Widget>[
           Text(
-            "Choose Image.",
+            "Choose Image",
             style: TextStyle(
               fontSize: 20.0,
+              color: HexColor("#3c1e08"),
             ),
           ),
           SizedBox(
@@ -200,19 +201,19 @@ class _NewPostState extends State<NewPost> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                icon: Icon(Icons.camera),
+                icon: Icon(Icons.camera,color: HexColor("#3c1e08"),),
                 onPressed: () {
                   getImage(ImageSource.camera);
                 },
-                label: Text("Camera"),
+                label: Text("Camera", style: TextStyle(color: HexColor("#3c1e08")),),
               ),
               SizedBox(width: 20.0,),
               TextButton.icon(
-                icon: Icon(Icons.image),
+                icon: Icon(Icons.image,color: HexColor("#3c1e08"),),
                 onPressed: () {
                   getImage(ImageSource.gallery);
                 },
-                label: Text("Gallery"),
+                label: Text("Gallery", style: TextStyle(color: HexColor("#3c1e08")),),
               ),
             ],
           )
@@ -298,7 +299,7 @@ class _NewPostState extends State<NewPost> {
             //if(_formKey.currentState!.validate()){
               if (image != null) {
                 String? imageData = await _getImageBase64(image!);
-                print(selectedPostType?.id);
+                print("posttype ${selectedPostType?.id}");
 
                 createBloc.add(PostButtonPressed(
                   description: captionController.text.trim(),

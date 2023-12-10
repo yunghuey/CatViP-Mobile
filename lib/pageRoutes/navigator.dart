@@ -1,6 +1,6 @@
 import 'package:CatViP/pages/home_page.dart';
 import 'package:CatViP/pages/post/new_post.dart';
-import 'package:CatViP/pages/search/searchuser_view.dart';
+import 'package:CatViP/pages/search/searchtab_view.dart';
 import 'package:CatViP/pages/user/profile_view.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +29,7 @@ class MyNavigator {
       case userRoute:
         return MaterialPageRoute(builder: (_) => ProfileView());
       case searchRoute:
-        return MaterialPageRoute(builder: (_) => SearchView());
+        return MaterialPageRoute(builder: (_) => SearchTab());
       default:
         return MaterialPageRoute(builder: (_) => NotFoundScreen());
     }

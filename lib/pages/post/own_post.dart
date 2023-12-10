@@ -104,7 +104,7 @@ class _OwnPostsState extends State<OwnPosts> {
                         backgroundColor: Colors.transparent,
                         backgroundImage: post.profileImage != ""
                             ? Image.memory(base64Decode(post.profileImage!)).image
-                            : AssetImage('assets/addImage.png'),
+                            : AssetImage('assets/profileimage.png'),
                       ),
                       Expanded(
                         child: Padding(

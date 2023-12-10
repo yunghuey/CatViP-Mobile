@@ -5,6 +5,8 @@ import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_event.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/model/expert/expert_model.dart';
+import 'package:CatViP/pages/expert/expertform_view.dart';
+import 'package:CatViP/pages/user/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -14,20 +16,30 @@ import 'package:path_provider/path_provider.dart';
 
 
 class ExpertCheckView extends StatefulWidget {
-  const ExpertCheckView({super.key});
+  int formstatus;
 
+  ExpertCheckView({
+    required this.formstatus,
+    Key? key
+  }):super(key:key);
   @override
   State<ExpertCheckView> createState() => _ExpertCheckViewState();
 }
 
 class _ExpertCheckViewState extends State<ExpertCheckView> {
+  late int formstatus;
   late ExpertBloc expBloc;
-  late List<ExpertApplyModel> formList;
+  late ExpertApplyModel formList;
+  late String btnText = "Revoke Application";
   @override
   void initState() {
     // TODO: implement initState
     expBloc = BlocProvider.of<ExpertBloc>(context);
     expBloc.add(LoadExpertApplicationEvent());
+    formstatus = widget.formstatus;
+    if (formstatus == 2){
+      btnText = "Reapply";
+    }
     super.initState();
   }
   @override
@@ -43,12 +55,12 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
       BlocListener<ExpertBloc, ExpertState>(
         listener: (context, state){
           if (state is RevokeFailState){
-            Navigator.pop(context);
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileView()));
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("Revoke failed. Please try again later"))
             );
           } else if (state is RevokeSuccessState){
-            Navigator.pop(context);
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileView()));
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("Application has been removed"))
             );
@@ -59,7 +71,7 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
               if (state is ExpertLoadingState){
                 return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
               } else if (state is LoadedFormState){
-                formList = state.formList;
+                formList = state.form;
                 return SingleChildScrollView(
                   child: Column(
                     children: [
@@ -81,10 +93,10 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: ListView.builder(
-          itemCount: formList.length,
+          itemCount: 1,
           shrinkWrap: true,
           itemBuilder: (context, index){
-            final form = formList[index];
+            final form = formList;
             return Container(
               margin: const EdgeInsets.all(15),
               padding: const EdgeInsets.only(bottom: 10.0),
@@ -112,9 +124,13 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
                   ElevatedButton(
                       onPressed: (){
                         int formId = form.id;
-                        removeApplication(formId);
+                        if (btnText == "Reapply"){
+                          reapplyApplication();
+                        } else{
+                          removeApplication(formId);
+                        }
                       },
-                      child: Text("revoke application",  style: TextStyle(color: HexColor("#3c1e08"))),
+                      child: Text(btnText,  style: TextStyle(color: HexColor("#3c1e08"))),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9"),),
                         side: MaterialStateProperty.all(BorderSide(width: 2.0, color: HexColor("#3c1e08"),),),
@@ -124,6 +140,28 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
               ),
             );
           }
+      ),
+    );
+  }
+
+  void reapplyApplication(){
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Reapply application'),
+        content: const Text('Are you sure to reapply?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> ExpertFormView()));
+            },
+            child: const Text('Yes'),
+          ),
+        ],
       ),
     );
   }
@@ -141,7 +179,7 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
           ),
           TextButton(
             onPressed: () {
-            //
+              expBloc.add(RevokeButtonPressed(formid: formId));
             },
             child: const Text('Yes'),
           ),

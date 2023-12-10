@@ -18,8 +18,8 @@ class AppliedFailState extends ExpertState {
 }
 
 class LoadedFormState extends ExpertState {
-  List<ExpertApplyModel> formList;
-  LoadedFormState({ required this.formList });
+  ExpertApplyModel form;
+  LoadedFormState({ required this.form });
 }
 
 class EmptyFormState extends ExpertState{}

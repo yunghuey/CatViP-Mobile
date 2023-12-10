@@ -136,16 +136,38 @@ class CatRepository{
       var response = await http.get(url, headers: header);
       if (response.statusCode == 200){
         var result = jsonDecode(response.body);
-        print(result);
         return CatModel.fromJson(result);
       }
-      print(response.statusCode);
-      print(response.body);
+      print("in getCat() ${response.statusCode}");
       return null;
     } catch (e){
       print("error in get one cat");
       print(e.toString());
       return null;
+    }
+  }
+
+  Future<List<CatModel>> getAllCatsByUserId(int userid) async {
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.SearchUserAllCatURL + userid.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200){
+        List result = jsonDecode(response.body);
+        print(result);
+        return result.map((e) => CatModel.fromJson(e)).toList();
+      }
+      print(response.statusCode);
+      print(response.body);
+      return [];
+    } catch (e){
+      print("error in get all cats by userid: ${e.toString()}");
+      return [];
     }
   }
 

@@ -22,3 +22,8 @@ class ReloadOneCatEvent extends CatProfileEvent {
   final int catid;
   ReloadOneCatEvent({required this.catid});
 }
+
+class SearchReloadAllCatEvent extends CatProfileEvent{
+  final int userID;
+  SearchReloadAllCatEvent({ required this.userID});
+}

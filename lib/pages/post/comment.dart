@@ -121,12 +121,12 @@ class _CommentsState extends State<Comments> {
             child: Text(state.error!),
           );
           } else if (state is GetPostCommentInitial) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: CircularProgressIndicator(color:  HexColor("#3c1e08"),),
           );
           } else if (state is GetPostCommentLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: CircularProgressIndicator(color:  HexColor("#3c1e08"),),
           );
           } else if (state is GetPostCommentLoaded) {
             List<PostComment> reversedComments = List.from(state.postComments.reversed);
@@ -141,7 +141,7 @@ class _CommentsState extends State<Comments> {
                         backgroundColor: Colors.transparent,
                         backgroundImage: postComment.profileImage != ""
                             ? Image.memory(base64Decode(postComment.profileImage!)).image
-                            : AssetImage('assets/addImage.png'),
+                            : AssetImage('assets/profileimage.png'),
                         radius: 20,
                       ),
                       Padding(

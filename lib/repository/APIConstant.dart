@@ -4,11 +4,12 @@ class APIConstant {
   // static const String URL = "http://10.131.76.30:7015/api/";
 
    //wafir's Melaka IP
-   static const String URL = "http://192.168.0.126:7015/api/";
+   // static const String URL = "http://192.168.0.126:7015/api/";
 
 
   // yung huey IP
-  //static const String URL = "http://192.168.137.1:7015/api/";
+   //static const String URL = "http://192.168.137.1:7015/api/";
+  static const String URL = "http://172.16.88.4:7015/api/";
 
   // auth module
   static String get LoginURL => "${APIConstant.URL}Auth/login";
@@ -18,6 +19,10 @@ class APIConstant {
   static String get LogoutURL => "${APIConstant.URL}auth/logout";
   static String get viewProfileURL => "${APIConstant.URL}auth/GetUserInfo";
   static String get editProfileURL => "${APIConstant.URL}auth/editProfile-mobile";
+  static String get searchUserURL => "${APIConstant.URL}user/SearchUser?Name=";
+  static String get getSearchUserInfoURL => "${APIConstant.URL}user/GetSearchUserInfo/";
+  static String get followURL => "${APIConstant.URL}user/FollowUser/";
+  static String get unfollowURL => "${APIConstant.URL}user/UnfollowUser/";
 
    // post module
    static String get NewPostURL => "${APIConstant.URL}post/createpost";
@@ -34,10 +39,13 @@ class APIConstant {
    static String get ReportPostURL => "${APIConstant.URL}post/reportpost";
 
 
+   static String get SearchUserGetPostURL => "${APIConstant.URL}post/GetPosts/";
 
    // expert module
-  static String get NewExpertURL => "${APIConstant.URL}Expert/ApplyAsExpert";
-  static String get GetAllSingleURL => "${APIConstant.URL}Expert/GetApplications";
+   static String get NewExpertURL => "${APIConstant.URL}Expert/ApplyAsExpert";
+   static String get GetApplicationURL => "${APIConstant.URL}Expert/GetLastestApplication";
+   static String get RevokeApplicationURL => "${APIConstant.URL}Expert/RevokeApplication/";
+
 
    // cat module
    static String get NewCatURL => "${APIConstant.URL}cat/StoreCat";
@@ -45,4 +53,6 @@ class APIConstant {
    static String get UpdateCatURL => "${APIConstant.URL}cat/EditCat/";
    static String get DeleteCatURL => "${APIConstant.URL}cat/DeleteCat/";
    static String get GetOneCatURL => "${APIConstant.URL}cat/GetCat/";
+   static String get SearchUserAllCatURL => "${APIConstant.URL}cat/GetCats/";
+
 }
