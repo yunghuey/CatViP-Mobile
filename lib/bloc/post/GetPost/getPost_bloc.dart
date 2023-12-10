@@ -116,14 +116,14 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
         // Attempt to post a new comment
         bool isUpdated = await postRepository.actionPost(
             event.postId, event.actionTypeId);
-/*
+
         print(event.postId);
         print(event.actionTypeId);
         print(isUpdated);
         if (isUpdated) {
           // Update the state with the new list of comments
           emit(ActionPostSuccessState());
-
+        }
       } catch (e) {
         // Handle any potential errors during the process
         emit(ActionPostFailState(message: "Failed to update action"));

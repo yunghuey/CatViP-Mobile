@@ -106,6 +106,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ReportPostBloc>(
           create: (context) => ReportPostBloc(ReportPostInitState(), PostRepository()),
+        ),
         BlocProvider<RelationBloc>(
           create: (context) => RelationBloc(RelationInitState(), UserRepository()),
         ),
