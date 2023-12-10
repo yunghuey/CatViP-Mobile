@@ -50,7 +50,7 @@ class _CatProfileViewState extends State<CatProfileView> {
         backgroundColor: HexColor("#ecd9c9"),
         bottomOpacity: 0.0,
         elevation: 0.0,
-        actions: [
+        actions: widget.fromOwner == true ? [
           IconButton(
             icon: Icon(Icons.menu, color: HexColor("#3c1e08"),),
             onPressed: (){
@@ -62,7 +62,7 @@ class _CatProfileViewState extends State<CatProfileView> {
               );
             },
           )
-        ],
+        ] : [],
       ),
       body:
       BlocBuilder<CatProfileBloc, CatProfileState>(
@@ -93,7 +93,9 @@ class _CatProfileViewState extends State<CatProfileView> {
             return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
           }
           else if (state is CatProfileEmptyState){
-            return Container(child: Text("No cat"),);
+            return Container(
+              margin: EdgeInsets.all(15.0),
+              child: Text("No cat"),);
           }
           else {
             return Container();

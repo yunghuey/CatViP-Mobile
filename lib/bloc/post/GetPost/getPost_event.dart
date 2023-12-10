@@ -47,3 +47,8 @@ class PostCommentPressed extends GetPostEvent{
   });
 
 }
+
+class LoadSearchAllPost extends GetPostEvent{
+  final int userid;
+  LoadSearchAllPost({ required this.userid});
+}

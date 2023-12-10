@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
               );
             } else if (state is GetPostInitial || state is GetPostLoading) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color:  HexColor("#3c1e08")),
               );
             } else if (state is GetPostLoaded) {
               return ListView.builder(
