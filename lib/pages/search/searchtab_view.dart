@@ -103,26 +103,24 @@ class _SearchTabState extends State<SearchTab> {
     return 
       Padding(
       padding: const EdgeInsets.all(15),
-      child: Expanded(
-        child: ListView.builder(
-          itemCount: searchList.length,
-          itemBuilder: (context,index){
-            var user = searchList[index];
-            return InkWell(
-              onTap: (){
-                int userid = user.id ?? 0;
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchView(userid: userid)));
-              },
-              child: Card(
-                margin: EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(user.username),
-                  subtitle: Text(user.fullname),
-                ),
+      child: ListView.builder(
+        itemCount: searchList.length,
+        itemBuilder: (context,index){
+          var user = searchList[index];
+          return InkWell(
+            onTap: (){
+              int userid = user.id ?? 0;
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SearchView(userid: userid)));
+            },
+            child: Card(
+              margin: EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(user.username),
+                subtitle: Text(user.fullname),
               ),
-            );
-          }
-        ),
+            ),
+          );
+        }
       ),
     );
   }

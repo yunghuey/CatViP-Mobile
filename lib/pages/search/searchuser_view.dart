@@ -6,6 +6,9 @@ import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
+import 'package:CatViP/bloc/user/relation_bloc.dart';
+import 'package:CatViP/bloc/user/relation_event.dart';
+import 'package:CatViP/bloc/user/relation_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_event.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
@@ -35,6 +38,9 @@ class _SearchViewState extends State<SearchView> {
   late UserProfileBloc userBloc;
   late GetPostBloc postBloc;
   late CatProfileBloc catBloc;
+  late RelationBloc relBloc;
+  bool isSet = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -45,6 +51,7 @@ class _SearchViewState extends State<SearchView> {
     catBloc.add(SearchReloadAllCatEvent(userID: userid));
     postBloc = BlocProvider.of<GetPostBloc>(context);
     postBloc.add(LoadSearchAllPost(userid: userid));
+    relBloc = BlocProvider.of<RelationBloc>(context);
     super.initState();
   }
   @override
@@ -68,66 +75,84 @@ class _SearchViewState extends State<SearchView> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            BlocBuilder<UserProfileBloc, UserProfileState>(
-              builder: (context, state){
-                if (state is UserProfileLoadingState){
-                  return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-                } else if (state is UserProfileErrorState){
-                  return Container(
-                    margin: const EdgeInsets.all(18.0),
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text(state.message,
-                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),
-                    ),
-                  );
-                } else if (state is UserProfileLoadedState){
-                  user = state.user;
-                  return _userDetails();
-                }
-                return Container();
-              },
-            ),
-
-            BlocBuilder<CatProfileBloc, CatProfileState>(
-              builder: (context, state){
-                if (state is CatProfileLoadingState) {
-                  return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                } else if (state is CatProfileLoadedState) {
-                  cats = state.cats;
-                  print("get cat in frontend");
-                  return _getAllCats();
-                } else {
-                  return Container(child: const Text("No cats has been added yet", style: TextStyle(fontSize: 17),)); // Handle other cases
-                }
-                return Container();
-              }
-            ),
-            BlocBuilder<GetPostBloc, GetPostState>(
-                builder: (context, state) {
-                  if (state is GetPostLoading) {
-                    return Center(
-                        child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                  }
-                  else if (state is GetPostLoaded) {
-                    listPost = state.postList;
-                    _getAllPosts();
-                  }
-                  return Center(
-                    child: Container(
-                      child: Text("No post is created yet", style: TextStyle(fontSize: 17),
+      body:
+      BlocListener<RelationBloc, RelationState>(
+        listener: (context,state){
+          if (state is UpdateFollowingState){
+            user.isFollowed = true;
+          }
+          else if (state is UpdateUnfollowingState){
+            user.isFollowed = false;
+          } else if (state is RelationFailState){
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message))
+            );
+          }
+        },
+        child:  SingleChildScrollView(
+          child: Column(
+            children: [
+              BlocBuilder<UserProfileBloc, UserProfileState>(
+                builder: (context, state){
+                  if (state is UserProfileLoadingState){
+                    return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+                  } else if (state is UserProfileErrorState){
+                    return Container(
+                      margin: const EdgeInsets.all(18.0),
+                      padding: const EdgeInsets.all(5.0),
+                      child: Text(state.message,
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),
                       ),
-                    ),
-                  ); // Handle other cases
-                }
-            ),
-          ],
+                    );
+                  } else if (state is UserProfileLoadedState){
+                    user = state.user;
+                    if (!isSet){
+                      print("reset btntext ${isSet}");
+                      btntext = user.isFollowed! == true ? "Following" : "Follow";
+                      isSet = true;
+                    }
+                    return _userDetails();
+                  }
+                  return Container();
+                },
+              ),
+              BlocBuilder<CatProfileBloc, CatProfileState>(
+                  builder: (context, state){
+                    if (state is CatProfileLoadingState) {
+                      return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                    } else if (state is CatProfileLoadedState) {
+                      cats = state.cats;
+                      print("get cat in frontend");
+                      return _getAllCats();
+                    } else {
+                      return Container(child: const Text("No cats has been added yet", style: TextStyle(fontSize: 17),)); // Handle other cases
+                    }
+                    return Container();
+                  }
+              ),
+              BlocBuilder<GetPostBloc, GetPostState>(
+                  builder: (context, state) {
+                    if (state is GetPostLoading) {
+                      return Center(
+                          child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                    }
+                    else if (state is GetPostLoaded) {
+                      listPost = state.postList;
+                      _getAllPosts();
+                    }
+                    return Center(
+                      child: Container(
+                        child: Text("No post is created yet", style: TextStyle(fontSize: 17),
+                        ),
+                      ),
+                    ); // Handle other cases
+                  }
+              ),
+            ],
+          ),
         ),
-      ),
+      ), // bloclistner
       bottomNavigationBar: CustomBottomNavigationBar(),
-
     );
   }
 
@@ -219,8 +244,19 @@ class _SearchViewState extends State<SearchView> {
                 padding: EdgeInsets.all(5),
                 child: ElevatedButton(
                   onPressed: (){
+                    if (btntext == "Follow"){
+                      relBloc.add(FollowButtonPressed(userID: userid));
+                    } else{
+                      relBloc.add(UnfollowButtonPressed(userID: userid));
+                    }
                    setState(() {
-                     btntext = (btntext == "Follow") ? "Unfollow" : "Follow";
+                     if(btntext == "Follow"){
+                       user.follower =  user.follower! + 1;
+                     }
+                     else {
+                       user.follower =  user.follower! - 1;
+                     }
+                     btntext = (btntext == "Follow") ? "Following" : "Follow";
                    });
 
                   },
