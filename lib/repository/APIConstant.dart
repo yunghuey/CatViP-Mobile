@@ -32,6 +32,7 @@ class APIConstant {
    static String get GetPostCommentsURL => "${APIConstant.URL}post/getpostcomments";
    static String get NewCommentURL => "${APIConstant.URL}post/createcomment";
    static String get ActionPostURL => "${APIConstant.URL}post/ActPost";
+   static String get DeleteActionPostURL => "${APIConstant.URL}post/deleteactpost/";
    static String get EditPostURL => "${APIConstant.URL}post/editpost/";
    static String get DeletePostURL => "${APIConstant.URL}post/deletepost/";
    static String get SearchUserGetPostURL => "${APIConstant.URL}post/GetPosts/";
