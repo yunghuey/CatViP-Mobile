@@ -85,7 +85,7 @@ class MyApp extends StatelessWidget {
           create: (context) => CreateCatBloc(CreateCatInitState(), CatRepository()),
         ),
         BlocProvider<UserProfileBloc>(
-          create: (context) => UserProfileBloc(UserProfileInitState(), UserRepository()),
+          create: (context) => UserProfileBloc(UserProfileInitState(), UserRepository(),ExpertRepository()),
         ),
         BlocProvider<CatProfileBloc>(
             create: (context) => CatProfileBloc(CatProfileInitState(), CatRepository())
