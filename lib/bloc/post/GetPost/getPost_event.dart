@@ -58,7 +58,7 @@ class DeleteActionPost extends GetPostEvent {
     required this.postId,
   });
 }
-}
+
 
 class LoadSearchAllPost extends GetPostEvent{
   final int userid;

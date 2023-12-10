@@ -111,12 +111,12 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
     });
 
     on<UpdateActionPost>((event, emit) async {
-
+/*
       try {
         // Attempt to post a new comment
         bool isUpdated = await postRepository.actionPost(
             event.postId, event.actionTypeId);
-/*
+
         print(event.postId);
         print(event.actionTypeId);
         print(isUpdated);
@@ -128,7 +128,9 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
         // Handle any potential errors during the process
         emit(ActionPostFailState(message: "Failed to update action"));
       }
-    });
+
+        */
+     });
 
     // update action post
     on<StartDeleteActionPost>((event, emit) {
