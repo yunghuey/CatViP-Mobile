@@ -153,11 +153,13 @@ class _ProfileViewState extends State<ProfileView> {
                       builder: (context, state) {
                         if (state is CatProfileLoadingState) {
                           return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                        } else if (state is CatProfileLoadedState) {
+                        }
+                        else if (state is CatProfileLoadedState) {
                           cats = state.cats;
                           print("get cat in frontend");
                           return _getAllCats();
-                        } else {
+                        }
+                        else {
                           return Container(child: const Text("Add your own cat now!")); // Handle other cases
                         }
                       },
@@ -168,6 +170,8 @@ class _ProfileViewState extends State<ProfileView> {
                           return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                         } else if (state is GetPostLoaded) {
                           listPost = state.postList;
+                          print(listPost.length);
+                          print("post list in frontend");
                           return _getAllPosts();
                         } else {
                           return Center(child: Container(child: Text("Create your first post today!"),)); // Handle other cases
@@ -277,7 +281,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget _followers(){
       return Column(
         children: [
-          Text(user!.follower.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+          Text(user.follower.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
           Text("Followers"),
         ],
       );
@@ -286,17 +290,17 @@ class _ProfileViewState extends State<ProfileView> {
   Widget _following(){
     return Column(
       children: [
-        Text(user!.following.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+        Text(user.following.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
         Text("Following"),
       ],
     );
   }
 
   Widget _tipsPost(){
-    if (user!.isExpert == true){
+    if (user.isExpert == true){
       return Column(
         children: [
-          Text(user!.expertTips.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+          Text(user.expertTips.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
           Text("Tips"),
         ],
       );

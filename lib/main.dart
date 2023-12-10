@@ -15,6 +15,8 @@ import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
+import 'package:CatViP/bloc/user/relation_bloc.dart';
+import 'package:CatViP/bloc/user/relation_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/pageRoutes/navigator.dart';
@@ -41,10 +43,20 @@ import 'bloc/post/EditPost/editPost_state.dart';
 import 'bloc/post/OwnCats/ownCats_state.dart';
 import 'bloc/post/new_post/new_post_bloc.dart';
 import 'bloc/post/new_post/new_post_state.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  OneSignal.Debug.setAlertLevel(OSLogLevel.none);
+  OneSignal.initialize("2c9ce8b1-a075-4864-83a3-009c8497310e");
+  OneSignal.login("12345");
+  OneSignal.Notifications.requestPermission(true);
+  OneSignal.Notifications.addPermissionObserver((state) {
+    print("Has permission " + state.toString());
+  });
+
   runApp(const MyApp());
-  //runApp(const HomePage());
 }
 
 class MyApp extends StatelessWidget {
@@ -96,6 +108,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<DeletePostBloc>(
           create: (context) => DeletePostBloc(DeletePostInitState(), PostRepository()),
+        ),
+        BlocProvider<RelationBloc>(
+          create: (context) => RelationBloc(RelationInitState(), UserRepository()),
         ),
       ],
       child: MaterialApp(

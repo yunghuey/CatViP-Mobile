@@ -167,6 +167,31 @@ class PostRepository{
     }
   }
 
+  // delete action post
+  Future<bool> deleteActPost(int postId) async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.DeleteActionPostURL + postId.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.delete(url, headers: header);
+      if (response.statusCode == 200){
+
+        return true;
+      }else{
+        return false;
+      }
+
+    } catch (e){
+      print("error to delete action post");
+      print(e.toString());
+      return false;
+    }
+  }
+
   // get post comments
   Future<List<PostComment>> fetchPostComments(int postId) async{
     try{
@@ -301,6 +326,32 @@ class PostRepository{
     } catch (e) {
       print(e.toString());
       return false;
+    }
+  }
+
+  // get all posts of a user by ID when search user
+  Future<List<Post>> getAllPostsByUserId(int userid) async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.SearchUserGetPostURL + userid.toString());
+      print("getallpostbyuserid : ${url}");
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200){
+        List<dynamic> jsonData = json.decode(response.body);
+
+        // Assuming the JSON data is a List of posts
+        return jsonData.map((e) => Post.fromJson(e)).toList();
+      }
+      return [];
+    } catch (e){
+      print("error in get own post");
+      print(e.toString());
+      return [];
     }
   }
 
