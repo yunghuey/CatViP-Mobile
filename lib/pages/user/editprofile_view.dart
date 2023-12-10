@@ -118,10 +118,10 @@ class EditProfileViewState extends State<EditProfileView> {
               }
 
               if (currentDate == DateTime(1999)){
-                String formatteddate = DateFormat("yyyy-MM-dd").format(DateTime.parse(user.dateOfBirth));
+                String formatteddate = DateFormat("yyyy-MM-dd").format(DateTime.parse(user.dateOfBirth!));
                 dateController.text = formatteddate;
                 print("passed by this reset date");
-                currentDate = DateTime.parse(user.dateOfBirth);
+                currentDate = DateTime.parse(user.dateOfBirth!);
               }
               if (_gender == 2){
                 _gender = user.gender == true ? 1 :0;
@@ -350,7 +350,7 @@ class EditProfileViewState extends State<EditProfileView> {
             if(_formKey.currentState!.validate()){
               // success validation
               String username = user.username;
-              String email = user.email;
+              String email = user.email!;
               String fullName = fullnameController.text.trim();
               String date = dateController.text;
               bool gender = _gender.toString() == 1 ? true : false;

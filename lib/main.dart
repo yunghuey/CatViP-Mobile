@@ -15,6 +15,8 @@ import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
+import 'package:CatViP/bloc/user/relation_bloc.dart';
+import 'package:CatViP/bloc/user/relation_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/pageRoutes/navigator.dart';
@@ -106,6 +108,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<DeletePostBloc>(
           create: (context) => DeletePostBloc(DeletePostInitState(), PostRepository()),
+        ),
+        BlocProvider<RelationBloc>(
+          create: (context) => RelationBloc(RelationInitState(), UserRepository()),
         ),
       ],
       child: MaterialApp(

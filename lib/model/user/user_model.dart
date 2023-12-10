@@ -3,9 +3,9 @@ import 'dart:convert';
 class UserModel {
   String username;
   String fullname;
-  String email;
-  bool gender;
-  String dateOfBirth;
+  String? email;
+  bool? gender;
+  String? dateOfBirth;
   String? address;
   String? profileImage;
   double? longitude;
@@ -15,13 +15,15 @@ class UserModel {
   int? following;
   bool? isExpert;
   int? expertTips;
+  int? id;
+  bool? isFollowed;
 
   UserModel({
     required this.username,
     required this.fullname,
-    required this.email,
-    required this.gender,
-    required this.dateOfBirth,
+    this.email,
+    this.gender,
+    this.dateOfBirth,
     this.address,
     this.profileImage,
     this.longitude,
@@ -31,15 +33,17 @@ class UserModel {
     this.following,
     this.isExpert,
     this.expertTips,
+    this.id,
+    this.isFollowed,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       username: json["username"],
       fullname: json["fullName"],
-      email: json["email"],
-      gender: json["gender"],
-      dateOfBirth: json["dateOfBirth"],
+      email: json["email"]?? "",
+      gender: json["gender"] ?? false,
+      dateOfBirth: json["dateOfBirth"] ?? "",
       address: json["address"],
       profileImage: json["profileImage"] ?? "", // Use an empty string if it's null
       longitude: json["longitude"],
@@ -49,6 +53,8 @@ class UserModel {
       following: json["following"],
       isExpert: json["isExpert"],
       expertTips: json["expertTips"],
+      id: json["id"],
+      isFollowed: json["isFollowed"],
     );
   }
 }
