@@ -10,8 +10,13 @@ class UserProfileInitState extends UserProfileState {}
 class UserProfileLoadedState extends UserProfileState {
   final UserModel user;
   UserProfileLoadedState({required this.user});
-
 }
+
+class SearchProfileLoadedState extends UserProfileState {
+  final UserModel user;
+  SearchProfileLoadedState({required this.user});
+}
+
 class UserProfileLoadingState extends UserProfileState {}
 
 class UserProfileErrorState extends UserProfileState {

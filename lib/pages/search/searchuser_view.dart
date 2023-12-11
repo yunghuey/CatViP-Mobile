@@ -104,7 +104,7 @@ class _SearchViewState extends State<SearchView> {
                         style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),
                       ),
                     );
-                  } else if (state is UserProfileLoadedState){
+                  } else if (state is SearchProfileLoadedState){
                     user = state.user;
                     if (!isSet){
                       print("reset btntext ${isSet}");
@@ -122,7 +122,6 @@ class _SearchViewState extends State<SearchView> {
                       return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                     } else if (state is CatProfileLoadedState) {
                       cats = state.cats;
-                      print("get cat in frontend");
                       return _getAllCats();
                     } else {
                       return Container(child: const Text("No cats has been added yet", style: TextStyle(fontSize: 17),)); // Handle other cases

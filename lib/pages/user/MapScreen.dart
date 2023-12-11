@@ -18,9 +18,9 @@ class _MapScreenState extends State<MapScreen> {
   static const CameraPosition initialCameraPosition = CameraPosition(target: LatLng(2.1960, 102.2405), zoom: 14.0);
   final String gApiKey = "AIzaSyCB7cpPFXRdOFprDVVtsOts8SM5zHRaulQ";
   Set<Marker> markerList = {};
-  late double userLat;
-  late double userLng;
-  late String userAddress;
+  late double? userLat;
+  late double? userLng;
+  late String? userAddress = "";
   final Mode _mode = Mode.overlay;
   final homeScaffoldKey = GlobalKey<ScaffoldState>();
   late GoogleMapController googleMapController;
@@ -35,22 +35,29 @@ class _MapScreenState extends State<MapScreen> {
         bottomOpacity: 0.0,
         elevation: 0.0,
           actions: [
-           IconButton(onPressed: (){
+           IconButton(
+               onPressed: (){
            //   get string, lat and log
-              print("latitude: ${userLat}");
-              print("longitude: ${userLng}");
-              print("address: ${userAddress}");
-              if (userLat.isNaN || userLng.isNaN || userAddress.isEmpty ){
+
+              if (userAddress!.isEmpty == true){
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: Text("Please pick a location", style: TextStyle(color: Colors.white54),),
-                      backgroundColor: HexColor("#B06161"),
+                      content: Text("Please pick a location",
+                        style: TextStyle(
+                          color: HexColor("#FF6464"),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      backgroundColor: HexColor("#FFE382"),
                   )
                 );
                 return;
               }
               Navigator.pop(context, { 'lat': userLat, 'lng': userLng, 'address': userAddress });
-           }, icon: Icon(Icons.done_rounded))
+           },
+               icon: Icon(Icons.done_rounded),
+           )
          ],
       ),
       body: Stack(

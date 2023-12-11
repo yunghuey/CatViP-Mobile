@@ -1,5 +1,6 @@
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/home_page.dart';
+import 'package:CatViP/pages/user/MapScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -37,6 +38,7 @@ class _SignUpViewState extends State<SignUpView> {
   TextEditingController genderController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController fullnameController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
 
   final FocusNode confirmPasswordFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
@@ -45,6 +47,7 @@ class _SignUpViewState extends State<SignUpView> {
   String confirmpassword = '';
 
   late RegisterBloc registerBloc;
+  late double lat, long;
 
   int _gender = 0;
   // 0 means false - male
@@ -111,6 +114,7 @@ class _SignUpViewState extends State<SignUpView> {
                   _dobField(),
                   SizedBox(height: 10.0,),
                   _genderField(),
+                  _addressField(),
                   _passwordField(),
                   _confirmpasswordField(),
                   _matchPassword(),
@@ -313,21 +317,16 @@ class _SignUpViewState extends State<SignUpView> {
           onPressed: () {
             if(_formKey.currentState!.validate()){
               // success validation
-              print(usernameController.text.trim());
-              print(emailController.text.trim());
-              print(fullnameController.text.trim());
-              print(pwdController.text.trim());
-              print(_gender.toString());
-              print(dateController.text);
-
-
                 registerBloc.add(SignUpButtonPressed(
-                username: usernameController.text.trim(),
-                fullname: fullnameController.text.trim(),
-                email: emailController.text.trim(),
-                gender: int.parse(_gender.toString()),
-                password: pwdController.text.trim(),
-                bdayDate: dateController.text.trim(),
+                  username: usernameController.text.trim(),
+                  fullname: fullnameController.text.trim(),
+                  email: emailController.text.trim(),
+                  gender: int.parse(_gender.toString()),
+                  password: pwdController.text.trim(),
+                  bdayDate: dateController.text.trim(),
+                  address: addressController.text,
+                  latitude: lat,
+                  longitude: long,
               ));
             }
 
@@ -397,6 +396,48 @@ class _SignUpViewState extends State<SignUpView> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _addressField(){
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0),
+      child: TextFormField(
+        readOnly: true,
+        controller: addressController,
+        maxLines: 3,
+        decoration:  InputDecoration(
+          prefixIcon: Icon(Icons.house, color: HexColor("#3c1e08"),),
+          labelText: 'Address',
+          labelStyle: TextStyle(color: HexColor("#3c1e08")),
+          focusColor: HexColor("#3c1e08"),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: HexColor("#a4a4a4")),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color:  HexColor("#3c1e08")),
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.add_location),
+            onPressed: (){
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MapScreen())
+              ).then((value) => {
+                lat = value['lat'],
+                long = value['lng'],
+                addressController.text = value['address']
+
+              });
+            },
+          ),
+        ),
+        validator: (value){
+          if (value == null || value.isEmpty){
+            return 'Please enter password';
+          }
+          return null;
+        } ,
       ),
     );
   }

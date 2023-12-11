@@ -159,7 +159,7 @@ class _ProfileViewState extends State<ProfileView> {
                           return _getAllCats();
                         }
                         else {
-                          return Container(child: const Text("Add your own cat now!")); // Handle other cases
+                          return Container(child: const Text("Add your own cat now!", style: TextStyle(fontSize: 16))); // Handle other cases
                         }
                       },
                     ),
@@ -171,7 +171,12 @@ class _ProfileViewState extends State<ProfileView> {
                           listPost = state.postList;
                           return _getAllPosts();
                         } else {
-                          return Center(child: Container(child: Text("Create your first post today!"),)); // Handle other cases
+                          return Center(
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                child: Text("Create your first post today!",style: TextStyle(fontSize: 16)),
+                              )
+                          ); // Handle other cases
                         }
                       },
                     ),
@@ -234,7 +239,14 @@ class _ProfileViewState extends State<ProfileView> {
             leading: Icon(Icons.add),
             title: Text("Register cat"),
             onTap: (){
-              Navigator.push(context,MaterialPageRoute(builder: (context) => CreateCatView(),));
+              Navigator.push(
+                  context,MaterialPageRoute(builder: (context) => CreateCatView(),)
+              ).then((result) {
+                if (result == true){
+                  Navigator.pop(context);
+                  catBloc.add(StartLoadCat());
+                }
+              });
             },
           ),
           ListTile(

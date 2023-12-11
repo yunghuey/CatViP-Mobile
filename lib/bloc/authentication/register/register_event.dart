@@ -15,6 +15,9 @@ class SignUpButtonPressed extends RegisterEvents {
   final String password;
   final int gender;
   final String bdayDate;
+  final String address;
+  final double latitude;
+  final double longitude;
 
   SignUpButtonPressed({
     required this.username,
@@ -22,7 +25,10 @@ class SignUpButtonPressed extends RegisterEvents {
     required this.email,
     required this.password,
     required this.gender,
-    required this.bdayDate
+    required this.bdayDate,
+    required this.address,
+    required this.latitude,
+    required this.longitude,
   });
 }
 

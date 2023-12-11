@@ -12,7 +12,10 @@ class RegisterBloc extends Bloc<RegisterEvents, RegisterState>{
 
     on<SignUpButtonPressed>((event,emit) async{
       emit(RegisterLoadingState());
-      int validSignUp = await repo.register(event.username,event.fullname,event.email, event.password, event.gender, event.bdayDate);
+      int validSignUp = await repo.register(
+          event.username,event.fullname,event.email, event.password,
+          event.gender, event.bdayDate, event.address, event.latitude,
+          event.longitude);
       if (validSignUp == 0){
         emit(RegisterSuccessState());
       } else if (validSignUp == 1){
