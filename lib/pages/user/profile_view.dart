@@ -156,7 +156,6 @@ class _ProfileViewState extends State<ProfileView> {
                         }
                         else if (state is CatProfileLoadedState) {
                           cats = state.cats;
-                          print("get cat in frontend");
                           return _getAllCats();
                         }
                         else {
@@ -170,8 +169,6 @@ class _ProfileViewState extends State<ProfileView> {
                           return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                         } else if (state is GetPostLoaded) {
                           listPost = state.postList;
-                          print(listPost.length);
-                          print("post list in frontend");
                           return _getAllPosts();
                         } else {
                           return Center(child: Container(child: Text("Create your first post today!"),)); // Handle other cases
@@ -225,11 +222,10 @@ class _ProfileViewState extends State<ProfileView> {
                 MaterialPageRoute(builder: (context) => EditProfileView()),
               ).then((result) {
                 if (result == true) {
+                  Navigator.pop(context);
                   userBloc.add(StartLoadProfile());
                   catBloc.add(StartLoadCat());
                   postBloc.add(StartLoadOwnPost());
-
-                  //   postBloc.add();
                 }
               });
             },
@@ -259,7 +255,6 @@ class _ProfileViewState extends State<ProfileView> {
                   );
                 }
                 else {
-                //   check status
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>ExpertCheckView(formstatus: user.validToApply!))).then(
                       (result) { userBloc.add(StartLoadProfile());}
                   );

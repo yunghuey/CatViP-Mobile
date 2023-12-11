@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/model/user/user_model.dart';
+import 'package:CatViP/pages/user/MapScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -94,7 +95,7 @@ class EditProfileViewState extends State<EditProfileView> {
                   Column(
                     children: [
                       SizedBox(height: 10),
-                      Text("Updating...Please wait"),
+                      Text("Updating...Please wait", style: TextStyle(fontSize: 16),),
                       SizedBox(height: 10),
                       CircularProgressIndicator(color:  HexColor("#3c1e08"),)
                     ],
@@ -110,11 +111,11 @@ class EditProfileViewState extends State<EditProfileView> {
               if (addressController.text == "" && user.address != null && user.address!.isNotEmpty) {
                 addressController.text = user.address!;
               }
-              print("image: ${user.profileImage}");
               if (profileEdited == 0){
+                lat = user.latitude ?? 0;
+                long = user.longitude ?? 0;
                 base64image = user.profileImage!;
                 profileEdited = 1;
-                print("profile image initialized: ${profileEdited}");
               }
 
               if (currentDate == DateTime(1999)){
@@ -231,24 +232,38 @@ class EditProfileViewState extends State<EditProfileView> {
 
   Widget _addressField(){
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0),
-      child: TextFormField(
-        controller: addressController,
-        maxLines: 3,
-        decoration:  InputDecoration(
-          prefixIcon: Icon(Icons.house, color: HexColor("#3c1e08"),),
-          labelText: 'Address',
-          labelStyle: TextStyle(color: HexColor("#3c1e08")),
-          focusColor: HexColor("#3c1e08"),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: HexColor("#a4a4a4")),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color:  HexColor("#3c1e08")),
+        padding: const EdgeInsets.only(top: 5.0),
+        child: TextFormField(
+          readOnly: true,
+          controller: addressController,
+          maxLines: 3,
+          decoration:  InputDecoration(
+            prefixIcon: Icon(Icons.house, color: HexColor("#3c1e08"),),
+            labelText: 'Address',
+            labelStyle: TextStyle(color: HexColor("#3c1e08")),
+            focusColor: HexColor("#3c1e08"),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: HexColor("#a4a4a4")),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color:  HexColor("#3c1e08")),
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(Icons.add_location),
+              onPressed: (){
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MapScreen())
+                ).then((value) => {
+                  lat = value['lat'],
+                  long = value['lng'],
+                  addressController.text = value['address']
+
+                });
+                },
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _genderField() {
@@ -275,7 +290,7 @@ class EditProfileViewState extends State<EditProfileView> {
                   Expanded(
                     child: RadioListTile(
                       title: Text('Male', style: TextStyle(fontSize: 14),),
-                      value: 0,
+                      value: 1,
                       activeColor: HexColor('#3c1e08'),
                       groupValue: _gender,
                       onChanged: (value) {
@@ -288,7 +303,7 @@ class EditProfileViewState extends State<EditProfileView> {
                   Expanded(
                     child: RadioListTile(
                       title: Text('Female', style: TextStyle(fontSize: 14),),
-                      value: 1,
+                      value: 0,
                       activeColor: HexColor('#3c1e08'),
                       groupValue: _gender,
                       onChanged: (value) {
@@ -353,13 +368,9 @@ class EditProfileViewState extends State<EditProfileView> {
               String email = user.email!;
               String fullName = fullnameController.text.trim();
               String date = dateController.text;
-              bool gender = _gender.toString() == 1 ? true : false;
+              bool gender = int.parse(_gender.toString()) == 1 ? true : false;
               String address = addressController.text.trim().isNotEmpty ? addressController.text.trim() : "";
               String? profileImg;
-              print(addressController.text.trim());
-              print(fullnameController.text.trim());
-              print(_gender.toString());
-              print(dateController.text);
               if (image != null){
                 Uint8List? imageData = await _getImageBytes(image!);
                 if (imageData != null){
@@ -368,9 +379,6 @@ class EditProfileViewState extends State<EditProfileView> {
                 }
               } else {
                 profileImg = base64image;
-              }
-              if (addressController.text != ""){
-                _getCoordinates(addressController.text.trim());
               }
               UserModel userupdate = UserModel(
                 username: username,
@@ -511,5 +519,4 @@ class EditProfileViewState extends State<EditProfileView> {
       print("No Image Selected");
     }
   }
-
 }
