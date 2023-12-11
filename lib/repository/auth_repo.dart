@@ -55,7 +55,6 @@ class AuthRepository{
           pref.setString("token", data);
           return true;
         } else {
-          print('not receiving 200 code');
           return false;
         }
       }
@@ -67,12 +66,14 @@ class AuthRepository{
     }
   }
 
-  Future<int> register(String username, String fullname, String email, String password, int gender, String bdayDate) async{
+  Future<int> register(String username, String fullname, String email,
+      String password, int gender, String bdayDate,
+      String address, double latitude, double longitude) async{
     var pref = await SharedPreferences.getInstance();
     try{
       bool genderFemale;
-      if (gender == 0){ genderFemale = false; }
-      else            { genderFemale = true; }
+      if (gender == 0){ genderFemale = true; }
+      else            { genderFemale = false; }
 
       var url = Uri.parse(APIConstant.RegisterURL);
 
@@ -83,7 +84,10 @@ class AuthRepository{
         "password": password,
         "gender": genderFemale,
         "dateOfBirth": bdayDate,
-        "roleId": 2
+        "roleId": 2,
+        "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
       });
 
       print(body.toString());

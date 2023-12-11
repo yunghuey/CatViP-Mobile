@@ -23,7 +23,6 @@ class UserRepository{
         if (response.statusCode == 200){
           var value = response.body;
           var jsonValue = json.decode(value);
-          print(jsonValue.toString());
           user_data =  UserModel.fromJson(jsonValue);
           return user_data;
         } else {
@@ -57,11 +56,9 @@ class UserRepository{
           "latitude": user.latitude,
           "profileImage": user.profileImage
         });
-        print(body.toString());
         var response = await http.put(url, headers: header, body: body);
 
         if (response.statusCode == 200){
-          print("profile updated");
           return true;
         } else {
           print("response fail: ${response.statusCode}");
@@ -86,14 +83,10 @@ class UserRepository{
           "Authorization" : "Bearer ${token}"
         };
 
-        print("${url} : searching ${name}");
         var response = await http.get(url, headers: header);
         if (response.statusCode == 200){
           List<dynamic> jsonValue = json.decode(response.body);
-          print(jsonValue);
           return jsonValue.map((e) => UserModel.fromJson(e as Map<String, dynamic>)).toList();        } else{
-          print(response.statusCode);
-          print(response.body);
         }
       }
       return [];
@@ -118,7 +111,6 @@ class UserRepository{
         var response = await http.get(url, headers: header);
         if (response.statusCode == 200) {
           var result = jsonDecode(response.body);
-          print("search user profile: ${result}");
           return UserModel.fromJson(result);
         }
       }
@@ -145,8 +137,6 @@ class UserRepository{
         } else if (response.statusCode == 400){
           return 0;
         }
-
-
         print("Follow user error: ${response.statusCode}: ${response.body}");
       }
 

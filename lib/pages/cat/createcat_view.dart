@@ -82,6 +82,7 @@ class _CreateCatViewState extends State<CreateCatView> {
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Cat is created successfully'))
             ); //   navigate to View All Cat
+            Navigator.pop(context, true);
             //   set texteditingcontroller to empty
           }
           else if (state is CreateCatFailState) {
