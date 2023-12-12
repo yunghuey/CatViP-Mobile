@@ -4,12 +4,12 @@ class APIConstant {
   // static const String URL = "http://10.131.76.30:7015/api/";
 
    //wafir's Melaka IP
-    static const String URL = "http://192.168.0.126:7015/api/";
+   // static const String URL = "http://192.168.0.126:7015/api/";
 
 
   // yung huey IP
-   //static const String URL = "http://192.168.137.1:7015/api/";
-  //static const String URL = "http://172.16.88.4:7015/api/";
+   static const String URL = "http://192.168.137.1:7015/api/";
+  // static const String URL = "http://172.16.88.4:7015/api/";
 
   // auth module
   static String get LoginURL => "${APIConstant.URL}Auth/login";
@@ -36,7 +36,6 @@ class APIConstant {
    static String get DeleteActionPostURL => "${APIConstant.URL}post/deleteactpost/";
    static String get EditPostURL => "${APIConstant.URL}post/editpost/";
    static String get DeletePostURL => "${APIConstant.URL}post/deletepost/";
-   static String get ReportPostURL => "${APIConstant.URL}post/reportpost";
    static String get SearchUserGetPostURL => "${APIConstant.URL}post/GetPosts/";
 
    // expert module
@@ -52,13 +51,5 @@ class APIConstant {
    static String get DeleteCatURL => "${APIConstant.URL}cat/DeleteCat/";
    static String get GetOneCatURL => "${APIConstant.URL}cat/GetCat/";
    static String get SearchUserAllCatURL => "${APIConstant.URL}cat/GetCats/";
-
-   // report case module
-    static String get CreateCaseReportURL => "${APIConstant.URL}caseReport/createCaseReport";
-    static String get GetOwnCaseReportURL => "${APIConstant.URL}caseReport/getowncasereports";
-    static String get GetCaseReportsURL => "${APIConstant.URL}caseReport/getnearbycasereports";
-
-
-
 
 }
