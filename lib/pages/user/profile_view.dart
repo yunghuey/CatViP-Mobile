@@ -174,7 +174,7 @@ class _ProfileViewState extends State<ProfileView> {
                         if (state is GetPostLoading) {
                           return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                         } else if (state is GetPostLoaded) {
-                          listPost = state.postList;
+                          listPost = state.postList.reversed.toList();
                           return _getAllPosts();
                         } else {
                           return Center(
@@ -405,7 +405,6 @@ class _ProfileViewState extends State<ProfileView> {
         height: 120,
         child: ListView.builder(
           itemCount:cats.length,
-          reverse: true,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {

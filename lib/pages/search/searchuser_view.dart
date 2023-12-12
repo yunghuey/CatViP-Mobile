@@ -143,7 +143,7 @@ class _SearchViewState extends State<SearchView> {
                           child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                     }
                     else if (state is GetPostLoaded) {
-                      listPost = state.postList;
+                      listPost = state.postList.reversed.toList();
                       print("frontend listPost length ${listPost.length}");
                       return _getAllPosts();
                     }
@@ -366,7 +366,6 @@ class _SearchViewState extends State<SearchView> {
           shrinkWrap: true, // Added shrinkWrap
           physics: NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
           itemCount: listPost.length,
-          reverse: true,
           itemBuilder: (context, index) {
             final Post post = listPost[index];
             print("Post: ${post.toJson()}");

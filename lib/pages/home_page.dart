@@ -5,6 +5,7 @@ import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CasesReport.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   bool thumbsUpSelected = false;
   bool thumbsDownSelected = false;
   bool hasBeenLiked = false;
-
+  late List<Post> postList;
   @override
   void initState() {
     // TODO: implement initState
@@ -85,6 +86,7 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator(color:  HexColor("#3c1e08")),
               );
             } else if (state is GetPostLoaded) {
+              postList = state.postList.reversed.toList();
               return Theme(
                 data: Theme.of(context).copyWith(
                   colorScheme: Theme.of(context).colorScheme.copyWith(primary: HexColor("#3c1e08")),
@@ -94,10 +96,9 @@ class _HomePageState extends State<HomePage> {
                   child: Stack(
                     children: [
                       ListView.builder(
-                        itemCount: state.postList.length,
-                        reverse: true,
+                        itemCount: postList.length,
                         itemBuilder: (context, index) {
-                          final Post post = state.postList[index];
+                          final Post post = postList[index];
                           print("Post: ${post.toJson()}");
                           return Card(
                             color: HexColor("#ecd9c9"),
