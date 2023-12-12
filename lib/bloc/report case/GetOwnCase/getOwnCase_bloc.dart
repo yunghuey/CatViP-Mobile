@@ -1,45 +1,42 @@
-
-import 'package:CatViP/model/post/postComment.dart';
-import 'package:CatViP/repository/post_repo.dart';
+import 'package:CatViP/model/caseReport/caseReport.dart';
+import 'package:CatViP/repository/reportCase_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'getOwnCase_event.dart';
+import 'getOwnCase_state.dart';
 
-import '../../../model/post/post.dart';
-import 'getPost_event.dart';
-import 'getPost_state.dart';
+class GetCaseBloc extends Bloc<GetCaseEvent, GetCaseState> {
 
-class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
+  final ReportCaseRepository reportCaseRepo = ReportCaseRepository();
 
-  final PostRepository postRepository = PostRepository();
-
-  GetPostBloc() : super(GetPostInitial()) {
-    on<GetPostList>((event, emit) async {
+  GetCaseBloc() : super(GetCaseInitial()) {
+    on<GetCaseList>((event, emit) async {
       try {
-        emit(GetPostLoading());
-        final List<Post> postList = await postRepository.fetchPost();
-        emit(GetPostLoaded(postList: postList));
+        emit(GetCaseLoading());
+        final List<CaseReport> caseList = await reportCaseRepo.fetchCases();
+        emit(GetCaseLoaded(caseList: caseList));
 
-        if (postList[0].error != null) {
-          emit(GetPostError(
-              error: postList[0].error));
+        if (caseList[0].error != null) {
+          emit(GetCaseError(
+              error: caseList[0].error));
         }
       } on http.ClientException {
-        emit(const GetPostError(
+        emit(const GetCaseError(
             error: "Failed to fetch data in your device online"));
       }
     });
 
-    on<StartLoadOwnPost>((event, emit) async {
-      emit(GetPostLoading());
-      final List<Post> postList = await postRepository.fetchMyPost();
-      if (postList.length > 0) {
-        emit(GetPostLoaded(postList: postList));
+    on<StartLoadOwnCase>((event, emit) async {
+      emit(GetCaseLoading());
+      final List<CaseReport> caseList = await reportCaseRepo.fetchMyCase();
+      if (caseList.length > 0) {
+        emit(GetCaseLoaded(caseList: caseList));
       } else {
-        emit(GetPostEmpty());
+        emit(GetCaseEmpty());
       }
     });
 
-    on<StartLoadSingleCatPost>((event, emit) async {
+    /* on<StartLoadSingleCatPost>((event, emit) async {
       emit(GetPostLoading());
       final List<Post> postList = await postRepository.fetchCatPost(
           event.catid);
@@ -111,7 +108,7 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
     });
 
     on<UpdateActionPost>((event, emit) async {
-/*
+
       try {
         // Attempt to post a new comment
         bool isUpdated = await postRepository.actionPost(
@@ -128,9 +125,7 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
         // Handle any potential errors during the process
         emit(ActionPostFailState(message: "Failed to update action"));
       }
-
-        */
-     });
+    });
 
     // update action post
     on<StartDeleteActionPost>((event, emit) {
@@ -160,5 +155,6 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
       }
     });
   }
-
+*/
+  }
 }
