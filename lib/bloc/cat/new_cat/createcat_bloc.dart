@@ -17,7 +17,7 @@ class CreateCatBloc extends Bloc<CreateCatEvents, CreateCatState>{
       if (isCreated) {
         emit(CreateCatSuccessState());
       } else {
-        emit(CreateCatFailState(message: "Fail to create cat"));
+        emit(CreateCatFailState(message: "Server error to detect cat"));
       }
     });
   }
