@@ -102,7 +102,7 @@ class _SearchTabState extends State<SearchTab> {
     print("list: ${searchList.length}");
     return 
       Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(10),
       child: ListView.builder(
         itemCount: searchList.length,
         itemBuilder: (context,index){

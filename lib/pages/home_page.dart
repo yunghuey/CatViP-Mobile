@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
             } else if (state is GetPostLoaded) {
               return ListView.builder(
                 itemCount: state.postList.length,
+                reverse: true,
                 itemBuilder: (context, index) {
                   final Post post = state.postList[index];
                   print("Post: ${post.toJson()}");
@@ -101,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                                   backgroundColor: Colors.transparent,
                                   backgroundImage: post.profileImage != ""
                                       ? Image.memory(base64Decode(post.profileImage!)).image
-                                      : AssetImage('assets/addImage.png'),
+                                      : AssetImage('assets/profileimage.png'),
                                 ),
                                 Expanded(
                                   child: Padding(
