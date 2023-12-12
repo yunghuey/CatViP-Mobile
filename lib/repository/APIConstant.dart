@@ -36,6 +36,7 @@ class APIConstant {
    static String get DeleteActionPostURL => "${APIConstant.URL}post/deleteactpost/";
    static String get EditPostURL => "${APIConstant.URL}post/editpost/";
    static String get DeletePostURL => "${APIConstant.URL}post/deletepost/";
+   static String get ReportPostURL => "${APIConstant.URL}post/reportpost";
    static String get SearchUserGetPostURL => "${APIConstant.URL}post/GetPosts/";
 
    // expert module
@@ -51,5 +52,11 @@ class APIConstant {
    static String get DeleteCatURL => "${APIConstant.URL}cat/DeleteCat/";
    static String get GetOneCatURL => "${APIConstant.URL}cat/GetCat/";
    static String get SearchUserAllCatURL => "${APIConstant.URL}cat/GetCats/";
+
+   // report case module
+   static String get CreateCaseReportURL => "${APIConstant.URL}caseReport/createCaseReport";
+   static String get GetOwnCaseReportURL => "${APIConstant.URL}caseReport/getowncasereports";
+   static String get GetCaseReportsURL => "${APIConstant.URL}caseReport/getnearbycasereports";
+
 
 }
