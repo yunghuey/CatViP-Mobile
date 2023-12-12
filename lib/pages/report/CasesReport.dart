@@ -363,7 +363,6 @@ class _CasesReportsState extends State<CaseReports> {
                         },
                       ),
                     ),
-                   
                   ],
                 );
               } else {
