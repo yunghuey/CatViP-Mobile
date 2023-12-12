@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
 import 'package:CatViP/bloc/cat/catprofile_event.dart';
 import 'package:CatViP/bloc/cat/catprofile_state.dart';
+import 'package:CatViP/bloc/post/DeletePost/deletePost_bloc.dart';
+import 'package:CatViP/bloc/post/DeletePost/deletePost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
@@ -17,6 +19,9 @@ import 'package:CatViP/model/post/post.dart';
 import 'package:CatViP/model/user/user_model.dart';
 import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
+import 'package:CatViP/pages/post/comment.dart';
+import 'package:CatViP/pages/user/editpost_view.dart';
+import 'package:CatViP/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -39,6 +44,8 @@ class _SearchViewState extends State<SearchView> {
   late GetPostBloc postBloc;
   late CatProfileBloc catBloc;
   late RelationBloc relBloc;
+  late DeletePostBloc deleteBloc;
+  final Widgets func = Widgets();
   bool isSet = false;
 
   @override
@@ -52,6 +59,7 @@ class _SearchViewState extends State<SearchView> {
     postBloc = BlocProvider.of<GetPostBloc>(context);
     postBloc.add(LoadSearchAllPost(userid: userid));
     relBloc = BlocProvider.of<RelationBloc>(context);
+    deleteBloc = BlocProvider.of<DeletePostBloc>(context);
     super.initState();
   }
   @override
@@ -107,7 +115,6 @@ class _SearchViewState extends State<SearchView> {
                   } else if (state is SearchProfileLoadedState){
                     user = state.user;
                     if (!isSet){
-                      print("reset btntext ${isSet}");
                       btntext = user.isFollowed! == true ? "Following" : "Follow";
                       isSet = true;
                     }
@@ -137,7 +144,8 @@ class _SearchViewState extends State<SearchView> {
                     }
                     else if (state is GetPostLoaded) {
                       listPost = state.postList;
-                      _getAllPosts();
+                      print("frontend listPost length ${listPost.length}");
+                      return _getAllPosts();
                     }
                     return Center(
                       child: Container(
@@ -234,56 +242,64 @@ class _SearchViewState extends State<SearchView> {
   Widget _buttons(){
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: ElevatedButton(
-                  onPressed: (){
-                    if (btntext == "Follow"){
-                      relBloc.add(FollowButtonPressed(userID: userid));
-                    } else{
-                      relBloc.add(UnfollowButtonPressed(userID: userid));
-                    }
-                   setState(() {
-                     if(btntext == "Follow"){
-                       user.follower =  user.follower! + 1;
-                     }
-                     else {
-                       user.follower =  user.follower! - 1;
-                     }
-                     btntext = (btntext == "Follow") ? "Following" : "Follow";
-                   });
+          Text(user.fullname, style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+          )),
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: ElevatedButton(
+                      onPressed: (){
+                        if (btntext == "Follow"){
+                          relBloc.add(FollowButtonPressed(userID: userid));
+                        } else{
+                          relBloc.add(UnfollowButtonPressed(userID: userid));
+                        }
+                       setState(() {
+                         if(btntext == "Follow"){
+                           user.follower =  user.follower! + 1;
+                         }
+                         else {
+                           user.follower =  user.follower! - 1;
+                         }
+                         btntext = (btntext == "Follow") ? "Following" : "Follow";
+                       });
 
-                  },
-                  child: Text(btntext),
-                  style: ButtonStyle(
-                    side: MaterialStateProperty.all(BorderSide(color: HexColor("#3c1e08"), width: 1)),
-                    backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
-                    foregroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+                      },
+                      child: Text(btntext),
+                      style: ButtonStyle(
+                        side: MaterialStateProperty.all(BorderSide(color: HexColor("#3c1e08"), width: 1)),
+                        backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
+                        foregroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: ElevatedButton(
-                  onPressed: (){},
-                  child: Text("Message"),
-                  style: ButtonStyle(
-                    side: MaterialStateProperty.all(BorderSide(color: HexColor("#3c1e08"), width: 1)),
-                    backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
-                    foregroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                  ),),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: ElevatedButton(
+                      onPressed: (){},
+                      child: Text("Message"),
+                      style: ButtonStyle(
+                        side: MaterialStateProperty.all(BorderSide(color: HexColor("#3c1e08"), width: 1)),
+                        backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
+                        foregroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+                      ),),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -341,36 +357,312 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
-  Widget _getAllPosts(){
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 1/1,
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
-      ),
-      itemBuilder: (context, index){
-        final post = listPost[index];
-
-        return GestureDetector(
-          onTap: (){
-            //   handle one image
-            //   new page
-            //   wait for wafir's code
-            // Navigator.push(context, MaterialPageRoute(builder: (context) => EditPost(currentPost: post)));
+  Widget _getAllPosts() {
+    return Card(
+      color: HexColor("#ecd9c9"),
+      child: Container(
+        padding: const EdgeInsets.all(20.0),
+        child: ListView.builder(
+          shrinkWrap: true, // Added shrinkWrap
+          physics: NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+          itemCount: listPost.length,
+          reverse: true,
+          itemBuilder: (context, index) {
+            final Post post = listPost[index];
+            print("Post: ${post.toJson()}");
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (post.postImages != null && post.postImages!.isNotEmpty)
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: post.profileImage != ""
+                            ? Image.memory(base64Decode(post.profileImage!)).image
+                            : AssetImage('assets/profileimage.png'),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.fullname,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 4.0),
+                AspectRatio(
+                  aspectRatio: 1.0, // Set the aspect ratio (adjust as needed)
+                  child: Image.memory(
+                    base64Decode(post.postImages![0].image!),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Row(
+                  children: [
+                    _FavoriteButton(
+                      postId: post.id!,
+                      actionTypeId: post.currentUserAction!,
+                      onFavoriteChanged: (bool isThumbsUpSelected) {
+                        setState(() {
+                          post.likeCount = post.likeCount! + (isThumbsUpSelected ? 1 : -1);
+                        });
+                        print('Is Thumbs Up Selected: $isThumbsUpSelected');
+                      },
+                    ),
+                    SizedBox(width: 4.0),
+                    IconButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Comments(postId: post.id!),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.comment_bank_outlined,
+                        color: Colors.black,
+                        size: 24.0,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${post.likeCount.toString()} likes",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(top: 8),
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: post.mentionedCats?[0].catName,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ',
+                              ),
+                              TextSpan(
+                                text: post.description.toString(),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Comments(postId: post.id!),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: post.commentCount! > 0
+                              ? Text(
+                            'View all ${post.commentCount} comments',
+                            style: const TextStyle(fontSize: 14, color: Colors.black),
+                          )
+                              : SizedBox.shrink(),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          func.getFormattedDate(post.dateTime!),
+                          style: const TextStyle(fontSize: 12, color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
           },
-          child: Container(
-            color: Colors.grey,
-            child: post.postImages != null && post.postImages!.isNotEmpty ?
-            Image(image: MemoryImage(base64Decode(post.postImages![0].image!)),fit: BoxFit.cover,) : Container(),
-          ),
-        );
-      },
-      itemCount: 10,
+        ),
+      ),
     );
   }
 
+  void refreshPosts() {
+    postBloc.add(StartLoadOwnPost());
+  }
+
+/*
+// Widget _getAllPosts(){
+  //   return GridView.builder(
+  //     shrinkWrap: true,
+  //     physics: const NeverScrollableScrollPhysics(),
+  //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //       crossAxisCount: 3,
+  //       childAspectRatio: 1/1,
+  //       crossAxisSpacing: 2,
+  //       mainAxisSpacing: 2,
+  //     ),
+  //     itemBuilder: (context, index){
+  //       final post = listPost[index];
+  //
+  //       return GestureDetector(
+  //         onTap: (){
+  //           //   handle one image
+  //           //   new page
+  //           //   wait for wafir's code
+  //           // Navigator.push(context, MaterialPageRoute(builder: (context) => EditPost(currentPost: post)));
+  //         },
+  //         child: Container(
+  //           color: Colors.grey,
+  //           child: post.postImages != null && post.postImages!.isNotEmpty ?
+  //           Image(image: MemoryImage(base64Decode(post.postImages![0].image!)),fit: BoxFit.cover,) : Container(),
+  //         ),
+  //       );
+  //     },
+  //     itemCount: listPost.length,
+  //     reverse: true,
+  //   );
+  // } */
 
 }
+
+class _FavoriteButton extends StatefulWidget {
+  final int postId;
+  final int actionTypeId;
+  final ValueChanged<bool> onFavoriteChanged;
+
+  const _FavoriteButton({
+    Key? key,
+    required this.postId,
+    required this.actionTypeId,
+    required this.onFavoriteChanged,
+  }) : super(key: key);
+
+  @override
+  _FavoriteButtonState createState() => _FavoriteButtonState(
+    postId: postId,
+    actionTypeId: actionTypeId,
+    onFavoriteChanged: onFavoriteChanged,
+  );
+}
+
+class _FavoriteButtonState extends State<_FavoriteButton> {
+  bool isFavorite = false;
+  final GetPostBloc _postBloc = GetPostBloc();
+  final int postId;
+  final int actionTypeId;
+  bool thumbsUpSelected = false;
+  bool thumbsDownSelected = false;
+  final ValueChanged<bool> onFavoriteChanged;
+
+  _FavoriteButtonState({
+    required this.postId,
+    required this.actionTypeId,
+    required this.onFavoriteChanged,
+  });
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the state based on the provided actionTypeId
+    if (actionTypeId == 1) {
+      thumbsUpSelected = true;
+    } else if (actionTypeId == 2) {
+      thumbsDownSelected = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () {
+            setState(() {
+              thumbsUpSelected = !thumbsUpSelected;
+              if (thumbsUpSelected) {
+                thumbsDownSelected = false;
+              }
+            });
+
+            // Update the action type for the specific post
+            if(thumbsUpSelected == true) {
+              int newActionTypeId = 1;
+              _postBloc.add(UpdateActionPost(
+                postId: postId,
+                actionTypeId: newActionTypeId,
+              ));
+              onFavoriteChanged(thumbsUpSelected);
+            } else if(thumbsUpSelected == false) {
+              int newActionTypeId = 2;
+              _postBloc.add(UpdateActionPost(
+                postId: postId,
+                actionTypeId: newActionTypeId,
+              ));
+              onFavoriteChanged(thumbsUpSelected);
+            }
+          },
+          icon: Icon(
+            thumbsUpSelected ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+            color: thumbsUpSelected ? Colors.blue : Colors.black,
+            size: 24.0,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              thumbsDownSelected = !thumbsDownSelected;
+              if (thumbsDownSelected) {
+                thumbsUpSelected = false;
+              }
+            });
+
+            // Update the action type for the specific post
+            if(thumbsDownSelected == true) {
+              _postBloc.add(UpdateActionPost(
+                postId: postId,
+                actionTypeId: 2,
+              ));
+              onFavoriteChanged(thumbsUpSelected);
+            }
+          },
+          icon: Icon(
+            thumbsDownSelected ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
+            color: thumbsDownSelected ? Colors.red : Colors.black,
+            size: 24.0,
+          ),
+        ),
+      ],
+    );
+  }
+}
+

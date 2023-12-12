@@ -18,19 +18,27 @@ class _ExpertProfileViewState extends State<ExpertProfileView> {
         bottomOpacity: 0.0,
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text("You are our expert"),
-            Row(
-              children: [
-                Icon(Icons.star),
-                Icon(Icons.star),
-                Icon(Icons.star),
-              ],
-            ),
-            Text("Thank you for contributing to the community"),
-          ],
+      body: const Padding(
+        padding: EdgeInsets.all(18.0),
+        child: Center(
+          child: Column(
+            children: [
+              Icon(Icons.star,size: 60.0),
+              SizedBox(height: 15.0),
+              Text("You are approved to be our expert!",
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,),
+              SizedBox(height: 15.0),
+              Text("Welcome to join the family",
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,),
+              SizedBox(height: 15.0),
+              Text("Thank you for contributing to the community, together let's help the needed cat",
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
