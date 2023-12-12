@@ -1,5 +1,6 @@
 import 'package:CatViP/pages/home_page.dart';
 import 'package:CatViP/pages/post/new_post.dart';
+import 'package:CatViP/pages/report/getOwnReport.dart';
 import 'package:CatViP/pages/search/searchtab_view.dart';
 import 'package:CatViP/pages/user/profile_view.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class MyNavigator {
       case addRoute:
         return MaterialPageRoute(builder: (_) => NewPost());
        case reportRoute:
-         return MaterialPageRoute(builder: (_) => NewReport());
+         return MaterialPageRoute(builder: (_) => OwnReport());
       case userRoute:
         return MaterialPageRoute(builder: (_) => ProfileView());
       case searchRoute:

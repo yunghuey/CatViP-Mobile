@@ -67,9 +67,9 @@ class PostRepository{
       String? token = pref.getString("token");
       http.Response response = await http.get(
           Uri.parse(APIConstant.GetPostsURL),
-      headers: {
-        'Authorization': 'Bearer ${token}',
-       }
+          headers: {
+            'Authorization': 'Bearer ${token}',
+          }
       );
 
       if (response.statusCode == 200){

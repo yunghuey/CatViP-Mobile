@@ -55,6 +55,10 @@ class APIConstant {
 
    // report case module
     static String get CreateCaseReportURL => "${APIConstant.URL}caseReport/createCaseReport";
+    static String get GetOwnCaseReportURL => "${APIConstant.URL}caseReport/getowncasereports";
+    static String get GetCaseReportsURL => "${APIConstant.URL}caseReport/getnearbycasereports";
+
+
 
 
 }

@@ -1,9 +1,6 @@
 import 'dart:convert';
-
 import 'package:CatViP/model/post/mentionedCat.dart';
 import 'package:CatViP/model/post/postImage.dart';
-
-import '../cat/cat_model.dart';
 
 Post postFromJson(String str) => Post.fromJson(jsonDecode(str));
 

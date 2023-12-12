@@ -25,6 +25,7 @@ import 'package:CatViP/repository/cat_repo.dart';
 import 'package:CatViP/repository/expert_repo.dart';
 import 'package:CatViP/repository/postType_repo.dart';
 import 'package:CatViP/repository/post_repo.dart';
+import 'package:CatViP/repository/reportCase_repo.dart';
 import 'package:CatViP/repository/user_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,6 +40,9 @@ import 'bloc/post/ReportPost/reportPost_state.dart';
 import 'bloc/post/new_post/new_post_bloc.dart';
 import 'bloc/post/new_post/new_post_state.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+
+import 'bloc/report case/new report case/newCase_bloc.dart';
+import 'bloc/report case/new report case/newCase_state.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -109,6 +113,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<RelationBloc>(
           create: (context) => RelationBloc(RelationInitState(), UserRepository()),
+        ),
+        BlocProvider<NewCaseBloc>(
+          create: (context) => NewCaseBloc(NewCaseInitState(), ReportCaseRepository(), CatRepository()),
         ),
       ],
       child: MaterialApp(

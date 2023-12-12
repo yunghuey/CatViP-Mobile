@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:CatViP/model/caseReport/caseReport.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'APIConstant.dart';
 
 class ReportCaseRepository{
+
 
   // New Report Case
   Future<bool> newReportCase(
@@ -11,8 +13,8 @@ class ReportCaseRepository{
       String address,
       double longitude,
       double latitude,
-      String? image,
-      int catId
+      List<String?> images,
+      int? catId
       ) async {
 
     var pref = await SharedPreferences.getInstance();
@@ -20,22 +22,30 @@ class ReportCaseRepository{
     try {
       var url = Uri.parse(APIConstant.CreateCaseReportURL);
 
-      // to serialize the data Map to JSON
+      List<Map<String, dynamic>> imageObjects = [];
+
+      if (images != null && images.isNotEmpty) {
+
+        for (String? image in images) {
+          Map<String, dynamic> imageObject = {
+            'image': image,
+            'isBloodyContent': false,
+          };
+
+          imageObjects.add(imageObject);
+        }
+      }
+
+        // to serialize the data Map to JSON
       var body = json.encode({
         'description': description,
         'address': address,
         'longitude': longitude,
         'latitude': latitude,
-        'catId': catId,
-        'caseReportImages': [
-          {
-            'image': image,
-            'isBloodyContent': false
-          }
-        ],
+        'catId': catId == 0 ? null : catId,
+        'caseReportImages': imageObjects,
 
       });
-      print(body);
 
       var header = {
         "Content-Type": "application/json",
@@ -63,6 +73,65 @@ class ReportCaseRepository{
       return false;
     }
   }
+
+  //Get Case Report
+  Future<List<CaseReport>> fetchCases() async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      http.Response response = await http.get(
+          Uri.parse(APIConstant.GetCaseReportsURL),
+          headers: {
+            'Authorization': 'Bearer ${token}',
+          }
+      );
+
+      if (response.statusCode == 200){
+        List<dynamic> jsonData = json.decode(response.body);
+
+        // Assuming the JSON data is a List of posts
+        List<CaseReport> caseReports = jsonData.map((e) => CaseReport.fromJson(e)).toList();
+        return caseReports;
+      } else {
+        return[CaseReport.withError("Status code: ${response.statusCode}")];
+      }
+      //List<dynamic> value = response.body as List;
+      //return value.map((e) => Post.fromJson(e)).toList();
+    }catch(e){
+      if(e.toString().contains("SocketException")){
+        return[CaseReport.withError("Check your internet connection please")];
+      }
+      return[CaseReport.withError(e.toString())];
+    }
+
+  }
+
+  //   Get Own Case
+  Future<List<CaseReport>> fetchMyCase() async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.GetOwnCaseReportURL);
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200){
+        List<dynamic> jsonData = json.decode(response.body);
+
+        // Assuming the JSON data is a List of posts
+        List<CaseReport> posts = jsonData.map((e) => CaseReport.fromJson(e)).toList();
+        return posts;
+      }
+      return [];
+    } catch (e){
+      print("error in get own post");
+      print(e.toString());
+      return [];
+    }
+  }
+
 
 
 
