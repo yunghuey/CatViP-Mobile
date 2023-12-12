@@ -50,8 +50,8 @@ class _CreateCatViewState extends State<CreateCatView> {
     }
   }
 
-  late var msg = Container();
-  late final status = BlocBuilder<CreateCatBloc, CreateCatState>(
+  late var msgimage = Container();
+  late final formstatus = BlocBuilder<CreateCatBloc, CreateCatState>(
     builder: (context, state){
       if (state is CreateCatLoadingState){
         return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
@@ -82,6 +82,7 @@ class _CreateCatViewState extends State<CreateCatView> {
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Cat is created successfully'))
             ); //   navigate to View All Cat
+            Navigator.pop(context, true);
             //   set texteditingcontroller to empty
           }
           else if (state is CreateCatFailState) {
@@ -98,18 +99,18 @@ class _CreateCatViewState extends State<CreateCatView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _catNameField(),
-                  SizedBox(height: 5.0),
-                  _catNameText(),
-                  _catDescField(),
-                  _catgenderField(),
-                  _catdobField(),
-                  SizedBox(height: 15.0),
                   _catImageText(),
                   SizedBox(height: 10.0),
                   _insertImage(context),
-                  msg,
-                  status,
+                  msgimage,
+                  _catNameField(),
+                  SizedBox(height: 5.0),
+                  _catNameText(),
+                  _catgenderField(),
+                  _catdobField(),
+                  _catDescField(),
+                  SizedBox(height: 15.0),
+                  formstatus,
                   _createCatButton(),
                 ],
               ),
@@ -267,7 +268,6 @@ class _CreateCatViewState extends State<CreateCatView> {
         controller: dateController,
         decoration: InputDecoration(
           labelText: "Date of birth",
-          prefixIcon: Icon(Icons.date_range_rounded, color: HexColor("#3c1e08"),),
           focusColor: HexColor("#3c1e08"),
           labelStyle: TextStyle(color: HexColor("#3c1e08")),
           enabledBorder: UnderlineInputBorder(
@@ -293,7 +293,7 @@ class _CreateCatViewState extends State<CreateCatView> {
 
 
   Widget _catImageText(){
-    return Text("Choose a profile image", style: TextStyle(fontSize: 16),);
+    return Text("Choose a profile image for cat", style: TextStyle(fontSize: 16),);
   }
 
   Widget _catNameText(){
@@ -370,6 +370,7 @@ class _CreateCatViewState extends State<CreateCatView> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done &&
                         snapshot.hasData) {
+                      // Navigator.pop(context);
                       return Image.memory(
                         snapshot.data!,
                         width: 250,
@@ -438,7 +439,7 @@ class _CreateCatViewState extends State<CreateCatView> {
                 }
               } else {
                 setState(() {
-                  msg = Container(child: Text("Please insert an image", style: TextStyle(color: Colors.red),));
+                  msgimage = Container(child: Text("Please insert an image", style: TextStyle(color: Colors.red),));
                 });
               }
             }

@@ -12,7 +12,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState>{
   UserProfileBloc(UserProfileState initialState, this.repo, this.exprepo):super(initialState){
     on<StartLoadProfile>((event, emit) async {
       emit(UserProfileLoadingState());
-      print("in bloc loading user");
       UserModel? isFound = await repo.getUser();
       ExpertApplyModel? formList = await exprepo.getAllMyApplication();
       /*
@@ -40,7 +39,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState>{
             isFound.validToApply = 0;
           }
         }
-
         emit(UserProfileLoadedState(user: isFound));
       } else{
         UserProfileErrorState(message: "Fail to load user profile");
@@ -71,7 +69,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState>{
       emit(UserProfileLoadingState());
       UserModel? isFound = await repo.getSearchUserInfo(event.userid);
       if (isFound != null){
-        emit(UserProfileLoadedState(user: isFound));
+        emit(SearchProfileLoadedState(user: isFound));
       } else {
         emit(UserProfileErrorState(message: "Unable to load user profile"));
       }

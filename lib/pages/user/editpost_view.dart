@@ -72,6 +72,7 @@ class _EditPostState extends State<EditPost> {
             context,
             MaterialPageRoute(builder: (context) => OwnPosts()),
           );
+          // Navigator.pop(context, true);
 
         } else if (state is EditPostFailState) {
           print('Failed to save post');

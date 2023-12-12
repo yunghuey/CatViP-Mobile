@@ -112,8 +112,7 @@ class PostRepository{
       }
       return [];
     } catch (e){
-      print("error in get own post");
-      print(e.toString());
+      print("error in get own post ${e.toString()}");
       return [];
     }
   }
@@ -134,13 +133,11 @@ class PostRepository{
 
         // Assuming the JSON data is a List of posts
         List<Post> posts = jsonData.map((e) => Post.fromJson(e)).toList();
-        print("post: ${posts.toString}");
         return posts;
       }
       return [];
     } catch (e){
-      print("error in get own post");
-      print(e.toString());
+      print("error in get own post ${e.toString()}");
       return [];
     }
   }
@@ -164,8 +161,7 @@ class PostRepository{
       }
 
     } catch (e){
-      print("error to delete post");
-      print(e.toString());
+      print("error to delete post ${e.toString()}");
       return false;
     }
   }
@@ -226,8 +222,7 @@ class PostRepository{
       }
 
     } catch (e){
-      print("error to delete action post");
-      print(e.toString());
+      print("error to delete action post ${e.toString()}");
       return false;
     }
   }
@@ -253,8 +248,7 @@ class PostRepository{
       }
       return [];
     } catch (e){
-      print("error in get own post");
-      print(e.toString());
+      print("error in get own post ${e.toString()}");
       return [];
     }
   }
@@ -375,7 +369,6 @@ class PostRepository{
       var pref = await SharedPreferences.getInstance();
       String? token = pref.getString("token");
       var url = Uri.parse(APIConstant.SearchUserGetPostURL + userid.toString());
-      print("getallpostbyuserid : ${url}");
       var header = {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${token}",
@@ -389,8 +382,7 @@ class PostRepository{
       }
       return [];
     } catch (e){
-      print("error in get own post");
-      print(e.toString());
+      print("error in get own post${e.toString()}");
       return [];
     }
   }

@@ -225,6 +225,7 @@ class _CatProfileViewState extends State<CatProfileView> {
         );
       },
       itemCount: catPostList.length,
+      reverse: true,
     );
   }
 }

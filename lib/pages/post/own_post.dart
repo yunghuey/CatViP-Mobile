@@ -141,7 +141,10 @@ class _OwnPostsState extends State<OwnPosts> {
                                       (e) => InkWell(
                                     onTap: () async {
                                       if (e == 'Edit') {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => EditPost(currentPost: post)));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => EditPost(currentPost: post))
+                                        ).then((result) {});
                                       } else if (e == 'Delete') {
                                         deleteBloc.add(DeleteButtonPressed(postId: post.id!));
                                         await Future.delayed(Duration(milliseconds: 100));
