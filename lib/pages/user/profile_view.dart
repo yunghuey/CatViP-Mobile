@@ -405,6 +405,7 @@ class _ProfileViewState extends State<ProfileView> {
         height: 120,
         child: ListView.builder(
           itemCount:cats.length,
+          reverse: true,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
