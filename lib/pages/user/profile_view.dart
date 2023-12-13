@@ -539,13 +539,8 @@ class _ProfileViewState extends State<ProfileView> {
                     ],
                   ),
                 SizedBox(height: 4.0),
-                AspectRatio(
-                  aspectRatio: 1.0, // Set the aspect ratio (adjust as needed)
-                  child: Image.memory(
-                    base64Decode(post.postImages![0].image!),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                displayImage(post),
+
                 Row(
                   children: [
                     _FavoriteButton(
@@ -594,7 +589,7 @@ class _ProfileViewState extends State<ProfileView> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: post.mentionedCats?[0].catName,
+                                text: post.mentionedCats?.isNotEmpty == true ? post.mentionedCats![0].catName ?? post.username! : post.username!,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -650,6 +645,18 @@ class _ProfileViewState extends State<ProfileView> {
         ),
       ),
     );
+  }
+
+  Widget displayImage(Post post){
+    return post.postImages![0].image! != ""
+        ? AspectRatio(
+      aspectRatio: 1.0,
+      child: Image.memory(
+        base64Decode(post.postImages![0].image!),
+        fit: BoxFit.cover,
+      ),
+    )
+        : Container();
   }
   /*
   * return GridView.builder(

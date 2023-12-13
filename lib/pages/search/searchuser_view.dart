@@ -402,13 +402,7 @@ class _SearchViewState extends State<SearchView> {
                     ],
                   ),
                 SizedBox(height: 4.0),
-                AspectRatio(
-                  aspectRatio: 1.0, // Set the aspect ratio (adjust as needed)
-                  child: Image.memory(
-                    base64Decode(post.postImages![0].image!),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                displayImage(post),
                 Row(
                   children: [
                     _FavoriteButton(
@@ -457,7 +451,7 @@ class _SearchViewState extends State<SearchView> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: post.mentionedCats?[0].catName,
+                                text: post.mentionedCats?.isNotEmpty == true ? post.mentionedCats![0].catName ?? post.username! : post.username!,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -515,6 +509,17 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
+  Widget displayImage(Post post){
+    return post.postImages![0].image! != ""
+        ? AspectRatio(
+          aspectRatio: 1.0,
+          child: Image.memory(
+            base64Decode(post.postImages![0].image!),
+            fit: BoxFit.cover,
+          ),
+    )
+        : Container();
+  }
   void refreshPosts() {
     postBloc.add(StartLoadOwnPost());
   }

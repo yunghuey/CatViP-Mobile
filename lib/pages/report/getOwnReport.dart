@@ -148,7 +148,7 @@ class _OwnReportState extends State<OwnReport> {
                 );
               } else if (state is GetCaseInitial || state is GetCaseLoading) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(color:  HexColor("#3c1e08"),),
                 );
               } else if (state is GetCaseLoaded) {
                 return Stack(
@@ -180,13 +180,15 @@ class _OwnReportState extends State<OwnReport> {
                             margin: EdgeInsets.all(8.0),
                             child: ListTile(
                               title: Text(caseReport.description!),
-                              subtitle: Row(
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  SizedBox(height: 6), // Add some space between the text widgets
                                   Text('Address: ${caseReport.address!}'),
-                                  const Spacer(),
+                                  SizedBox(height: 4), // Add some space between the text widgets
                                   Text(
                                     'Date: ${func.getFormattedDate(caseReport.dateTime!)}',
-                                  )
+                                  ),
                                 ],
                               ),
                               trailing: IconButton(

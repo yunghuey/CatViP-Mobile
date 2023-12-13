@@ -209,7 +209,7 @@ class _NewReportState extends State<NewReport> {
       child: Column(
         children: <Widget>[
           Text(
-            "Choose Image.",
+            "Choose Image",
             style: TextStyle(
               fontSize: 20.0,
             ),
@@ -221,19 +221,19 @@ class _NewReportState extends State<NewReport> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                icon: Icon(Icons.camera),
+                icon: Icon(Icons.camera, color: HexColor("#3c1e08")),
                 onPressed: () {
                   pickImages(ImageSource.camera);
                 },
-                label: Text("Camera"),
+                label: Text("Camera", style: TextStyle(color:HexColor("#3c1e08")),),
               ),
               SizedBox(width: 20.0,),
               TextButton.icon(
-                icon: Icon(Icons.image),
+                icon: Icon(Icons.image, color: HexColor("#3c1e08")),
                 onPressed: () {
                   pickImages(ImageSource.gallery);
                 },
-                label: Text("Gallery"),
+                label: Text("Gallery", style: TextStyle(color:HexColor("#3c1e08")),),
               ),
             ],
           )
@@ -442,12 +442,14 @@ class _NewReportState extends State<NewReport> {
             controller: addressController,
             decoration: InputDecoration(
               labelText: "Location",
-              labelStyle: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+              hintText: "Click on icon to pick location",
+              labelStyle: TextStyle(color: HexColor("#3c1e08")),
+              focusColor: HexColor("#3c1e08"),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue),
+                borderSide: BorderSide(color: HexColor("#a4a4a4")),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: HexColor("#3c1e08")),
               ),
             ),
           ),
