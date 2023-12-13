@@ -13,6 +13,8 @@ class UpdateButtonPressed extends UserProfileEvent {
   UpdateButtonPressed({ required this.user });
 }
 
+class ResetSearchEvent extends UserProfileEvent {}
+
 class SearchUserPressed extends UserProfileEvent {
   String name;
   SearchUserPressed({ required this.name });

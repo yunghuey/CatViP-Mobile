@@ -75,6 +75,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState>{
       }
     });
 
-
+    on<ResetSearchEvent>((event, emit){
+      emit(ResetSearchState());
+    });
   }
 }
