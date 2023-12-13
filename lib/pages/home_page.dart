@@ -428,10 +428,9 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
 
             // Update the action type for the specific post
             if(thumbsUpSelected == true) {
-              int newActionTypeId = 1;
               _postBloc.add(UpdateActionPost(
                 postId: postId,
-                actionTypeId: newActionTypeId,
+                actionTypeId: 1,
               ));
               onFavoriteChanged(thumbsUpSelected);
             } else if(thumbsUpSelected == false) {

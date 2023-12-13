@@ -111,7 +111,6 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
     });
 
     on<UpdateActionPost>((event, emit) async {
-/*
       try {
         // Attempt to post a new comment
         bool isUpdated = await postRepository.actionPost(
@@ -129,7 +128,6 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
         emit(ActionPostFailState(message: "Failed to update action"));
       }
 
-        */
      });
 
     // update action post
