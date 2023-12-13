@@ -25,6 +25,7 @@ class AuthRepository{
       if (response.statusCode == 200) {
           String data =  response.body;
           pref.setString("token", data);
+          pref.setString("username", username);
           return 1;
       }
       return 0;
@@ -145,7 +146,7 @@ class AuthRepository{
     try{
       var url = Uri.parse(APIConstant.LogoutURL);
       String? token = pref.getString('token');
-
+      String? username = pref.getString('username');
       if (token != null){
         var header = {
           "Content-Type": "application/json",
