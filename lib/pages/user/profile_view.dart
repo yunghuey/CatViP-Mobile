@@ -539,6 +539,28 @@ class _ProfileViewState extends State<ProfileView> {
                     ],
                   ),
                 SizedBox(height: 4.0),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(
+                    top: 6,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: ' ',
+                        ),
+                        TextSpan(
+                          text: post.description.toString(),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 displayImage(post),
 
                 Row(
@@ -582,34 +604,7 @@ class _ProfileViewState extends State<ProfileView> {
                           fontSize: 16.0,
                         ),
                       ),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.only(top: 8),
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: post.mentionedCats?.isNotEmpty == true ? post.mentionedCats![0].catName ?? post.username! : post.username!,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' ',
-                              ),
-                              TextSpan(
-                                text: post.description.toString(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+
                       InkWell(
                         onTap: () {
                           Navigator.push(
