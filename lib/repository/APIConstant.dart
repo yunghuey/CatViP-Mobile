@@ -8,7 +8,7 @@ class APIConstant {
 
 
   // yung huey IP
-   static const String URL = "http://192.168.137.1:7015/api/";
+   static const String URL = "http://10.131.78.121:7015/api/";
   // static const String URL = "http://172.16.88.4:7015/api/";
 
   // auth module
@@ -61,7 +61,6 @@ class APIConstant {
     static String get RevokeCaseReportsURL => "${APIConstant.URL}caseReport/revokecasereport/";
     static String get CreateCaseReportCommentURL => "${APIConstant.URL}caseReport/createcomment";
     static String get GetCaseReportCommentsURL => "${APIConstant.URL}caseReport/GetCaseReportComments/";
-
 
 
 
