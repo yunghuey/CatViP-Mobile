@@ -14,5 +14,9 @@ class LogoutBloc extends Bloc<LogoutEvents, LogoutState>{
         emit(LogoutFailState());
       }
     });
+
+    on<LogoutResetEvent>((event, emit) async {
+      emit(LogoutInitState());
+    });
   }
 }

@@ -5,5 +5,6 @@ class LogoutEvents extends Equatable {
   List<Object> get props => [];
 }
 
+class LogoutResetEvent extends LogoutEvents { }
 class LogoutButtonPressed extends LogoutEvents {
 }
