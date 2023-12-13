@@ -168,6 +168,36 @@ class _HomePageState extends State<HomePage> {
                                       ],
                                     ),
                                   SizedBox(height: 4.0),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.only(
+                                      top: 6,
+                                    ),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: ' ',
+                                          ),
+                                          TextSpan(
+                                            text: post.description.toString(),
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.0),
+                                  AspectRatio(
+                                    aspectRatio: 1.0,
+                                    child: Image.memory(
+                                      base64Decode(post.postImages![0].image!),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                   displayImage(post),
                                   Row(
                                     children: [
@@ -217,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                                             fontSize: 16.0,
                                           ),
                                         ),
-                                        Container(
+                                     /*   Container(
                                           width: double.infinity,
                                           padding: const EdgeInsets.only(
                                             top: 6,
@@ -246,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                                               ],
                                             ),
                                           ),
-                                        ),
+                                        ),*/
                                         InkWell(
                                           onTap: () {
                                             Navigator.push(
