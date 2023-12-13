@@ -191,13 +191,13 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   SizedBox(height: 4.0),
-                                  AspectRatio(
+                                  /*AspectRatio(
                                     aspectRatio: 1.0,
                                     child: Image.memory(
                                       base64Decode(post.postImages![0].image!),
                                       fit: BoxFit.cover,
                                     ),
-                                  ),
+                                  ),*/
                                   displayImage(post),
                                   Row(
                                     children: [
