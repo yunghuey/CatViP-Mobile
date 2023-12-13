@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 
 class CurrentLocation extends StatefulWidget {
@@ -27,12 +28,31 @@ class _CurrentLocationState extends State<CurrentLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Current Location'),
+        title: Text('Current Location',style: Theme.of(context).textTheme.bodyLarge),
+        backgroundColor: HexColor("#ecd9c9"),
+        bottomOpacity: 0.0,
+        elevation: 0.0,
         centerTitle: true,
         actions: [
           TextButton(
             onPressed: () {
               // Handle the button press
+              if (address.isEmpty == true){
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Please pick a location",
+                        style: TextStyle(
+                          color: HexColor("#FF6464"),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      backgroundColor: HexColor("#FFE382"),
+                    )
+                );
+                return;
+              }
+
               print('TextButton pressed');
               Navigator.pop(
                   context,
@@ -40,11 +60,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
               );
             },
             child: Text(
-              'SAVE',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.0,
-              ),
+              'SAVE', style: Theme.of(context).textTheme.bodyLarge
             ),
           ),
         ],
@@ -80,7 +96,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
           setState(() {});
         },
         tooltip: "Current Location",
-        child: Icon(Icons.location_history),
+        child: Icon(Icons.location_history,color: HexColor("#3c1e08"),),
       ),
     );
   }
@@ -138,7 +154,8 @@ class _CurrentLocationState extends State<CurrentLocation> {
     );
     Placemark place = placeMark.isNotEmpty ? placeMark.first : Placemark();
 
-    address = '${place.street},'
+    address = '${place.name},'
+        '${place.street},'
         ' ${place.subLocality},'
         ' ${place.locality},'
         ' ${place.postalCode},'
