@@ -82,15 +82,6 @@ class _ProfileViewState extends State<ProfileView> {
       }
   );
 
-  late List<CatModel> cats;
-  late List<Post> listPost;
-  late UserModel user;
-  String message = "Welcome";
-  final String applyExpert = "Apply as Expert";
-  final String checkExpert = "Check application status";
-  final String viewExpert = "You are an expert!";
-  String expertMsg = "Apply as Expert";
-
   //  need to get all cat of this user and all post by this user
   // when tap on cat, should be able to get the index
   @override
@@ -137,6 +128,7 @@ class _ProfileViewState extends State<ProfileView> {
                     context, MaterialPageRoute(
                     builder: (context) => LoginView()), (Route<dynamic> route) => false
                 );
+                logoutbloc.add(LogoutResetEvent());
               }
             },
           ),

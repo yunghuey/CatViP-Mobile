@@ -32,7 +32,7 @@ class ExpertRepository{
     }
   }
 
-  Future<ExpertApplyModel?> getAllMyApplication() async{
+  Future<ExpertApplyModel?> getMyApplication() async{
     dynamic expert_data;
     try{
       var pref = await SharedPreferences.getInstance();
