@@ -79,6 +79,15 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
+  PostType getInitialPostType() {
+    if (postTypes.isNotEmpty) {
+      return postTypes[0];
+    } else {
+      return PostType(id: 0, name: "Default", error: '');
+    }
+  }
+
+
   late var msg = Container();
   late final status = BlocBuilder<NewPostBloc, NewPostState>(
     builder: (context, state){
@@ -94,8 +103,8 @@ class _NewPostState extends State<NewPost> {
     super.initState();
     createBloc = BlocProvider.of<NewPostBloc>(context);
     createBloc.add(GetPostTypes());
-
     catBloc = BlocProvider.of<OwnCatsBloc>(context);
+    selectedPostType = getInitialPostType();
   }
 
   @override
@@ -117,27 +126,32 @@ class _NewPostState extends State<NewPost> {
             },
           ),
         ),
-        body:  BlocListener<NewPostBloc, NewPostState>(
-          // ignore: curly_braces_in_flow_control_structures
-            listener: (context, state) {
-              if (state is NewPostSuccessState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Successfully Post'))
-                ); //   navigate to View All Cat
+        body:  MultiBlocListener(
+          listeners: [
+            BlocListener<NewPostBloc, NewPostState>(
+              // ignore: curly_braces_in_flow_control_structures
+                listener: (context, state) {
+                  if (state is NewPostSuccessState) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Successfully Post'))
+                    ); //   navigate to View All Cat
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              }
-              else if (state is NewPostFailState) {
-                getMessage().then((message) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(message))
-                  );
-                });
-              }
-            },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  }
+                  else if (state is NewPostFailState) {
+                    getMessage().then((message) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(message))
+                      );
+                    });
+                  }
+                },
+            ),
+
+          ],
         child: SingleChildScrollView(
           child: Center(
             child: Column(
@@ -158,6 +172,7 @@ class _NewPostState extends State<NewPost> {
                       SizedBox(
                         height: 8.0,
                       ),
+                      if (selectedPostType != null && selectedPostType?.id == 1)
                       OwnCats(),
                       SizedBox(
                         height: 8.0,
@@ -358,52 +373,57 @@ class _NewPostState extends State<NewPost> {
   }
 
   Widget postType() {
-    //print('PostTypes: $postTypes');
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
-      child: BlocListener<NewPostBloc, NewPostState>(
-        listener: (context, state) {
+      child: BlocBuilder<NewPostBloc, NewPostState>(
+        builder: (context, state) {
           if (state is GetPostTypeLoading) {
-            // You can perform side-effects here if needed
+            return CircularProgressIndicator(color: HexColor("#3c1e08"));
           } else if (state is GetPostTypeError) {
-            // You can perform side-effects here if needed
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Error: ${state.error}'),
-              ),
-            );
+            return Text('Error: ${state.error}');
           } else if (state is GetPostTypeLoaded) {
-            // Use the fetched data to populate the drop-down menu
             postTypes = state.postTypes;
-            print("success");// Update the postTypes list
-            // You can perform side-effects here if needed
+
+            // If selectedPostType is null, set it to the first post type
+            if (selectedPostType == null && postTypes.isNotEmpty) {
+              selectedPostType = postTypes.first;
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'PostType',
+                  style: TextStyle(color: HexColor("#3c1e08")),
+                ),
+                SizedBox(height: 10.0),
+                Wrap(
+                  spacing: 8.0,
+                  children: postTypes.map((postType) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<PostType>(
+                          value: postType,
+                          groupValue: selectedPostType,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedPostType = value!;
+                            });
+                          },
+                        ),
+                        Text(postType.name! ?? "no data"),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ],
+            );
+          } else {
+            // Handle other states if needed
+            return Container();
           }
         },
-        child: DropdownButtonFormField<PostType>(
-          value: selectedPostType, // Replace with the selected PostType variable
-          onChanged: (value) {
-            setState(() {
-              selectedPostType = value;
-            });
-          },
-          items: postTypes.map((postType) {
-            return DropdownMenuItem<PostType>(
-              value: postType,
-              child: Text(postType.name! ?? "no data"), // Replace with the actual field you want to display
-            );
-          }).toList(),
-          decoration: InputDecoration(
-            labelText: 'PostType',
-            labelStyle: TextStyle(color: HexColor("#3c1e08")),
-            focusColor: HexColor("#3c1e08"),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: HexColor("#a4a4a4")),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: HexColor("#3c1e08")),
-            ),
-          ),
-        ),
       ),
     );
   }

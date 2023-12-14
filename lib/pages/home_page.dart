@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../bloc/post/ReportPost/reportPost_bloc.dart';
+import '../bloc/post/ReportPost/reportPost_event.dart';
+import '../bloc/post/ReportPost/reportPost_state.dart';
 import '../model/post/post.dart';
 import '../pageRoutes/bottom_navigation_bar.dart';
 import '../widgets/widgets.dart';
@@ -23,6 +26,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GetPostBloc _postBloc = GetPostBloc();
+  late ReportPostBloc reportBloc;
   int? selectedPostIndex;
   late final int? postId;
   final Widgets func = Widgets();
@@ -30,6 +34,8 @@ class _HomePageState extends State<HomePage> {
   bool thumbsUpSelected = false;
   bool thumbsDownSelected = false;
   bool hasBeenLiked = false;
+  TextEditingController reportController = TextEditingController();
+  Set<int> reportedPostIds = {};
 
   @override
   void initState() {
@@ -95,10 +101,8 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ListView.builder(
                         itemCount: state.postList.length,
-                        reverse: true,
                         itemBuilder: (context, index) {
                           final Post post = state.postList[index];
-                          print("Post: ${post.toJson()}");
                           return Card(
                             color: HexColor("#ecd9c9"),
                             child: Padding(
@@ -138,28 +142,54 @@ class _HomePageState extends State<HomePage> {
                                           onPressed: () {
                                             showDialog(
                                               context: context,
-                                              builder: (context) => Dialog(
-                                                child: ListView(
-                                                  padding: const EdgeInsets.symmetric(
-                                                    vertical: 16,
-                                                  ),
-                                                  shrinkWrap: true,
-                                                  children: [
-                                                    'Report',
-                                                  ]
-                                                      .map(
-                                                        (e) => InkWell(
-                                                      onTap: () {},
-                                                      child: Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            vertical: 12, horizontal: 16),
-                                                        child: Text(e),
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text("Report"),
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      TextField(
+                                                        controller: reportController,
+                                                        decoration: InputDecoration(
+                                                          hintText: "Enter your report...",
+                                                        ),
                                                       ),
-                                                    ),
-                                                  )
-                                                      .toList(),
-                                                ),
-                                              ),
+                                                      SizedBox(height: 16),
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          // Handle the report logic here
+                                                          String reportText = reportController.text;
+                                                          reportBloc.add(
+                                                              ReportButtonPressed(
+                                                                postId: post.id!,
+                                                                description: reportText,
+                                                              )
+                                                          );
+
+                                                          // Wait for the completion of the ReportButtonPressed event
+                                                          await reportBloc.stream.firstWhere((state) =>
+                                                          state is ReportPostSuccessState || state is ReportPostFailState,
+                                                          );
+
+                                                          if (!(reportBloc.state is ReportPostFailState)) {
+                                                            setState(() {
+                                                              reportedPostIds.add(post.id!);
+                                                              reportController.clear();
+                                                            });
+                                                          }
+                                                          print("Report: $reportText");
+
+                                                          reportController.clear();
+                                                          await Future.delayed(Duration(milliseconds: 100));
+                                                          // Close the dialog
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        child: Text("Report"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
                                             );
                                           },
                                           icon: const Icon(Icons.more_vert),

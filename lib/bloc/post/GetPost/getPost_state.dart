@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import '../../../model/post/post.dart';
 import '../../../model/post/postComment.dart';
 

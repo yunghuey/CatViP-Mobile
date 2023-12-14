@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:CatViP/model/caseReport/caseReport.dart';
+import 'package:CatViP/model/caseReport/caseReportComments.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'APIConstant.dart';
@@ -132,6 +133,126 @@ class ReportCaseRepository{
     }
   }
 
+  // Complete Case
+  Future<bool> completeCase(int postId) async {
+
+    var pref = await SharedPreferences.getInstance();
+    String? token = pref.getString("token");
+    try {
+      var url = Uri.parse(APIConstant.CompleteCaseReportsURL + postId.toString());
+
+      var response = await http.put(url,
+          headers:
+          {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token}",
+          },
+
+      );
+
+      if (response.statusCode == 200) {
+        String data =  response.body;
+        pref.setString("message", data);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  // Revoke Case
+  Future<bool> revokeCase(int postId) async {
+
+    var pref = await SharedPreferences.getInstance();
+    String? token = pref.getString("token");
+    try {
+      var url = Uri.parse(APIConstant.RevokeCaseReportsURL + postId.toString());
+
+      var response = await http.delete(url,
+        headers:
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${token}",
+        },
+
+      );
+
+      if (response.statusCode == 200) {
+        String data =  response.body;
+        pref.setString("message", data);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  // get case report comments
+  Future<List<CaseReportComment>> fetchCaseReportComments(int caseReportId) async{
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      var url = Uri.parse(APIConstant.GetCaseReportCommentsURL + caseReportId.toString());
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}",
+      };
+      var response = await http.get(url, headers: header);
+      if (response.statusCode == 200){
+        List<dynamic> jsonData = json.decode(response.body);
+
+        // Assuming the JSON data is a List of posts
+        List<CaseReportComment> caseReportComments = jsonData.map((e) => CaseReportComment.fromJson(e)).toList();
+        print("post: ${caseReportComments.toString}");
+        return caseReportComments;
+      }
+      return [];
+    } catch (e){
+      print("error in get own post ${e.toString()}");
+      return [];
+    }
+  }
+
+  // New Post Comment
+  Future<bool> newCaseReportComment(String description,int caseReportId) async {
+
+    var pref = await SharedPreferences.getInstance();
+    String? token = pref.getString("token");
+    try {
+      var url = Uri.parse(APIConstant.CreateCaseReportCommentURL);
+
+      // to serialize the data Map to JSON
+      var body = json.encode(
+          {
+            'description': description,
+            'catCaseReportId': caseReportId,
+          }
+      );
+
+      var response = await http.post(url,
+          headers:
+          {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer ${token}",
+          },
+          body: body
+      );
+
+      if (response.statusCode == 200) {
+        String data =  response.body;
+        pref.setString("message", data);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
 
 
 

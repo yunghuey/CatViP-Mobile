@@ -30,7 +30,7 @@ class APIConstant {
    static String get GetOwnPostURL =>  "${APIConstant.URL}post/GetOwnPosts";
    static String get GetCatPostURL =>  "${APIConstant.URL}post/GetCatPosts/";
    static String get GetPostTypesURL => "${APIConstant.URL}post/getposttypes";
-   static String get GetPostCommentsURL => "${APIConstant.URL}post/getpostcomments";
+   static String get GetPostCommentsURL => "${APIConstant.URL}post/getpostcomments/";
    static String get NewCommentURL => "${APIConstant.URL}post/createcomment";
    static String get ActionPostURL => "${APIConstant.URL}post/ActPost";
    static String get DeleteActionPostURL => "${APIConstant.URL}post/deleteactpost/";
@@ -57,6 +57,13 @@ class APIConstant {
     static String get CreateCaseReportURL => "${APIConstant.URL}caseReport/createCaseReport";
     static String get GetOwnCaseReportURL => "${APIConstant.URL}caseReport/getowncasereports";
     static String get GetCaseReportsURL => "${APIConstant.URL}caseReport/getnearbycasereports";
+    static String get CompleteCaseReportsURL => "${APIConstant.URL}caseReport/settlecasereport/";
+    static String get RevokeCaseReportsURL => "${APIConstant.URL}caseReport/revokecasereport/";
+    static String get CreateCaseReportCommentURL => "${APIConstant.URL}caseReport/createcomment";
+    static String get GetCaseReportCommentsURL => "${APIConstant.URL}caseReport/GetCaseReportComments/";
+
+
+
 
 
 

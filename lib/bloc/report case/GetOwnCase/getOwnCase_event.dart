@@ -8,60 +8,60 @@ class GetCaseEvent extends Equatable{
 
 class GetCaseList extends GetCaseEvent {}
 
-class StartLoadOwnCase extends GetCaseEvent {}
-
-/*
-class StartLoadSingleCatPost extends GetPostEvent {
-  int catid;
-  StartLoadSingleCatPost({required this.catid});
-}
-
-class GetPostComments extends GetPostEvent {
-  int postId;
-  GetPostComments({required this.postId});
+// Get Case Report Comments
+class GetCaseReportComments extends GetCaseEvent {
+  int caseReportId;
+  GetCaseReportComments({required this.caseReportId});
 }
 
 // create new comment
-class StartNewComment extends GetPostEvent {}
+class StartNewCaseReportComment extends GetCaseEvent {}
 
-class PostCommentPressed extends GetPostEvent{
+class PostCaseReportCommentPressed extends GetCaseEvent{
   final String description;
-  final int postId;
+  final int caseReportId;
 
-  PostCommentPressed({
+  PostCaseReportCommentPressed({
     required this.description,
-    required this.postId,
+    required this.caseReportId,
   });
 }
 
-// update action post
-class StartActionPost extends GetPostEvent {}
+class StartLoadOwnCase extends GetCaseEvent {}
 
-class UpdateActionPost extends GetPostEvent {
+// class StartLoadSingleCatPost extends GetPostEvent {
+//   int catid;
+//   StartLoadSingleCatPost({required this.catid});
+// }
 
-  final int postId;
-  final int actionTypeId;
-
-  UpdateActionPost({
-    required this.postId,
-    required this.actionTypeId,
-  });
-}
-
-// delete action post
-class StartDeleteActionPost extends GetPostEvent {}
-
-class DeleteActionPost extends GetPostEvent {
-
-  final int postId;
-
-  DeleteActionPost({
-    required this.postId,
-  });
-}
-
-
-class LoadSearchAllPost extends GetPostEvent{
-  final int userid;
-  LoadSearchAllPost({ required this.userid});
-}*/
+// // update action post
+// class StartActionPost extends GetPostEvent {}
+//
+// class UpdateActionPost extends GetPostEvent {
+//
+//   final int postId;
+//   final int actionTypeId;
+//
+//   UpdateActionPost({
+//     required this.postId,
+//     required this.actionTypeId,
+//   });
+// }
+//
+// // delete action post
+// class StartDeleteActionPost extends GetPostEvent {}
+//
+// class DeleteActionPost extends GetPostEvent {
+//
+//   final int postId;
+//
+//   DeleteActionPost({
+//     required this.postId,
+//   });
+// }
+//
+//
+// class LoadSearchAllPost extends GetPostEvent{
+//   final int userid;
+//   LoadSearchAllPost({ required this.userid});
+// }

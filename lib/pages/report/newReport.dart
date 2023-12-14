@@ -21,6 +21,7 @@ import '../../bloc/report case/new report case/newCase_state.dart';
 import '../../model/cat/cat_model.dart';
 import '../../model/post/postType.dart';
 import '../../pageRoutes/bottom_navigation_bar.dart';
+import 'getOwnReport.dart';
 
 class NewReport extends StatefulWidget {
   const NewReport({Key? key}) : super(key: key);
@@ -131,7 +132,7 @@ class _NewReportState extends State<NewReport> {
               );
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => OwnReport()),
               );
             } else if (state is NewCaseFailState) {
               getMessage().then((message) {
@@ -156,7 +157,7 @@ class _NewReportState extends State<NewReport> {
               icon: Icon(Icons.arrow_back),
               color: HexColor("#3c1e08"),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => OwnReport()));
               },
             ),
           ),
@@ -459,12 +460,12 @@ class _NewReportState extends State<NewReport> {
 
 
   Widget OwnCats() {
-    //print('PostTypes: $postTypes');
     catBloc.add(GetOwnCats());
+
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
-      child: BlocListener<OwnCatsBloc, OwnCatsState>(
-        listener: (context, state) {
+      child: BlocBuilder<OwnCatsBloc, OwnCatsState>(
+        builder: (context, state) {
           if (state is GetOwnCatsLoading) {
             // You can perform side-effects here if needed
           } else if (state is GetOwnCatsError) {
@@ -477,43 +478,91 @@ class _NewReportState extends State<NewReport> {
           } else if (state is GetOwnCatsLoaded) {
             // Use the fetched data to populate the drop-down menu
             cats = state.cats;
-            print("success"); // Update the OwnCats list
-            // You can perform side-effects here if needed
+            print("success");
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'My cat:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Radio<int>(
+                      value: 1,
+                      groupValue: selectedCatId == null ? 0 : 1,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCatId = value == 1 ? (cats.isNotEmpty ? cats.first.id : null) : null;
+
+                          if (selectedCatId == null) {
+                            Future.delayed(Duration.zero, () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('No cats available'),
+                                ),
+                              );
+                            });
+                          }
+                        });
+                      },
+                    ),
+                    Text('Yes'),
+                    Radio<int>(
+                      value: 0,
+                      groupValue: selectedCatId == null ? 0 : 1,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCatId = value == 0 ? null : cats.first.id;
+                        });
+                      },
+                    ),
+                    Text('No'),
+                  ],
+                ),
+                if (selectedCatId == 1 && cats.isNotEmpty)
+                  InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: 'Cat',
+                      labelStyle: TextStyle(color: HexColor("#3c1e08")),
+                      focusColor: HexColor("#3c1e08"),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: HexColor("#a4a4a4")),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: HexColor("#3c1e08")),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.pets,
+                        color: HexColor("#3c1e08"),
+                      ),
+                    ),
+                    child: DropdownButtonFormField<int>(
+                      value: selectedCatId,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCatId = value;
+                        });
+                      },
+                      items: cats.map((cat) {
+                        return DropdownMenuItem<int>(
+                          value: cat.id,
+                          child: Text(cat.name! ?? "no data"),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+              ],
+            );
           } else {
-            print('tak jadi bey');
+            return Container(); // Return an empty container or any fallback widget
           }
+          return Container(); // Return an empty container or any fallback widget
         },
-        child: InputDecorator(
-          decoration: InputDecoration(
-            labelText: 'Cat',
-            labelStyle: TextStyle(color: HexColor("#3c1e08")),
-            focusColor: HexColor("#3c1e08"),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: HexColor("#a4a4a4")),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: HexColor("#3c1e08")),
-            ),
-            prefixIcon: Icon(
-              Icons.pets, // Change the icon as needed
-              color: HexColor("#3c1e08"),
-            ),
-          ),
-          child: DropdownButtonFormField<int>(
-            value: selectedCatId, // Replace with the selected cat variable
-            onChanged: (value) {
-              setState(() {
-                selectedCatId = value;
-              });
-            },
-            items: cats.map((cat) {
-              return DropdownMenuItem<int>(
-                value: cat.id,
-                child: Text(cat.name! ?? "no data"), // Replace with the actual field you want to display
-              );
-            }).toList(),
-          ),
-        ),
       ),
     );
   }

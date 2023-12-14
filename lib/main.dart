@@ -41,6 +41,10 @@ import 'bloc/post/new_post/new_post_bloc.dart';
 import 'bloc/post/new_post/new_post_state.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import 'bloc/report case/EditCaseReport/editCaseReport_bloc.dart';
+import 'bloc/report case/EditCaseReport/editCaseReport_state.dart';
+import 'bloc/report case/RevokeCaseReport/revokeCase_bloc.dart';
+import 'bloc/report case/RevokeCaseReport/revokeCase_state.dart';
 import 'bloc/report case/new report case/newCase_bloc.dart';
 import 'bloc/report case/new report case/newCase_state.dart';
 
@@ -116,6 +120,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<NewCaseBloc>(
           create: (context) => NewCaseBloc(NewCaseInitState(), ReportCaseRepository(), CatRepository()),
+        ),
+        BlocProvider<CompleteCaseBloc>(
+          create: (context) => CompleteCaseBloc(CompleteCaseInitState(), ReportCaseRepository()),
+        ),
+        BlocProvider<RevokeCaseBloc>(
+          create: (context) => RevokeCaseBloc(RevokeCaseInitState(), ReportCaseRepository()),
         ),
       ],
       child: MaterialApp(

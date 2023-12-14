@@ -1,6 +1,7 @@
 import 'package:CatViP/model/caseReport/caseReport.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../model/caseReport/caseReportComments.dart';
 import '../../../model/post/post.dart';
 import '../../../model/post/postComment.dart';
 
@@ -26,47 +27,42 @@ class GetCaseError extends GetCaseState {
 
 class GetCaseEmpty extends GetCaseState {}
 
-/*
-class GetPostSingleCatLoaded extends GetOwnCaseState{
-  final List<Post> postList;
-  const GetPostSingleCatLoaded({required this.postList});
-}
-*/
 
-/*
+
 // Get Post Comments
-class GetPostCommentInitial extends GetPostState { }
+class GetCaseReportCommentInitial extends GetCaseState { }
 
-class GetPostCommentLoading extends GetPostState { }
+class GetCaseReportCommentLoading extends GetCaseState { }
 
-class GetPostCommentLoaded extends GetPostState {
-  final List<PostComment> postComments;
-  const GetPostCommentLoaded({required this.postComments});
+class GetCaseReportCommentLoaded extends GetCaseState {
+  final List<CaseReportComment> caseReportComments;
+  const GetCaseReportCommentLoaded({required this.caseReportComments});
 
 }
 
-class GetPostCommentError extends GetPostState {
+class GetCaseReportCommentError extends GetCaseState {
   final String? error;
-  GetPostCommentError({required this.error});
+  GetCaseReportCommentError({required this.error});
 }
 
 // Create comment
-class NewCommentInitState extends GetPostState {}
+class NewCaseReportCommentInitState extends GetCaseState {}
 
-class NewCommentLoadingState extends GetPostState {}
+class NewCaseReportCommentLoadingState extends GetCaseState {}
 
-class NewCommentFailState extends GetPostState {
+class NewCaseReportCommentFailState extends GetCaseState {
   final String message;
-  NewCommentFailState({required this.message});
+  NewCaseReportCommentFailState({required this.message});
 }
 
-class NewCommentIsNull extends GetPostState {
+class NewCaseReportCommentIsNull extends GetCaseState {
   final String message;
-  NewCommentIsNull({required this.message});
+  NewCaseReportCommentIsNull({required this.message});
 }
 
-class NewCommentSuccessState extends GetPostState {}
+class NewCaseReportCommentSuccessState extends GetCaseState {}
 
+/*
 // update action post
 class ActionPostInitState extends GetPostState {}
 
@@ -89,4 +85,5 @@ class DeleteActionPostFailState extends GetPostState {
   DeleteActionPostFailState({required this.message});
 }
 
-class DeleteActionPostSuccessState extends GetPostState {}*/
+class DeleteActionPostSuccessState extends GetPostState {}
+*/

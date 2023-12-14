@@ -232,7 +232,7 @@ class PostRepository{
     try{
       var pref = await SharedPreferences.getInstance();
       String? token = pref.getString("token");
-      var url = Uri.parse(APIConstant.GetPostCommentsURL + "?postId=" + postId.toString());
+      var url = Uri.parse(APIConstant.GetPostCommentsURL + postId.toString());
       var header = {
         "Content-Type": "application/json",
         "Authorization": "Bearer ${token}",

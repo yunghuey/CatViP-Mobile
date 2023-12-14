@@ -3,11 +3,6 @@ import 'package:CatViP/bloc/post/ReportPost/reportPost_bloc.dart';
 import 'package:CatViP/bloc/post/ReportPost/reportPost_event.dart';
 import 'package:CatViP/bloc/post/ReportPost/reportPost_state.dart';
 import 'package:CatViP/model/caseReport/caseReport.dart';
-import 'package:CatViP/pages/post/comment.dart';
-import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
-import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
-import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
-import 'package:CatViP/pages/report/newReport.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -15,9 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_bloc.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_event.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_state.dart';
-import '../../model/post/post.dart';
 import '../../pageRoutes/bottom_navigation_bar.dart';
 import '../../widgets/widgets.dart';
+import 'CaseReportComment.dart';
 
 
 
@@ -95,7 +90,7 @@ class _CasesReportsState extends State<CaseReports> {
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: false,
           actions: [
             IconButton(
               onPressed: (){},
@@ -167,16 +162,14 @@ class _CasesReportsState extends State<CaseReports> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // if (caseReport.caseReportImages != null &&
-                                  //     caseReport.caseReportImages!.isNotEmpty)
-                                    Row(
+                                  Row(
                                       children: [
                                         CircleAvatar(
                                           radius: 16,
                                           backgroundColor: Colors.transparent,
                                           backgroundImage: caseReport.profileImage != null
                                               ? Image.memory(base64Decode(caseReport.profileImage!)).image
-                                              : AssetImage('assets/addImage.png'),
+                                              : AssetImage('assets/profileimage.png'),
                                         ),
                                         Expanded(
                                           child: Padding(
@@ -301,7 +294,7 @@ class _CasesReportsState extends State<CaseReports> {
                                         onPressed: () => Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Comments(postId: caseReport.id!),
+                                            builder: (context) => CaseReportCommentView(caseReportId: caseReport.id!),
                                           ),
                                         ),
                                         icon: Icon(
