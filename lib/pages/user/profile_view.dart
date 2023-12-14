@@ -6,7 +6,6 @@ import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
 import 'package:CatViP/bloc/cat/catprofile_event.dart';
 import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/bloc/expert/expert_bloc.dart';
-import 'package:CatViP/bloc/expert/expert_event.dart';
 import 'package:CatViP/bloc/post/DeletePost/deletePost_bloc.dart';
 import 'package:CatViP/bloc/post/DeletePost/deletePost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
@@ -24,14 +23,10 @@ import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/cat/createcat_view.dart';
 import 'package:CatViP/pages/expert/expertIntro_view.dart';
 import 'package:CatViP/pages/expert/expertcheck_view.dart';
-import 'package:CatViP/pages/expert/expertform_view.dart';
 import 'package:CatViP/pages/expert/expertprofile_view.dart';
 import 'package:CatViP/pages/post/comment.dart';
-import 'package:CatViP/pages/post/own_post.dart';
-import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:CatViP/pages/user/editpost_view.dart';
 import 'package:CatViP/pages/user/editprofile_view.dart';
-import 'package:CatViP/repository/user_repo.dart';
 import 'package:CatViP/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,6 +55,9 @@ class _ProfileViewState extends State<ProfileView> {
   final String checkExpert = "Check application status";
   final String viewExpert = "You are an expert!";
   String expertMsg = "Apply as Expert";
+  PageController _pageController = PageController();
+  int _currentPage = 0;
+
   @override
   void initState() {
     logoutbloc = BlocProvider.of<LogoutBloc>(context);
@@ -71,6 +69,7 @@ class _ProfileViewState extends State<ProfileView> {
     postBloc = BlocProvider.of<GetPostBloc>(context);
     postBloc.add(StartLoadOwnPost());
     deleteBloc = BlocProvider.of<DeletePostBloc>(context);
+    _pageController = PageController();
     super.initState();
   }
   late final msg = BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -642,16 +641,60 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget displayImage(Post post){
-    return post.postImages![0].image! != ""
-        ? AspectRatio(
-      aspectRatio: 1.0,
-      child: Image.memory(
-        base64Decode(post.postImages![0].image!),
-        fit: BoxFit.cover,
-      ),
-    )
-        : Container();
+  Widget displayImage(Post post) {
+
+    return Container(
+      height: post.postImages != null && post.postImages!.isNotEmpty
+          ? MediaQuery.of(context).size.width // Set height to screen width if there are images
+          : 0, // Set height to 0 if postImages is null or empty
+      child: post.postImages != null && post.postImages!.isNotEmpty
+          ? Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: post.postImages!.length,
+              itemBuilder: (context, index) {
+                return AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Image.memory(
+                    base64Decode(post.postImages![index].image!),
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPage = page;
+                });
+              },
+            ),
+          ),
+          post.postImages!.length > 1
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              post.postImages!.length,
+                  (index) => Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentPage == index
+                        ? Colors.blue // Highlight the current page indicator
+                        : Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+          )
+              : Container(),
+        ],
+      )
+          : Container(), // Show an empty container if postImages is null or empty
+    );
   }
   /*
   * return GridView.builder(
@@ -684,6 +727,12 @@ class _ProfileViewState extends State<ProfileView> {
   },
   itemCount: listPost.length,
   );*/
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
 }
 

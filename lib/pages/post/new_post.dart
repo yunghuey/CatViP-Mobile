@@ -13,6 +13,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../bloc/post/GetPostType/getPostType_bloc.dart';
+import '../../bloc/post/GetPostType/getPostType_event.dart';
+import '../../bloc/post/GetPostType/getPostType_state.dart';
 import '../../bloc/post/new_post/new_post_event.dart';
 import '../../bloc/post/new_post/new_post_state.dart';
 import '../../model/cat/cat_model.dart';
@@ -38,21 +41,43 @@ class _NewPostState extends State<NewPost> {
   final _formKey = GlobalKey<FormState>();
   late NewPostBloc createBloc;
   late OwnCatsBloc catBloc;
+  late GetPostTypeBloc postTypeBloc;
   PostType? selectedPostType;
   int? selectedCatId;
   File? image;
   final _picker = ImagePicker();
   bool showSpinner = false;
   late final String message;
+  List<XFile> selectedImages = [];
+  List<String> base64Images = [];
+  List<int> selectedCats = [];
 
-  Future<void> getImage(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
+  Future<void> pickImages(ImageSource source, {int maxImages = 5}) async {
+    try {
+      List<XFile>? images = await ImagePicker().pickMultiImage(
+        imageQuality: 70,
+        maxWidth: 800,
+      );
 
-    if (pickedFile != null) {
-      image = File(pickedFile.path);
-      setState(() {});
-    } else {
-      print("No Image Selected");
+      if (images != null && images.isNotEmpty) {
+
+        for (XFile image in images) {
+          String? base64String = await _getImageBase64(File(image.path));
+
+          if (base64String != null) {
+            base64Images.add(base64String);
+          }
+        }
+
+        setState(() {
+          selectedImages = List.from(selectedImages)..addAll(images);
+        });
+
+        // Now base64Images list contains all base64-encoded strings of the selected images
+        print(base64Images);
+      }
+    } catch (e) {
+      print("Error picking images: $e");
     }
   }
 
@@ -102,8 +127,9 @@ class _NewPostState extends State<NewPost> {
   void initState() {
     super.initState();
     createBloc = BlocProvider.of<NewPostBloc>(context);
-    createBloc.add(GetPostTypes());
     catBloc = BlocProvider.of<OwnCatsBloc>(context);
+    postTypeBloc = BlocProvider.of<GetPostTypeBloc>(context);
+    postTypeBloc.add(GetPostTypes());
     selectedPostType = getInitialPostType();
   }
 
@@ -206,7 +232,6 @@ class _NewPostState extends State<NewPost> {
             "Choose Image",
             style: TextStyle(
               fontSize: 20.0,
-              color: HexColor("#3c1e08"),
             ),
           ),
           SizedBox(
@@ -216,19 +241,19 @@ class _NewPostState extends State<NewPost> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextButton.icon(
-                icon: Icon(Icons.camera,color: HexColor("#3c1e08"),),
+                icon: Icon(Icons.camera, color: HexColor("#3c1e08")),
                 onPressed: () {
-                  getImage(ImageSource.camera);
+                  pickImages(ImageSource.camera);
                 },
-                label: Text("Camera", style: TextStyle(color: HexColor("#3c1e08")),),
+                label: Text("Camera", style: TextStyle(color:HexColor("#3c1e08")),),
               ),
               SizedBox(width: 20.0,),
               TextButton.icon(
-                icon: Icon(Icons.image,color: HexColor("#3c1e08"),),
+                icon: Icon(Icons.image, color: HexColor("#3c1e08")),
                 onPressed: () {
-                  getImage(ImageSource.gallery);
+                  pickImages(ImageSource.gallery);
                 },
-                label: Text("Gallery", style: TextStyle(color: HexColor("#3c1e08")),),
+                label: Text("Gallery", style: TextStyle(color:HexColor("#3c1e08")),),
               ),
             ],
           )
@@ -257,26 +282,63 @@ class _NewPostState extends State<NewPost> {
                   width: 2.0,
                 ),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: FutureBuilder<String?>(
-                  future: image != null ? _getImageBase64(image!) : null,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done &&
-                        snapshot.hasData) {
-                      return Image.memory(
-                        base64Decode(snapshot.data!),
+              child: PageView.builder(
+                itemCount: selectedImages.length,
+                itemBuilder: (context, index) {
+                  return Stack(
+                    children: [
+                      Container(
                         width: 300,
                         height: 300,
-                        fit: BoxFit.cover,
-                      );
-                    } else {
-                      return Center(
-                        child: Text('Pick Image'),
-                      );
-                    }
-                  },
-                ),
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: FutureBuilder<String?>(
+                            future: _getImageBase64(File(selectedImages[index].path)),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done &&
+                                  snapshot.hasData) {
+                                return Image.memory(
+                                  base64Decode(snapshot.data!),
+                                  width: 300,
+                                  height: 300,
+                                  fit: BoxFit.cover,
+                                );
+                              } else {
+                                return Center(
+                                  child: Text('Loading Image'),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 8.0,
+                        right: 8.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            // Remove the image at the given index
+                            setState(() {
+                              selectedImages.removeAt(index);
+                            });
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(4.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red,
+                            ),
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -312,15 +374,13 @@ class _NewPostState extends State<NewPost> {
           onPressed: () async {
             print(captionController.text);
             //if(_formKey.currentState!.validate()){
-              if (image != null) {
-                String? imageData = await _getImageBase64(image!);
-                print("posttype ${selectedPostType?.id}");
+              if (base64Images != null) {
 
                 createBloc.add(PostButtonPressed(
                   description: captionController.text.trim(),
                   postTypeId: selectedPostType?.id ?? 0,
-                  image: imageData ?? '',
-                  catId: selectedCatId ?? 0,
+                  image: base64Images,
+                  catIds: selectedCats,
                 ));
               }
               else {
@@ -328,8 +388,8 @@ class _NewPostState extends State<NewPost> {
                 createBloc.add(PostButtonPressed(
                   description: captionController.text.trim(),
                   postTypeId: selectedPostType?.id ?? 0,
-                  image: '',
-                  catId: selectedCatId ?? 0,
+                  image: [],
+                  catIds: selectedCats,
                 ));
               }
 
@@ -375,7 +435,7 @@ class _NewPostState extends State<NewPost> {
   Widget postType() {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
-      child: BlocBuilder<NewPostBloc, NewPostState>(
+      child: BlocBuilder<GetPostTypeBloc, GetPostTypeState>(
         builder: (context, state) {
           if (state is GetPostTypeLoading) {
             return CircularProgressIndicator(color: HexColor("#3c1e08"));
@@ -389,7 +449,7 @@ class _NewPostState extends State<NewPost> {
               selectedPostType = postTypes.first;
             }
 
-            return Column(
+            return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -429,58 +489,82 @@ class _NewPostState extends State<NewPost> {
   }
 
   Widget OwnCats() {
-    //print('PostTypes: $postTypes');
     catBloc.add(GetOwnCats());
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
-      child: BlocListener<OwnCatsBloc, OwnCatsState>(
-        listener: (context, state) {
+      child: BlocBuilder<OwnCatsBloc, OwnCatsState>(
+        builder: (context, state) {
           if (state is GetOwnCatsLoading) {
-            // You can perform side-effects here if needed
+            // You can return a loading indicator or other UI elements here
+            return CircularProgressIndicator();
           } else if (state is GetOwnCatsError) {
-            // You can perform side-effects here if needed
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Error: ${state.error}'),
-              ),
-            );
+            // You can return an error message or other UI elements here
+            return Text('Error: ${state.error}');
           } else if (state is GetOwnCatsLoaded) {
-            // Use the fetched data to populate the drop-down menu
             cats = state.cats;
-            print("success");// Update the OwnCats list
-            // You can perform side-effects here if needed
-          }else{
-            print('tak jadi bey');
+            print("success"); // Update the OwnCats list
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DropdownButtonFormField<int>(
+                  value: selectedCatId, // Replace with the selected cat variable
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCatId = value;
+                      selectedCats.add(value!); // Add the selected cat to the list
+                    });
+                  },
+                  items: cats.map((cat) {
+                    return DropdownMenuItem<int>(
+                      value: cat.id,
+                      child: Text(cat.name! ?? "no data"), // Replace with the actual field you want to display
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: 'Cat',
+                    labelStyle: TextStyle(color: HexColor("#3c1e08")),
+                    focusColor: HexColor("#3c1e08"),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: HexColor("#a4a4a4")),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: HexColor("#3c1e08")),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Selected Cats:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 5),
+                // Display selected cats below the dropdown menu
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: selectedCats.length,
+                  itemBuilder: (context, index) {
+                    int catId = selectedCats[index];
+                    CatModel cat = cats.firstWhere((element) => element.id == catId);
+                    return Chip(
+                      label: Text(cat.name!),
+                      onDeleted: () {
+                        setState(() {
+                          selectedCats.removeAt(index);
+                        });
+                      },
+                    );
+                  },
+                ),
+              ],
+            );
+          } else {
+            return Text('Not loaded yet'); // Placeholder or fallback UI
           }
         },
-        child: DropdownButtonFormField<int>(
-          value: selectedCatId, // Replace with the selected cat variable
-          onChanged: (value) {
-            setState(() {
-              selectedCatId = value;
-            });
-          },
-          items: cats.map((cat) {
-            return DropdownMenuItem<int>(
-              value: cat.id,
-              child: Text(cat.name! ?? "no data"), // Replace with the actual field you want to display
-            );
-          }).toList(),
-          decoration: InputDecoration(
-            labelText: 'Cat',
-            labelStyle: TextStyle(color: HexColor("#3c1e08")),
-            focusColor: HexColor("#3c1e08"),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: HexColor("#a4a4a4")),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: HexColor("#3c1e08")),
-            ),
-          ),
-        ),
       ),
     );
   }
+
 
 
 }

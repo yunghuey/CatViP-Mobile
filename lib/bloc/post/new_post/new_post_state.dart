@@ -21,18 +21,18 @@ class NewPostFailState extends NewPostState {
 
 class NewPostSuccessState extends NewPostState {}
 
-// Get Post Types
-class GetPostTypeInitial extends NewPostState { }
-
-class GetPostTypeLoading extends NewPostState { }
-
-class GetPostTypeLoaded extends NewPostState {
-  final List<PostType> postTypes;
-  GetPostTypeLoaded({required this.postTypes});
-}
-
-class GetPostTypeError extends NewPostState {
-  final String? error;
-  GetPostTypeError({required this.error});
-}
+// // Get Post Types
+// class GetPostTypeInitial extends NewPostState { }
+//
+// class GetPostTypeLoading extends NewPostState { }
+//
+// class GetPostTypeLoaded extends NewPostState {
+//   final List<PostType> postTypes;
+//   GetPostTypeLoaded({required this.postTypes});
+// }
+//
+// class GetPostTypeError extends NewPostState {
+//   final String? error;
+//   GetPostTypeError({required this.error});
+// }
 

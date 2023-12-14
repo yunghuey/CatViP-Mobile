@@ -1,35 +1,57 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:CatViP/repository/APIConstant.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:CatViP/repository/APIConstant.dart';
 import '../model/post/post.dart';
 import '../model/post/postComment.dart';
 
 class PostRepository{
 
   // New Post
-  Future<bool> newPost(String description,int postTypeId,
-                        String? image, int catId ) async {
+  Future<bool> newPost(
+      String description,
+      int postTypeId,
+      List<String?> images,
+      List<int?> catIds, ) async {
 
     var pref = await SharedPreferences.getInstance();
     String? token = pref.getString("token");
     try {
       var url = Uri.parse(APIConstant.NewPostURL);
 
+      List<Map<String, dynamic>> imageObjects = [];
+
+      if (images != null && images.isNotEmpty) {
+
+        for (String? image in images) {
+          Map<String, dynamic> imageObject = {
+            'image': image,
+            'isBloodyContent': false,
+          };
+
+          imageObjects.add(imageObject);
+        }
+      }
+
+      List<Map<String, dynamic>> catIdObjects = [];
+
+      if (catIds != null && catIds.isNotEmpty) {
+
+        for (int? catId in catIds) {
+          Map<String, dynamic> carIdObject = {
+            'catId': catId,
+          };
+
+          catIdObjects.add(carIdObject);
+        }
+      }
+
       // to serialize the data Map to JSON
       var body = json.encode({
         'postTypeId': postTypeId,
         'description': description,
-        'postImages': [
-          {
-            'image': image,
-            'isBloodyContent': false
-          }
-        ],
-        'mentionedCats': catId != 0 ? [{'catId': catId}] : []
+        'postImages': imageObjects != [] ? imageObjects: [],
+        'mentionedCats': catIdObjects != [] ? catIdObjects : []
       });
       print(body);
 
