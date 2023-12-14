@@ -130,7 +130,7 @@ class _OwnReportState extends State<OwnReport> {
                 );
               } else if (state is GetCaseInitial || state is GetCaseLoading) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(color:  HexColor("#3c1e08"),),
                 );
               } else if (state is GetCaseLoaded) {
                 List<CaseReport> caseList = state.caseList;
@@ -176,7 +176,7 @@ class _OwnReportState extends State<OwnReport> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 4),
+                      SizedBox(height: 6),
                       Text('Address: ${caseReport.address!}'),
                       SizedBox(height: 4), // Add some space between Address and Date
                       Text(
@@ -230,4 +230,3 @@ class _OwnReportState extends State<OwnReport> {
   }
 
 }
-

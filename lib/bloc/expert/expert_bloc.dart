@@ -20,7 +20,7 @@ class ExpertBloc extends Bloc<ExpertEvent,ExpertState> {
 
     on<LoadExpertApplicationEvent>((event, emit) async{
       emit(ExpertLoadingState());
-      ExpertApplyModel? formList = await repo.getAllMyApplication();
+      ExpertApplyModel? formList = await repo.getMyApplication();
       if (formList != null){
         emit(LoadedFormState(form: formList));
       } else {

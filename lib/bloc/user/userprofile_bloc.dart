@@ -13,7 +13,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState>{
     on<StartLoadProfile>((event, emit) async {
       emit(UserProfileLoadingState());
       UserModel? isFound = await repo.getUser();
-      ExpertApplyModel? formList = await exprepo.getAllMyApplication();
+      ExpertApplyModel? formList = await exprepo.getMyApplication();
       /*
       validToApply
       0 = never apply before
@@ -75,6 +75,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState>{
       }
     });
 
-
+    on<ResetSearchEvent>((event, emit){
+      emit(ResetSearchState());
+    });
   }
 }

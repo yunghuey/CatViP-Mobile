@@ -5,6 +5,7 @@ import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CasesReport.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController reportController = TextEditingController();
   Set<int> reportedPostIds = {};
 
+  late List<Post> postList;
   @override
   void initState() {
     // TODO: implement initState
@@ -91,6 +93,7 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator(color:  HexColor("#3c1e08")),
               );
             } else if (state is GetPostLoaded) {
+              postList = state.postList.reversed.toList();
               return Theme(
                 data: Theme.of(context).copyWith(
                   colorScheme: Theme.of(context).colorScheme.copyWith(primary: HexColor("#3c1e08")),
@@ -100,9 +103,10 @@ class _HomePageState extends State<HomePage> {
                   child: Stack(
                     children: [
                       ListView.builder(
-                        itemCount: state.postList.length,
+                        itemCount: postList.length,
                         itemBuilder: (context, index) {
-                          final Post post = state.postList[index];
+                          final Post post = postList[index];
+                          print("Post: ${post.toJson()}");
                           return Card(
                             color: HexColor("#ecd9c9"),
                             child: Padding(
@@ -220,13 +224,14 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   SizedBox(height: 4.0),
-                                  AspectRatio(
+                                  /*AspectRatio(
                                     aspectRatio: 1.0,
                                     child: Image.memory(
                                       base64Decode(post.postImages![0].image!),
                                       fit: BoxFit.cover,
                                     ),
-                                  ),
+                                  ),*/
+                                  displayImage(post),
                                   Row(
                                     children: [
                                       _FavoriteButton(
@@ -284,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                                             text: TextSpan(
                                               children: [
                                                 TextSpan(
-                                                  text: post.mentionedCats?[0].catName,
+                                                  text: post.mentionedCats?.isNotEmpty == true ? post.mentionedCats![0].catName ?? post.username! : post.username!,
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.black,
@@ -382,6 +387,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget displayImage(Post post){
+    return post.postImages![0].image! != ""
+        ? AspectRatio(
+          aspectRatio: 1.0,
+          child: Image.memory(
+            base64Decode(post.postImages![0].image!),
+            fit: BoxFit.cover,
+          ),
+        )
+        : Container();
+  }
 
   Future<void> retrieveSharedPreference() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

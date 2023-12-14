@@ -52,10 +52,18 @@ class _ProfileViewState extends State<ProfileView> {
   late ExpertBloc expertBloc;
   final Widgets func = Widgets();
   late DeletePostBloc deleteBloc;
-
+  late List<CatModel> cats;
+  late List<Post> listPost;
+  late UserModel user;
+  String message = "Welcome";
+  final String applyExpert = "Apply as Expert";
+  final String checkExpert = "Check application status";
+  final String viewExpert = "You are an expert!";
+  String expertMsg = "Apply as Expert";
   @override
   void initState() {
     logoutbloc = BlocProvider.of<LogoutBloc>(context);
+    logoutbloc.add(LogoutResetEvent());
     userBloc = BlocProvider.of<UserProfileBloc>(context);
     userBloc.add(StartLoadProfile());
     catBloc = BlocProvider.of<CatProfileBloc>(context);
@@ -74,15 +82,6 @@ class _ProfileViewState extends State<ProfileView> {
       }
   );
 
-  late List<CatModel> cats;
-  late List<Post> listPost;
-  late UserModel user;
-  String message = "Welcome";
-  final String applyExpert = "Apply as Expert";
-  final String checkExpert = "Check application status";
-  final String viewExpert = "You are an expert!";
-  String expertMsg = "Apply as Expert";
-
   //  need to get all cat of this user and all post by this user
   // when tap on cat, should be able to get the index
   @override
@@ -92,7 +91,7 @@ class _ProfileViewState extends State<ProfileView> {
         title: BlocBuilder<UserProfileBloc, UserProfileState>(
           builder: (context, state){
             if (state is UserProfileLoadedState) {
-              final username = state.user?.username ?? "Welcome";
+              final username = state.user?.fullname ?? "Welcome";
               return Text(
                 username,
                 style: Theme.of(context).textTheme.bodyLarge,
@@ -129,6 +128,7 @@ class _ProfileViewState extends State<ProfileView> {
                     context, MaterialPageRoute(
                     builder: (context) => LoginView()), (Route<dynamic> route) => false
                 );
+                logoutbloc.add(LogoutResetEvent());
               }
             },
           ),
@@ -174,7 +174,7 @@ class _ProfileViewState extends State<ProfileView> {
                         if (state is GetPostLoading) {
                           return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                         } else if (state is GetPostLoaded) {
-                          listPost = state.postList;
+                          listPost = state.postList.reversed.toList();
                           return _getAllPosts();
                         } else {
                           return Center(
@@ -405,7 +405,6 @@ class _ProfileViewState extends State<ProfileView> {
         height: 120,
         child: ListView.builder(
           itemCount:cats.length,
-          reverse: true,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
@@ -540,13 +539,30 @@ class _ProfileViewState extends State<ProfileView> {
                     ],
                   ),
                 SizedBox(height: 4.0),
-                AspectRatio(
-                  aspectRatio: 1.0, // Set the aspect ratio (adjust as needed)
-                  child: Image.memory(
-                    base64Decode(post.postImages![0].image!),
-                    fit: BoxFit.cover,
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(
+                    top: 6,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: ' ',
+                        ),
+                        TextSpan(
+                          text: post.description.toString(),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+                displayImage(post),
+
                 Row(
                   children: [
                     _FavoriteButton(
@@ -588,34 +604,7 @@ class _ProfileViewState extends State<ProfileView> {
                           fontSize: 16.0,
                         ),
                       ),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.only(top: 8),
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: post.mentionedCats?[0].catName,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' ',
-                              ),
-                              TextSpan(
-                                text: post.description.toString(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+
                       InkWell(
                         onTap: () {
                           Navigator.push(
@@ -651,6 +640,18 @@ class _ProfileViewState extends State<ProfileView> {
         ),
       ),
     );
+  }
+
+  Widget displayImage(Post post){
+    return post.postImages![0].image! != ""
+        ? AspectRatio(
+      aspectRatio: 1.0,
+      child: Image.memory(
+        base64Decode(post.postImages![0].image!),
+        fit: BoxFit.cover,
+      ),
+    )
+        : Container();
   }
   /*
   * return GridView.builder(

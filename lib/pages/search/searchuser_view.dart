@@ -143,7 +143,7 @@ class _SearchViewState extends State<SearchView> {
                           child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                     }
                     else if (state is GetPostLoaded) {
-                      listPost = state.postList;
+                      listPost = state.postList.reversed.toList();
                       print("frontend listPost length ${listPost.length}");
                       return _getAllPosts();
                     }
@@ -366,7 +366,6 @@ class _SearchViewState extends State<SearchView> {
           shrinkWrap: true, // Added shrinkWrap
           physics: NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
           itemCount: listPost.length,
-          reverse: true,
           itemBuilder: (context, index) {
             final Post post = listPost[index];
             print("Post: ${post.toJson()}");
@@ -403,13 +402,29 @@ class _SearchViewState extends State<SearchView> {
                     ],
                   ),
                 SizedBox(height: 4.0),
-                AspectRatio(
-                  aspectRatio: 1.0, // Set the aspect ratio (adjust as needed)
-                  child: Image.memory(
-                    base64Decode(post.postImages![0].image!),
-                    fit: BoxFit.cover,
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(
+                    top: 6,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: ' ',
+                        ),
+                        TextSpan(
+                          text: post.description.toString(),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+                displayImage(post),
                 Row(
                   children: [
                     _FavoriteButton(
@@ -451,34 +466,6 @@ class _SearchViewState extends State<SearchView> {
                           fontSize: 16.0,
                         ),
                       ),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.only(top: 8),
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: post.mentionedCats?[0].catName,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' ',
-                              ),
-                              TextSpan(
-                                text: post.description.toString(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                       InkWell(
                         onTap: () {
                           Navigator.push(
@@ -516,6 +503,17 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
+  Widget displayImage(Post post){
+    return post.postImages![0].image! != ""
+        ? AspectRatio(
+          aspectRatio: 1.0,
+          child: Image.memory(
+            base64Decode(post.postImages![0].image!),
+            fit: BoxFit.cover,
+          ),
+    )
+        : Container();
+  }
   void refreshPosts() {
     postBloc.add(StartLoadOwnPost());
   }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_event.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
@@ -93,12 +95,19 @@ class _SearchTabState extends State<SearchTab> {
           hintText: "Search",
           focusColor: HexColor("#3c1e08"),
         ),
+        onChanged: (text){
+          print("text: ${text}");
+          if (text.length > 0){
+            userBloc.add(SearchUserPressed(name: text.trim()));
+          } else{
+            userBloc.add(ResetSearchEvent());
+          }
+        },
       ),
     );
   }
 
   Widget resultList(){
-    print("in list function");
     print("list: ${searchList.length}");
     return 
       Padding(
@@ -114,9 +123,25 @@ class _SearchTabState extends State<SearchTab> {
             },
             child: Card(
               margin: EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text(user.username),
-                subtitle: Text(user.fullname),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundColor: Colors.white,
+                      backgroundImage: user.profileImage != ""
+                          ? MemoryImage(base64Decode(user.profileImage!))  as ImageProvider<Object>
+                          : AssetImage('assets/profileimage.png'),
+                    ),
+                    Expanded(
+                      child: ListTile(
+                        title: Text(user.fullname),
+                        subtitle: Text(user.username),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

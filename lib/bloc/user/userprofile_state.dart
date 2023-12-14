@@ -24,6 +24,8 @@ class UserProfileErrorState extends UserProfileState {
   UserProfileErrorState({required this.message});
 }
 
+class ResetSearchState extends UserProfileState {}
+
 class UserProfileUpdating extends UserProfileState {}
 
 class UserProfileUpdated extends UserProfileState {}

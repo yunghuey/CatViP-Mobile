@@ -142,7 +142,7 @@ class _CasesReportsState extends State<CaseReports> {
                 );
               } else if (state is GetCaseInitial || state is GetCaseLoading) {
                 return Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(color:  HexColor("#3c1e08"))
                 );
               } else if (state is GetCaseLoaded) {
                 return Column(
@@ -275,7 +275,7 @@ class _CasesReportsState extends State<CaseReports> {
                                         : 0, // Set height to 0 if postImages is null or empty
                                     child: caseReport.caseReportImages != null && caseReport.caseReportImages!.isNotEmpty
                                         ? PageView.builder(
-                                      itemCount: caseReport.caseReportImages![index].images!.length,
+                                      itemCount: caseReport.caseReportImages!.length, // Use the length of the outer list
                                       itemBuilder: (context, index) {
                                         return AspectRatio(
                                           aspectRatio: 1.0,
