@@ -40,7 +40,6 @@ class _CatProfileViewState extends State<CatProfileView> {
     postBloc = BlocProvider.of<GetPostBloc>(context);
     postBloc.add(StartLoadSingleCatPost(catid: cat.id));
     super.initState();
-
   }
   @override
   Widget build(BuildContext context) {

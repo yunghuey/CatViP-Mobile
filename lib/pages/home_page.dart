@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:CatViP/pages/chat/chatlist_view.dart';
 import 'package:CatViP/pages/post/comment.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
@@ -61,7 +62,11 @@ class _HomePageState extends State<HomePage> {
           automaticallyImplyLeading: false,
           actions: [
             IconButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => ChatListView(),
+                ),);
+              },
               icon: Icon(Icons.messenger_outline, color: HexColor("#3c1e08"),),
               color: Colors.white,
             ),

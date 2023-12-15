@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
 import 'package:CatViP/bloc/cat/catprofile_event.dart';
 import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/bloc/post/DeletePost/deletePost_bloc.dart';
-import 'package:CatViP/bloc/post/DeletePost/deletePost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
@@ -20,7 +18,6 @@ import 'package:CatViP/model/user/user_model.dart';
 import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/post/comment.dart';
-import 'package:CatViP/pages/user/editpost_view.dart';
 import 'package:CatViP/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

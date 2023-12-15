@@ -62,7 +62,9 @@ class APIConstant {
     static String get CreateCaseReportCommentURL => "${APIConstant.URL}caseReport/createcomment";
     static String get GetCaseReportCommentsURL => "${APIConstant.URL}caseReport/GetCaseReportComments/";
 
-
+  // chat module
+   static String get GetChatListURL => "${APIConstant.URL}Chat/GetChatUsers";
+   static String get GetChatByUserURL => "${APIConstant.URL}Chat/GetChats/";
 
 
 
