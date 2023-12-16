@@ -70,8 +70,8 @@ class _SearchViewState extends State<SearchView> {
         elevation: 0.0,
         title: BlocBuilder<UserProfileBloc, UserProfileState>(
           builder: (context, state){
-            if (state is UserProfileLoadedState) {
-              final username = state.user.username ?? "Search";
+            if (state is SearchProfileLoadedState) {
+              final username = state.user.fullname ?? "Search";
               return Text(
                 username,
                 style: Theme.of(context).textTheme.bodyLarge,
