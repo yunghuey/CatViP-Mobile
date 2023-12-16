@@ -185,7 +185,6 @@ class _ProfileViewState extends State<ProfileView> {
                         }
                       },
                     ),
-                    // _getAllPosts(),
                   ],
                 ),
               );
@@ -399,50 +398,53 @@ class _ProfileViewState extends State<ProfileView> {
 
   Widget _getAllCats(){
     return Padding(
-      padding: const EdgeInsets.only(left: 15.0),
+      padding: const EdgeInsets.only(left: 15.0, top: 10.0),
       child: Container(
         height: 120,
-        child: ListView.builder(
-          itemCount:cats.length,
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            final cat = cats[index];
-            return Row(
-              children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: InkWell(
-                        onTap: (){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => CatProfileView(currentcat: cats[index],fromOwner: true,)))
-                              .then((value) {
-                                  catBloc.add(StartLoadCat());
-                                  postBloc.add(StartLoadOwnPost());
-                          });
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: HexColor("#3c1e08"),
-                          radius: 40,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: ListView.builder(
+            itemCount:cats.length,
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              final cat = cats[index];
+              return Row(
+                children: [
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => CatProfileView(currentcat: cats[index],fromOwner: true,)))
+                                .then((value) {
+                                    catBloc.add(StartLoadCat());
+                                    postBloc.add(StartLoadOwnPost());
+                            });
+                          },
                           child: CircleAvatar(
-                            radius: 38,
-                            backgroundImage: cats[index].profileImage != ""
-                                ? MemoryImage(base64Decode(cats[index].profileImage))  as ImageProvider<Object>
-                                : AssetImage('assets/profileimage.png'),
+                            backgroundColor: HexColor("#3c1e08"),
+                            radius: 37,
+                            child: CircleAvatar(
+                              radius: 35,
+                              backgroundImage: cats[index].profileImage != ""
+                                  ? MemoryImage(base64Decode(cats[index].profileImage))  as ImageProvider<Object>
+                                  : AssetImage('assets/profileimage.png'),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Text(cats[index].name),
-                  ],
-                ),
-              ],
-            );
-          },
+                      Text(cats[index].name),
+                    ],
+                  ),
+                ],
+              );
+            },
 
+          ),
         ),
       ),
     );
@@ -511,7 +513,12 @@ class _ProfileViewState extends State<ProfileView> {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: (context) => EditPost(currentPost: post))
-                                        ).then((result) {});
+                                        ).then((result) {
+                                          if (result == true){
+                                            postBloc.add(StartLoadOwnPost());
+                                          }
+                                          Navigator.pop(context, true);
+                                        });
                                       } else if (e == 'Delete') {
                                         deleteBloc.add(DeleteButtonPressed(postId: post.id!));
                                         await Future.delayed(Duration(milliseconds: 100));
@@ -640,6 +647,7 @@ class _ProfileViewState extends State<ProfileView> {
       ),
     );
   }
+
 
   Widget displayImage(Post post) {
 

@@ -103,8 +103,8 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Application Date: ${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(form.applyDateTime))}"),
                   Text("Status : ${form.status}"),
+                  Text("Application Date: ${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(form.applyDateTime))}"),
                   Row(
                     children: [
                       Text("Document: "),
@@ -112,8 +112,9 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
                         createPdf(form.document);
                       }, child: Text("View document",
                           style: TextStyle(
-                          color: HexColor("#3c1e08"),
-                          decoration: TextDecoration.underline,
+                            color: HexColor("#3c1e08"),
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.bold,
                           )
                         )
                       )

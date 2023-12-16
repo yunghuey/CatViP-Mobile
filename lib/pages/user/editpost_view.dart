@@ -68,12 +68,7 @@ class _EditPostState extends State<EditPost> {
       listener: (context, state) {
         if (state is EditPostSuccessState) {
           print('Post edited successfully');
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => OwnPosts()),
-          );
-          // Navigator.pop(context, true);
-
+          Navigator.pop(context, true);
         } else if (state is EditPostFailState) {
           print('Failed to save post');
         }
@@ -181,8 +176,17 @@ class _EditPostState extends State<EditPost> {
           controller: descController,
           decoration: InputDecoration(
             hintText: 'Caption',
-            border: OutlineInputBorder(),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: HexColor("#a4a4a4")),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color:  HexColor("#3c1e08")),
+            ),
+            focusColor: HexColor("#3c1e08"),
+
           ),
+
+
         ),
       ],
     );

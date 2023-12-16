@@ -497,6 +497,7 @@ class _NewReportState extends State<NewReport> {
                     Radio<int>(
                       value: 1,
                       groupValue: selectedCatId == null ? 0 : 1,
+                      activeColor: HexColor('#3c1e08'),
                       onChanged: (value) {
                         setState(() {
                           selectedCatId = value == 1 ? (cats.isNotEmpty ? cats.first.id : null) : null;
@@ -516,6 +517,7 @@ class _NewReportState extends State<NewReport> {
                     Text('Yes'),
                     Radio<int>(
                       value: 0,
+                      activeColor: HexColor('#3c1e08'),
                       groupValue: selectedCatId == null ? 0 : 1,
                       onChanged: (value) {
                         setState(() {

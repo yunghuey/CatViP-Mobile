@@ -121,8 +121,8 @@ class _SearchTabState extends State<SearchTab> {
               int userid = user.id ?? 0;
               Navigator.push(context, MaterialPageRoute(builder: (context) => SearchView(userid: userid)));
             },
-            child: Card(
-              margin: EdgeInsets.all(8.0),
+            child: Container(
+              margin: EdgeInsets.all(5.0),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
