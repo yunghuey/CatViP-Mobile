@@ -86,7 +86,7 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Edit Case Report",
+            "Update Case Report",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           backgroundColor: HexColor("#ecd9c9"),
@@ -118,7 +118,7 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
           : 0, // Set height to 0 if postImages is null or empty
       child: caseReport.caseReportImages != null && caseReport.caseReportImages!.isNotEmpty
           ? PageView.builder(
-        itemCount: caseReport.caseReportImages![0].images!.length,
+        itemCount: caseReport.caseReportImages!.length,
         itemBuilder: (context, index) {
           return AspectRatio(
             aspectRatio: 1.0,

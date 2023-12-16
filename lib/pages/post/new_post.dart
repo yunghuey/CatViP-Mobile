@@ -449,34 +449,40 @@ class _NewPostState extends State<NewPost> {
               selectedPostType = postTypes.first;
             }
 
-            return Row(
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'PostType',
-                  style: TextStyle(color: HexColor("#3c1e08")),
+                  'Post Type',
+                  style: TextStyle(color: HexColor("#3c1e08"), fontSize: 15),
                 ),
-                SizedBox(height: 10.0),
-                Wrap(
-                  spacing: 8.0,
-                  children: postTypes.map((postType) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Radio<PostType>(
-                          value: postType,
-                          activeColor: HexColor('#3c1e08'),
-                          groupValue: selectedPostType,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedPostType = value!;
-                            });
-                          },
-                        ),
-                        Text(postType.name! ?? "no data"),
-                      ],
-                    );
-                  }).toList(),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                    SizedBox(height: 10.0),
+                    Wrap(
+                      spacing: 8.0,
+                      children: postTypes.map((postType) {
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Radio<PostType>(
+                              value: postType,
+                              activeColor: HexColor('#3c1e08'),
+                              groupValue: selectedPostType,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedPostType = value!;
+                                });
+                              },
+                            ),
+                            Text(postType.name! ?? "no data", style: TextStyle(fontSize: 15),),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
               ],
             );
@@ -497,7 +503,7 @@ class _NewPostState extends State<NewPost> {
         builder: (context, state) {
           if (state is GetOwnCatsLoading) {
             // You can return a loading indicator or other UI elements here
-            return CircularProgressIndicator();
+            return CircularProgressIndicator(color: HexColor("#3c1e08"),);
           } else if (state is GetOwnCatsError) {
             // You can return an error message or other UI elements here
             return Text('Error: ${state.error}');
