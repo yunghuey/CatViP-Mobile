@@ -405,6 +405,7 @@ class _NewPostState extends State<NewPost> {
                       children: [
                         Radio<PostType>(
                           value: postType,
+                          activeColor: HexColor('#3c1e08'),
                           groupValue: selectedPostType,
                           onChanged: (value) {
                             setState(() {

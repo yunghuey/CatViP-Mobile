@@ -57,7 +57,7 @@ class _ChatListViewState extends State<ChatListView> {
   Widget resultList(List<ChatListModel> chatlist){
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: ListView.builder(
+      child: ListView.separated(
         itemCount: chatlist.length,
         itemBuilder: (context, index){
           var chat = chatlist[index];
@@ -93,6 +93,15 @@ class _ChatListViewState extends State<ChatListView> {
             ),
           );
 
+        },
+        separatorBuilder: (context, index){
+          return Divider(
+            color: Colors.grey,
+            thickness: 1,
+            indent: 10,
+            endIndent: 10,
+            height: 5,
+          );
         }
       ),
     );
