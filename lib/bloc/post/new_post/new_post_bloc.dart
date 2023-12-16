@@ -24,7 +24,7 @@ class NewPostBloc extends Bloc<NewPostEvents, NewPostState>{
     on<PostButtonPressed>((event, emit) async{
       emit(NewPostLoadingState());
 
-      bool isCreated = await postRepo.newPost(event.description, event.postTypeId, event.image, event.catId);
+      bool isCreated = await postRepo.newPost(event.description, event.postTypeId, event.image, event.catIds);
       if (isCreated) {
         emit(NewPostSuccessState());
       } else {
@@ -32,22 +32,22 @@ class NewPostBloc extends Bloc<NewPostEvents, NewPostState>{
       }
     });
 
-    // Get Post Types
-    on<GetPostTypes>((event, emit) async {
-      try {
-        emit(GetPostTypeLoading());
-        final List<PostType> postTypes = await postTypeRepo.fetchPostTypes();
-        emit(GetPostTypeLoaded(postTypes: postTypes));
-
-        if (postTypes[0].error != null) {
-          emit(GetPostTypeError(
-              error: postTypes[0].error));
-        }
-      }catch (e){
-        emit(GetPostTypeError(
-            error: "Failed to fetch data in your device online"));
-      }
-    });
+    // // Get Post Types
+    // on<GetPostTypes>((event, emit) async {
+    //   try {
+    //     emit(GetPostTypeLoading());
+    //     final List<PostType> postTypes = await postTypeRepo.fetchPostTypes();
+    //     emit(GetPostTypeLoaded(postTypes: postTypes));
+    //
+    //     if (postTypes[0].error != null) {
+    //       emit(GetPostTypeError(
+    //           error: postTypes[0].error));
+    //     }
+    //   }catch (e){
+    //     emit(GetPostTypeError(
+    //         error: "Failed to fetch data in your device online"));
+    //   }
+    // });
 
 
 

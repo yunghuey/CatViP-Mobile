@@ -38,6 +38,9 @@ class _HomePageState extends State<HomePage> {
   bool hasBeenLiked = false;
   TextEditingController reportController = TextEditingController();
   Set<int> reportedPostIds = {};
+  PageController _pageController = PageController();
+  int _currentPage = 0;
+
 
   late List<Post> postList;
   @override
@@ -229,13 +232,6 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   SizedBox(height: 4.0),
-                                  /*AspectRatio(
-                                    aspectRatio: 1.0,
-                                    child: Image.memory(
-                                      base64Decode(post.postImages![0].image!),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),*/
                                   displayImage(post),
                                   Row(
                                     children: [
@@ -392,17 +388,62 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget displayImage(Post post){
-    return post.postImages![0].image! != ""
-        ? AspectRatio(
-          aspectRatio: 1.0,
-          child: Image.memory(
-            base64Decode(post.postImages![0].image!),
-            fit: BoxFit.cover,
+  Widget displayImage(Post post) {
+
+    return Container(
+      height: post.postImages != null && post.postImages!.isNotEmpty
+          ? MediaQuery.of(context).size.width // Set height to screen width if there are images
+          : 0, // Set height to 0 if postImages is null or empty
+      child: post.postImages != null && post.postImages!.isNotEmpty
+          ? Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: post.postImages!.length,
+              itemBuilder: (context, index) {
+                return AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Image.memory(
+                    base64Decode(post.postImages![index].image!),
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPage = page;
+                });
+              },
+            ),
           ),
-        )
-        : Container();
+          post.postImages!.length > 1
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              post.postImages!.length,
+                  (index) => Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentPage == index
+                        ? Colors.blue // Highlight the current page indicator
+                        : Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+          )
+              : Container(),
+        ],
+      )
+          : Container(), // Show an empty container if postImages is null or empty
+    );
   }
+
 
   Future<void> retrieveSharedPreference() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -32,42 +32,9 @@ class _CasesReportsState extends State<CaseReports> {
   final Widgets func = Widgets();
   TextEditingController reportController = TextEditingController();
   Set<int> reportedPostIds = {};
+  PageController _pageController = PageController();
+  int _currentPage = 0;
 
-  void _removeExpense(int index) async{
-/*
-    Expense exp = Expense.withId(expenses[index].id, 0.0, '', '');
-
-    if(await exp.delete()) {
-      totalAmount -= expenses[index].amount;
-      setState(() {
-        expenses.removeAt(index);
-        totalAmountController.text = totalAmount.toString();
-      });
-    }*/
-
-  }
-
-
-  void _editExpense(int index) {
-    /* Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditExpenseScreen(
-          expense: expenses[index],
-          onSave: (editedExpense) {
-            print(editedExpense.desc);
-            setState(() {
-              totalAmount +=
-                  editedExpense.amount -
-                      expenses[index].amount;
-              expenses[index] = editedExpense;
-              totalAmountController.text = totalAmount.toString();
-            });
-          },
-        ),
-      ),
-    );*/
-  }
 
 
   @override
@@ -269,25 +236,8 @@ class _CasesReportsState extends State<CaseReports> {
                                     ),
                                   ),
                                   SizedBox(height: 4.0),
-                                  Container(
-                                    height: caseReport.caseReportImages != null && caseReport.caseReportImages!.isNotEmpty
-                                        ? MediaQuery.of(context).size.width // Set height to screen width if there are images
-                                        : 0, // Set height to 0 if postImages is null or empty
-                                    child: caseReport.caseReportImages != null && caseReport.caseReportImages!.isNotEmpty
-                                        ? PageView.builder(
-                                      itemCount: caseReport.caseReportImages!.length, // Use the length of the outer list
-                                      itemBuilder: (context, index) {
-                                        return AspectRatio(
-                                          aspectRatio: 1.0,
-                                          child: Image.memory(
-                                            base64Decode(caseReport.caseReportImages![index].images!),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        );
-                                      },
-                                    )
-                                        : Container(), // Show an empty container if postImages is null or empty
-                                  ),
+                                  displayImage(caseReport),
+
                                   Row(
                                     children: [
                                       IconButton(
@@ -313,32 +263,6 @@ class _CasesReportsState extends State<CaseReports> {
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                       /* Text(
-                                          "${post.likeCount.toString()} likes",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 16.0,
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Comments(postId: post.id!),
-                                              ),
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 4),
-                                            child: post.commentCount! > 0
-                                                ? Text(
-                                              'View all ${post.commentCount} comments',
-                                              style: const TextStyle(fontSize: 14, color: Colors.black),
-                                            )
-                                                : SizedBox.shrink(),
-                                          ),
-                                        ),*/
                                         Container(
                                           padding: const EdgeInsets.symmetric(vertical: 4),
                                           child: Text(
@@ -365,6 +289,62 @@ class _CasesReportsState extends State<CaseReports> {
           ),
         ),
      // ),
+    );
+  }
+
+  Widget displayImage(CaseReport caseReport) {
+
+    return Container(
+      height: caseReport.caseReportImages != null && caseReport.caseReportImages!.isNotEmpty
+          ? MediaQuery.of(context).size.width // Set height to screen width if there are images
+          : 0, // Set height to 0 if postImages is null or empty
+      child: caseReport.caseReportImages != null && caseReport.caseReportImages!.isNotEmpty
+          ? Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: caseReport.caseReportImages!.length,
+              itemBuilder: (context, index) {
+                return AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Image.memory(
+                    base64Decode(caseReport.caseReportImages![index].images!),
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPage = page;
+                });
+              },
+            ),
+          ),
+          caseReport.caseReportImages!.length > 1
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              caseReport.caseReportImages!.length,
+                  (index) => Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentPage == index
+                        ? Colors.blue // Highlight the current page indicator
+                        : Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+          )
+              : Container(),
+        ],
+      )
+          : Container(), // Show an empty container if postImages is null or empty
     );
   }
 

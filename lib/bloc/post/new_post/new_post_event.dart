@@ -12,19 +12,19 @@ class StartNewPost extends NewPostEvents {}
 class PostButtonPressed extends NewPostEvents{
   final String description;
   final int postTypeId;
-  final String? image;
-  final int catId;
+  final List<String?> image;
+  final List<int?> catIds;
 
 
   PostButtonPressed({
     required this.description,
     required this.postTypeId,
     required this.image,
-    required this.catId,
+    required this.catIds,
   });
 
 }
 
-class GetPostTypes extends NewPostEvents {}
+// class GetPostTypes extends NewPostEvents {}
 
 

@@ -37,6 +37,8 @@ import 'bloc/post/DeletePost/deletePost_bloc.dart';
 import 'bloc/post/DeletePost/deletePost_state.dart';
 import 'bloc/post/EditPost/editPost_bloc.dart';
 import 'bloc/post/EditPost/editPost_state.dart';
+import 'bloc/post/GetPostType/getPostType_bloc.dart';
+import 'bloc/post/GetPostType/getPostType_state.dart';
 import 'bloc/post/OwnCats/ownCats_state.dart';
 import 'bloc/post/ReportPost/reportPost_bloc.dart';
 import 'bloc/post/ReportPost/reportPost_state.dart';
@@ -131,6 +133,8 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ChatBloc>(
           create: (context) => ChatBloc(ChatInitState(), ChatRepository()),
+        BlocProvider<GetPostTypeBloc>(
+          create: (context) => GetPostTypeBloc(GetPostTypeInitial(), PostTypeRepository()),
         ),
       ],
       child: MaterialApp(
