@@ -28,11 +28,10 @@ class _CurrentLocationState extends State<CurrentLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Current Location',style: Theme.of(context).textTheme.bodyLarge),
+        title: Text('Current Location', style: TextStyle(color:  HexColor("#3c1e08"))),
         backgroundColor: HexColor("#ecd9c9"),
         bottomOpacity: 0.0,
         elevation: 0.0,
-        centerTitle: true,
         actions: [
           TextButton(
             onPressed: () {
@@ -96,8 +95,10 @@ class _CurrentLocationState extends State<CurrentLocation> {
           setState(() {});
         },
         tooltip: "Current Location",
-        child: Icon(Icons.location_history,color: HexColor("#3c1e08"),),
+        child: Icon(Icons.location_history,color: HexColor("#3c1e08")),
+        backgroundColor: HexColor("#ecd9c9"),
       ),
+
     );
   }
 
