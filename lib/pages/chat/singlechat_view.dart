@@ -73,9 +73,9 @@ class _SingleChatViewState extends State<SingleChatView> {
           dateTime: DateTime.now().toString(),
           isCurrentUserSent: false,
         );
-        // messagelist.add(newmessage);
+        messagelist.add(newmessage);
         print(messagelist);
-        print("received message: ${_receivedMessage}" );
+        print("received message: ${message}" );
       });
     }
   }
