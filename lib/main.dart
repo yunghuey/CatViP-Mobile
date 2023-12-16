@@ -133,6 +133,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<ChatBloc>(
           create: (context) => ChatBloc(ChatInitState(), ChatRepository()),
+        ),
         BlocProvider<GetPostTypeBloc>(
           create: (context) => GetPostTypeBloc(GetPostTypeInitial(), PostTypeRepository()),
         ),
