@@ -492,11 +492,36 @@ class _EditCatViewState extends State<EditCatView> {
                     actions: <Widget>[
                       TextButton(
                         onPressed: () => Navigator.pop(context, 'Cancel'),
-                        child: const Text('Cancel'),
+                        child: Text('Cancel',style: TextStyle(color: HexColor('#3c1e08'))),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith<HexColor>(
+                                  (Set<MaterialState> states){
+                                if(states.contains(MaterialState.pressed))
+                                  return HexColor("#ecd9c9");
+                                return HexColor("#F2EFEA");
+                              }
+                          ),
+                          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)
+                              )
+                          ),
+                        ),
+
                       ),
                       TextButton(
                         onPressed: () => catBloc.add(DeleteCatPressed(catid: cat.id)),
-                        child: const Text('Yes'),
+                        child:  Text('Yes',style: TextStyle(color: Colors.white)),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+                          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)
+                              )
+                          ),
+                        ),
                       ),
                     ],
                   ),

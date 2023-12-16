@@ -14,5 +14,4 @@ class MentionedCat {
       catName: json["catName"],
     );
   }
-
 }
