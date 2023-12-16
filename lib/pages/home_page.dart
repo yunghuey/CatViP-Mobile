@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator(color:  HexColor("#3c1e08")),
               );
             } else if (state is GetPostLoaded) {
-              postList = state.postList.reversed.toList();
+              postList = state.postList;
               return Theme(
                 data: Theme.of(context).copyWith(
                   colorScheme: Theme.of(context).colorScheme.copyWith(primary: HexColor("#3c1e08")),

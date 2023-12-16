@@ -22,18 +22,32 @@ class ChatBloc extends Bloc<ChatEvent, ChatState>{
       }
     });
 
+    // comfirm got chat because is from message list
     on<SingleUserButtonPressed>((event, emit) async {
       emit(ChatLoadingState());
       List<MessageModel>? hasList = await repo.getAllMessages(event.userid);
       if(hasList.length > 0){
         emit(MessageListLoaded(messagelist: hasList));
       } else {
-        emit(MessageListEmpty(message: "No chats yet"));
+        emit(MessageListEmpty(message: "Error: Message list unable to load"));
       }
     });
 
     on<MessageInitEvent>((event, emit){
       emit(MessageInitState());
     });
+
+    on<CheckMessageHistoryEvent>((event, emit) async {
+      emit(ChatLoadingState());
+      print("bloc: check message history");
+      List<MessageModel>? hasList = await repo.getAllMessages(event.userid);
+      if(hasList.length > 0) {
+        emit(MessageListLoaded(messagelist: hasList));
+      } else{
+        print("no message history");
+        emit(CreateNewChatState());
+      }
+    });
+
   }
 }

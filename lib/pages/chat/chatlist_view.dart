@@ -64,7 +64,7 @@ class _ChatListViewState extends State<ChatListView> {
           return InkWell(
             onTap: (){
               Navigator.push(context,
-              MaterialPageRoute(builder: (context) => SingleChatView(user:chat))).then((value) => {    chatBloc.add(ChatListLoadEvent())
+              MaterialPageRoute(builder: (context) => SingleChatView(user:chat, existChat: true,))).then((value) => {    chatBloc.add(ChatListLoadEvent())
               } );
             //   navigate to single user chat
             },

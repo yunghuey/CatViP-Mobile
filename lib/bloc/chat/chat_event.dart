@@ -15,3 +15,8 @@ class SingleUserButtonPressed extends ChatEvent {
 }
 
 class MessageInitEvent extends ChatEvent{}
+
+class CheckMessageHistoryEvent extends ChatEvent {
+  final int userid;
+  CheckMessageHistoryEvent({required this.userid });
+}

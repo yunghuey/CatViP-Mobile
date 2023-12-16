@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:signalr_core/signalr_core.dart';
-
 import 'package:CatViP/bloc/chat/chat_bloc.dart';
 import 'package:CatViP/bloc/chat/chat_event.dart';
 import 'package:CatViP/bloc/chat/chat_state.dart';
@@ -15,7 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SingleChatView extends StatefulWidget {
   final ChatListModel user;
-  const SingleChatView({ required this.user, Key? key}): super(key: key);
+  final bool existChat;
+  const SingleChatView({ required this.user, required this.existChat, Key? key}): super(key: key);
 
   @override
   State<SingleChatView> createState() => _SingleChatViewState();
@@ -32,7 +32,12 @@ class _SingleChatViewState extends State<SingleChatView> {
   @override
   void initState() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
-    chatBloc.add(SingleUserButtonPressed(userid: widget.user.userid));
+    if (widget.existChat){
+      chatBloc.add(SingleUserButtonPressed(userid: widget.user.userid));
+    } else{
+      chatBloc.add(CheckMessageHistoryEvent(userid: widget.user.userid));
+    }
+
 
     hubConnection = HubConnectionBuilder()
         .withUrl('http://10.131.78.121:7015/chathub')
@@ -113,9 +118,17 @@ class _SingleChatViewState extends State<SingleChatView> {
           }
           else if (state is MessageListLoaded){
             messagelist = state.messagelist.reversed.toList();
+            // print()
             chatBloc.add(MessageInitEvent());
             return displayChat();
-          } else if (state is MessageInitState){
+          }
+          else if (state is CreateNewChatState){
+            print("received no message list");
+            messagelist = [];
+            chatBloc.add(MessageInitEvent());
+            return displayChat();
+          }
+          else if (state is MessageInitState){
             return displayChat();
           }
           return Center(child: Text("Error in getting chat"));

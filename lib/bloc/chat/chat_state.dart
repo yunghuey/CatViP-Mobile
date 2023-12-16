@@ -32,3 +32,5 @@ class MessageListEmpty extends ChatState{
 }
 
 class MessageInitState extends ChatState{}
+
+class CreateNewChatState extends ChatState{}

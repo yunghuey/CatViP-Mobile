@@ -13,10 +13,12 @@ import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_event.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
+import 'package:CatViP/model/chat/ChatListModel.dart';
 import 'package:CatViP/model/post/post.dart';
 import 'package:CatViP/model/user/user_model.dart';
 import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
+import 'package:CatViP/pages/chat/singlechat_view.dart';
 import 'package:CatViP/pages/post/comment.dart';
 import 'package:CatViP/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -286,7 +288,18 @@ class _SearchViewState extends State<SearchView> {
                   child: Container(
                     padding: EdgeInsets.all(5),
                     child: ElevatedButton(
-                      onPressed: (){},
+                      onPressed: (){
+                      //   chat
+                        ChatListModel chatlist = ChatListModel(
+                            userid: widget.userid ?? 0,
+                            username: user.username,
+                            fullname: user.fullname,
+                            profileImage: user.profileImage,
+                            latestMsg: ""
+                        );
+                        print("search user id = ${widget.userid}");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SingleChatView(user: chatlist, existChat: false,)));
+                      },
                       child: Text("Message"),
                       style: ButtonStyle(
                         side: MaterialStateProperty.all(BorderSide(color: HexColor("#3c1e08"), width: 1)),
