@@ -520,12 +520,52 @@ class _ProfileViewState extends State<ProfileView> {
                                           Navigator.pop(context, true);
                                         });
                                       } else if (e == 'Delete') {
-                                        deleteBloc.add(DeleteButtonPressed(postId: post.id!));
-                                        await Future.delayed(Duration(milliseconds: 100));
-                                        Navigator.pop(context);
-                                        postBloc.add(StartLoadOwnPost());
-                                        //Navigator.push(context, MaterialPageRoute(builder: (context) => OwnPosts()));
-
+                                        showDialog<String>(
+                                            context: context,
+                                            builder: (BuildContext context) => AlertDialog(
+                                              title: const Text('Delete Post'),
+                                              content: const Text('Are you sure to delete this post? This action cannot be undone'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                  child: Text('Cancel',style: TextStyle(color: HexColor('#3c1e08'))),
+                                                  style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.resolveWith<HexColor>(
+                                                            (Set<MaterialState> states){
+                                                          if(states.contains(MaterialState.pressed))
+                                                            return HexColor("#ecd9c9");
+                                                          return HexColor("#F2EFEA");
+                                                        }
+                                                    ),
+                                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
+                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10.0)
+                                                        )
+                                                    ),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async => {
+                                                    deleteBloc.add(DeleteButtonPressed(postId: post.id!)),
+                                                    await Future.delayed(Duration(milliseconds: 100)),
+                                                    Navigator.pop(context),
+                                                    postBloc.add(StartLoadOwnPost()),
+                                                  },
+                                                  child:  Text('Yes',style: TextStyle(color: Colors.white)),
+                                                  style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+                                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
+                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10.0)
+                                                        )
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                        );
                                       }
                                     },
                                     child: Container(
