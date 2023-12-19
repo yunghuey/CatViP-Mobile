@@ -4,7 +4,6 @@ import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_event.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/model/user/user_model.dart';
-import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,7 +55,6 @@ class _SearchTabState extends State<SearchTab> {
         ),
       ),
       body: Container(
-      //   list view
         child: BlocBuilder<UserProfileBloc, UserProfileState>(
           builder: (context, state){
             if (state is SearchFailState){
@@ -70,7 +68,6 @@ class _SearchTabState extends State<SearchTab> {
                 ),
               );
             } else if (state is SearchSuccessState){
-              print('inside success state');
               searchList = state.searchList;
               return resultList();
             } else if (state is UserProfileLoadingState){
@@ -80,8 +77,6 @@ class _SearchTabState extends State<SearchTab> {
           }
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
-
     );
   }
 
@@ -96,7 +91,6 @@ class _SearchTabState extends State<SearchTab> {
           focusColor: HexColor("#3c1e08"),
         ),
         onChanged: (text){
-          print("text: ${text}");
           if (text.length > 0){
             userBloc.add(SearchUserPressed(name: text.trim()));
           } else{
@@ -108,9 +102,7 @@ class _SearchTabState extends State<SearchTab> {
   }
 
   Widget resultList(){
-    print("list: ${searchList.length}");
-    return 
-      Padding(
+    return Padding(
       padding: const EdgeInsets.all(10),
       child: ListView.builder(
         itemCount: searchList.length,

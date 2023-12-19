@@ -17,7 +17,6 @@ import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/model/post/post.dart';
 import 'package:CatViP/model/user/user_model.dart';
-import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/cat/createcat_view.dart';
@@ -72,6 +71,13 @@ class _ProfileViewState extends State<ProfileView> {
     _pageController = PageController();
     super.initState();
   }
+
+  Future<void> refreshPage() async {
+    userBloc.add(StartLoadProfile());
+    catBloc.add(StartLoadCat());
+    postBloc.add(StartLoadOwnPost());
+  }
+
   late final msg = BlocBuilder<UserProfileBloc, UserProfileState>(
       builder: (context, state){
         if (state is UserProfileLoadingState){
@@ -150,42 +156,46 @@ class _ProfileViewState extends State<ProfileView> {
               user = state.user;
               expertMsg = user.validToApply! == 1 ? viewExpert : user.validToApply! == 0 ? applyExpert : checkExpert;
               message = user.username ?? "Welcome";
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _userDetails(),
-                    BlocBuilder<CatProfileBloc, CatProfileState>(
-                      builder: (context, state) {
-                        if (state is CatProfileLoadingState) {
-                          return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                        }
-                        else if (state is CatProfileLoadedState) {
-                          cats = state.cats;
-                          return _getAllCats();
-                        }
-                        else {
-                          return Container(child: const Text("Add your own cat now!", style: TextStyle(fontSize: 16))); // Handle other cases
-                        }
-                      },
-                    ),
-                    BlocBuilder<GetPostBloc, GetPostState>(
-                      builder: (context, state) {
-                        if (state is GetPostLoading) {
-                          return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                        } else if (state is GetPostLoaded) {
-                          listPost = state.postList.reversed.toList();
-                          return _getAllPosts();
-                        } else {
-                          return Center(
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Text("Create your first post today!",style: TextStyle(fontSize: 16)),
-                              )
-                          ); // Handle other cases
-                        }
-                      },
-                    ),
-                  ],
+              return RefreshIndicator(
+                onRefresh: refreshPage,
+                color: HexColor("#3c1e08"),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _userDetails(),
+                      BlocBuilder<CatProfileBloc, CatProfileState>(
+                        builder: (context, state) {
+                          if (state is CatProfileLoadingState) {
+                            return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                          }
+                          else if (state is CatProfileLoadedState) {
+                            cats = state.cats;
+                            return _getAllCats();
+                          }
+                          else {
+                            return Container(child: const Text("Add your own cat now!", style: TextStyle(fontSize: 16))); // Handle other cases
+                          }
+                        },
+                      ),
+                      BlocBuilder<GetPostBloc, GetPostState>(
+                        builder: (context, state) {
+                          if (state is GetPostLoading) {
+                            return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                          } else if (state is GetPostLoaded) {
+                            listPost = state.postList.reversed.toList();
+                            return _getAllPosts();
+                          } else {
+                            return Center(
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  child: Text("Create your first post today!",style: TextStyle(fontSize: 16)),
+                                )
+                            ); // Handle other cases
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else {
@@ -194,7 +204,6 @@ class _ProfileViewState extends State<ProfileView> {
           },
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 
@@ -461,7 +470,6 @@ class _ProfileViewState extends State<ProfileView> {
           itemCount: listPost.length,
           itemBuilder: (context, index) {
             final Post post = listPost[index];
-            print("Post: ${post.toJson()}");
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -618,7 +626,6 @@ class _ProfileViewState extends State<ProfileView> {
                         setState(() {
                           post.likeCount = post.likeCount! + (isThumbsUpSelected ? 1 : -1);
                         });
-                        print('Is Thumbs Up Selected: $isThumbsUpSelected');
                       },
                     ),
                     SizedBox(width: 4.0),
@@ -693,8 +700,8 @@ class _ProfileViewState extends State<ProfileView> {
 
     return Container(
       height: post.postImages != null && post.postImages!.isNotEmpty
-          ? MediaQuery.of(context).size.width // Set height to screen width if there are images
-          : 0, // Set height to 0 if postImages is null or empty
+          ? MediaQuery.of(context).size.width
+          : 0,
       child: post.postImages != null && post.postImages!.isNotEmpty
           ? Column(
         children: [

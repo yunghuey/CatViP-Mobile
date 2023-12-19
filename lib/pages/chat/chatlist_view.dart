@@ -24,6 +24,11 @@ class _ChatListViewState extends State<ChatListView> {
     chatBloc.add(ChatListLoadEvent());
     super.initState();
   }
+
+  Future<void> refreshChat() async {
+    chatBloc.add(ChatListLoadEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,11 +44,15 @@ class _ChatListViewState extends State<ChatListView> {
           if (state is ChatLoadingState){
             return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
           } else if (state is ChatListLoaded){
-            print("chat list inside loaded state");
             return resultList(state.chatlist);
           } else if (state is ChatListEmpty){
-            return Container(
-              child: Text(state.message),
+            return RefreshIndicator(
+              onRefresh: refreshChat,
+              color: HexColor("#3c1e08"),
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Text(state.message, style: TextStyle(fontSize: 17,), textAlign: TextAlign.center,),
+              ),
             );
           }
           return Container(
@@ -55,54 +64,58 @@ class _ChatListViewState extends State<ChatListView> {
   }
 
   Widget resultList(List<ChatListModel> chatlist){
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: ListView.separated(
-        itemCount: chatlist.length,
-        itemBuilder: (context, index){
-          var chat = chatlist[index];
-          return InkWell(
-            onTap: (){
-              Navigator.push(context,
-              MaterialPageRoute(builder: (context) => SingleChatView(user:chat, existChat: true,))).then((value) => {    chatBloc.add(ChatListLoadEvent())
-              } );
-            //   navigate to single user chat
-            },
-            child: Card(
-              elevation: 0,
-              color: HexColor("#ecd9c9"),
-              margin: const EdgeInsets.only(top: 5.0, bottom: 13.0, left: 5.0),
-              child: Row(
-                children:[
-                  CircleAvatar(
-                  radius: 32,
-                  backgroundColor: Colors.white,
-                  backgroundImage: chat.profileImage != ""
-                      ? MemoryImage(base64Decode(chat.profileImage!))  as ImageProvider<Object>
-                      : AssetImage('assets/profileimage.png'),
-                ),
-                  Expanded(
-                    child: ListTile(
-                      title: Text(chat.fullname, style: TextStyle(fontWeight: FontWeight.bold),),
-                      subtitle: Text(chat.latestMsg),
-                    ),
+    return RefreshIndicator(
+      color: HexColor("#3c1e08"),
+      onRefresh: refreshChat,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ListView.separated(
+          itemCount: chatlist.length,
+          itemBuilder: (context, index){
+            var chat = chatlist[index];
+            return InkWell(
+              onTap: (){
+                Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SingleChatView(user:chat, existChat: true,))).then((value) => {    chatBloc.add(ChatListLoadEvent())
+                } );
+              //   navigate to single user chat
+              },
+              child: Card(
+                elevation: 0,
+                color: HexColor("#ecd9c9"),
+                margin: const EdgeInsets.only(top: 5.0, bottom: 13.0, left: 5.0),
+                child: Row(
+                  children:[
+                    CircleAvatar(
+                    radius: 32,
+                    backgroundColor: Colors.white,
+                    backgroundImage: chat.profileImage != ""
+                        ? MemoryImage(base64Decode(chat.profileImage!))  as ImageProvider<Object>
+                        : AssetImage('assets/profileimage.png'),
                   ),
-              ],
-            ),
+                    Expanded(
+                      child: ListTile(
+                        title: Text(chat.fullname, style: TextStyle(fontWeight: FontWeight.bold),),
+                        subtitle: Text(chat.latestMsg),
+                      ),
+                    ),
+                ],
+              ),
 
-            ),
-          );
+              ),
+            );
 
-        },
-        separatorBuilder: (context, index){
-          return Divider(
-            color: Colors.grey,
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-            height: 5,
-          );
-        }
+          },
+          separatorBuilder: (context, index){
+            return Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 10,
+              endIndent: 10,
+              height: 5,
+            );
+          }
+        ),
       ),
     );
   }

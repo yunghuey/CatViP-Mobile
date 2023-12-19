@@ -16,7 +16,6 @@ import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/model/chat/ChatListModel.dart';
 import 'package:CatViP/model/post/post.dart';
 import 'package:CatViP/model/user/user_model.dart';
-import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/chat/singlechat_view.dart';
 import 'package:CatViP/pages/post/comment.dart';
@@ -61,6 +60,13 @@ class _SearchViewState extends State<SearchView> {
     deleteBloc = BlocProvider.of<DeletePostBloc>(context);
     super.initState();
   }
+
+  Future<void> refreshPage() async {
+    userBloc.add(LoadSearchUserEvent(userid: userid));
+    catBloc.add(SearchReloadAllCatEvent(userID: userid));
+    postBloc.add(LoadSearchAllPost(userid: userid));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,7 +164,6 @@ class _SearchViewState extends State<SearchView> {
           ),
         ),
       ), // bloclistner
-      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 
@@ -212,29 +217,33 @@ class _SearchViewState extends State<SearchView> {
   }
 
   Widget _userDetails(){
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 15.0, top: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _profileImage(),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _followers(),
-                    _following(),
-                    _tipsPost(),
-                  ],
+    return RefreshIndicator(
+      onRefresh: refreshPage,
+      color: HexColor("#3c1e08"),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 15.0, top: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _profileImage(),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _followers(),
+                      _following(),
+                      _tipsPost(),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        _buttons(),
-      ],
+          _buttons(),
+        ],
+      ),
     );
   }
 
