@@ -20,7 +20,6 @@ import '../../bloc/post/new_post/new_post_event.dart';
 import '../../bloc/post/new_post/new_post_state.dart';
 import '../../model/cat/cat_model.dart';
 import '../../model/post/postType.dart';
-import '../../pageRoutes/bottom_navigation_bar.dart';
 
 class NewPost extends StatefulWidget {
   const NewPost({Key? key}) : super(key: key);
@@ -74,7 +73,6 @@ class _NewPostState extends State<NewPost> {
         });
 
         // Now base64Images list contains all base64-encoded strings of the selected images
-        print(base64Images);
       }
     } catch (e) {
       print("Error picking images: $e");
@@ -95,11 +93,9 @@ class _NewPostState extends State<NewPost> {
     try {
       List<int> imageBytes = await imageFile.readAsBytes();
       String base64String = base64Encode(Uint8List.fromList(imageBytes));
-      print(base64Encode(Uint8List.fromList(imageBytes)));
       //return base64String;
       return base64Encode(Uint8List.fromList(imageBytes));
     } catch (e) {
-      print("Error reading image as bytes: $e");
       return null;
     }
   }
@@ -212,7 +208,6 @@ class _NewPostState extends State<NewPost> {
           ),
         ),
       ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
 
     );
@@ -373,7 +368,6 @@ class _NewPostState extends State<NewPost> {
         height: 55.0,
         child: ElevatedButton(
           onPressed: () async {
-            print(captionController.text);
             //if(_formKey.currentState!.validate()){
               if (base64Images != null) {
                 
@@ -391,7 +385,7 @@ class _NewPostState extends State<NewPost> {
                 ));
               }
               else {
-                print("image is null");
+                // image is null
                 createBloc.add(PostButtonPressed(
                   description: captionController.text.trim(),
                   postTypeId: selectedPostType?.id ?? 0,
@@ -516,7 +510,6 @@ class _NewPostState extends State<NewPost> {
             return Text('Error: ${state.error}');
           } else if (state is GetOwnCatsLoaded) {
             cats = state.cats;
-            print("success"); // Update the OwnCats list
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

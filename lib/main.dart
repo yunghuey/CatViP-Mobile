@@ -20,7 +20,6 @@ import 'package:CatViP/bloc/user/relation_bloc.dart';
 import 'package:CatViP/bloc/user/relation_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
-import 'package:CatViP/pageRoutes/navigator.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:CatViP/repository/cat_repo.dart';
@@ -141,8 +140,6 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: title,
-        initialRoute: MyNavigator.initialRoute,
-        onGenerateRoute: MyNavigator.generateRoute,
         theme: ThemeData(
             scaffoldBackgroundColor: HexColor("#ecd9c9"),
             fontFamily: 'Times New Roman',

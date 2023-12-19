@@ -16,7 +16,6 @@ import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/model/chat/ChatListModel.dart';
 import 'package:CatViP/model/post/post.dart';
 import 'package:CatViP/model/user/user_model.dart';
-import 'package:CatViP/pageRoutes/bottom_navigation_bar.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/chat/singlechat_view.dart';
 import 'package:CatViP/pages/post/comment.dart';
@@ -158,7 +157,6 @@ class _SearchViewState extends State<SearchView> {
           ),
         ),
       ), // bloclistner
-      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 

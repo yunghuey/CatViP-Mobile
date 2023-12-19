@@ -1,4 +1,5 @@
 import 'package:CatViP/bloc/authentication/login/login_state.dart';
+import 'package:CatViP/pages/RoutePage.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class _SplashState extends State<Splash> {
           if (state is RefreshTokenSuccess){
             Navigator.pushAndRemoveUntil(
                 context, MaterialPageRoute(
-                builder: (context) => HomePage()),
+                builder: (context) => RoutePage()),
                     (Route<dynamic> route) => false
             );
           } else if (state is RefreshTokenFail || state is LoginInitState){
@@ -81,8 +82,7 @@ class _SplashState extends State<Splash> {
                 alignment: Alignment.center,
               ),
               SizedBox(height: 10.0),
-              Text(
-                'Angles with whiskers',
+              Text('Angles with whiskers',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               SizedBox(height: 5.0),

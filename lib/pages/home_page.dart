@@ -6,7 +6,6 @@ import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CasesReport.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +13,6 @@ import '../bloc/post/ReportPost/reportPost_bloc.dart';
 import '../bloc/post/ReportPost/reportPost_event.dart';
 import '../bloc/post/ReportPost/reportPost_state.dart';
 import '../model/post/post.dart';
-import '../pageRoutes/bottom_navigation_bar.dart';
 import '../widgets/widgets.dart';
 
 
@@ -40,7 +38,6 @@ class _HomePageState extends State<HomePage> {
   Set<int> reportedPostIds = {};
   PageController _pageController = PageController();
   int _currentPage = 0;
-
 
   late List<Post> postList;
   @override
@@ -76,7 +73,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body: _buildListUser(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }

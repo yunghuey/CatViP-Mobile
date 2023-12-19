@@ -18,7 +18,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState>{
       if (hasList.length >0){
         emit(ChatListLoaded(chatlist: hasList));
       } else{
-        emit(ChatListEmpty(message: "No message yet"));
+        emit(ChatListEmpty(message: "You have not send a message before. Find a friend to chat today!"));
       }
     });
 
@@ -39,12 +39,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState>{
 
     on<CheckMessageHistoryEvent>((event, emit) async {
       emit(ChatLoadingState());
-      print("bloc: check message history");
       List<MessageModel>? hasList = await repo.getAllMessages(event.userid);
       if(hasList.length > 0) {
         emit(MessageListLoaded(messagelist: hasList));
       } else{
-        print("no message history");
         emit(CreateNewChatState());
       }
     });

@@ -106,10 +106,9 @@ class _LoginViewState extends State<LoginView> {
         alignment: Alignment.topRight,
         child: TextButton(
           onPressed: (){
-            print("forgot password");
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPwd()));
           } ,
-          child: Text('Forgot password', style: Theme.of(context).textTheme.bodyMedium,),
+          child: Text('Forgot password', style: Theme.of(context).textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),),
         )
       ),
     );
@@ -174,8 +173,6 @@ class _LoginViewState extends State<LoginView> {
         height: 55.0,
         child: ElevatedButton(
             onPressed: () {
-                print(usernameController.text);
-                print(pwdController.text);
                 if (usernameController.text != "" && pwdController.text != "" ){
                   authBloc.add(LoginButtonPressed(
                     username: usernameController.text,

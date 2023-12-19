@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_bloc.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_event.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_state.dart';
-import '../../pageRoutes/bottom_navigation_bar.dart';
 import '../../widgets/widgets.dart';
 import 'UpdateCasesReport.dart';
 
@@ -86,7 +85,6 @@ class _OwnReportState extends State<OwnReport> {
           ],
         ),
         body: _buildListUser(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }
@@ -150,6 +148,9 @@ class _OwnReportState extends State<OwnReport> {
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => NewReport())
+                        ).then((result) {
+                              caseBloc.add(StartLoadOwnCase());
+                            }
                         );
                       },
                       child: Icon(Icons.add),

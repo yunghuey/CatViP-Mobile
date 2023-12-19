@@ -7,7 +7,6 @@ import 'package:CatViP/bloc/post/OwnCats/ownCats_state.dart';
 import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
 import 'package:CatViP/bloc/report%20case/new%20report%20case/newCase_bloc.dart';
 import 'package:CatViP/bloc/report%20case/new%20report%20case/newCase_event.dart';
-import 'package:CatViP/pages/home_page.dart';
 import 'package:CatViP/pages/report/current_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,12 +14,9 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../bloc/post/new_post/new_post_event.dart';
 import '../../bloc/post/new_post/new_post_state.dart';
 import '../../bloc/report case/new report case/newCase_state.dart';
 import '../../model/cat/cat_model.dart';
-import '../../model/post/postType.dart';
-import '../../pageRoutes/bottom_navigation_bar.dart';
 import 'getOwnReport.dart';
 
 class NewReport extends StatefulWidget {
@@ -130,10 +126,7 @@ class _NewReportState extends State<NewReport> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Successfully Report')),
               );
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => OwnReport()),
-              );
+              Navigator.pop(context, true);
             } else if (state is NewCaseFailState) {
               getMessage().then((message) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -193,7 +186,6 @@ class _NewReportState extends State<NewReport> {
               ),
             ),
           ),
-          bottomNavigationBar: CustomBottomNavigationBar(),
         ),
       ),
     );
@@ -578,7 +570,4 @@ class _NewReportState extends State<NewReport> {
       ),
     );
   }
-
-
-
 }

@@ -3,6 +3,7 @@ import 'package:CatViP/bloc/post/ReportPost/reportPost_bloc.dart';
 import 'package:CatViP/bloc/post/ReportPost/reportPost_event.dart';
 import 'package:CatViP/bloc/post/ReportPost/reportPost_state.dart';
 import 'package:CatViP/model/caseReport/caseReport.dart';
+import 'package:CatViP/pages/chat/chatlist_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -10,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_bloc.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_event.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_state.dart';
-import '../../pageRoutes/bottom_navigation_bar.dart';
 import '../../widgets/widgets.dart';
 import 'CaseReportComment.dart';
 
@@ -60,14 +60,17 @@ class _CasesReportsState extends State<CaseReports> {
           // automaticallyImplyLeading: false,
           actions: [
             IconButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => ChatListView(),
+                ),);
+              },
               icon: Icon(Icons.messenger_outline, color: HexColor("#3c1e08"),),
               color: Colors.white,
             ),
           ],
         ),
         body: _buildListUser(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }

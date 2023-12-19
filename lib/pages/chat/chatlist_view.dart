@@ -39,11 +39,11 @@ class _ChatListViewState extends State<ChatListView> {
           if (state is ChatLoadingState){
             return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
           } else if (state is ChatListLoaded){
-            print("chat list inside loaded state");
             return resultList(state.chatlist);
           } else if (state is ChatListEmpty){
-            return Container(
-              child: Text(state.message),
+            return Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Text(state.message, style: TextStyle(fontSize: 17,), textAlign: TextAlign.center,),
             );
           }
           return Container(
