@@ -268,10 +268,11 @@ class _NewPostState extends State<NewPost> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet(context)),
-              );
+              // showModalBottomSheet(
+              //   context: context,
+              //   builder: ((builder) => bottomSheet(context)),
+              // );
+              pickImages(ImageSource.gallery);
             },
             child: Container(
               width: 300, // Set your desired width for the square box
@@ -375,6 +376,12 @@ class _NewPostState extends State<NewPost> {
             print(captionController.text);
             //if(_formKey.currentState!.validate()){
               if (base64Images != null) {
+                
+                if (captionController.text.isEmpty){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Caption must be filled up'))
+                  );
+                }
 
                 createBloc.add(PostButtonPressed(
                   description: captionController.text.trim(),
@@ -571,7 +578,5 @@ class _NewPostState extends State<NewPost> {
       ),
     );
   }
-
-
 
 }

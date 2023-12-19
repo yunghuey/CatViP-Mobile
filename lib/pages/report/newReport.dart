@@ -148,7 +148,7 @@ class _NewReportState extends State<NewReport> {
         inAsyncCall: showSpinner,
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Repost Case", style: Theme.of(context).textTheme.bodyLarge),
+            title: Text("Report Case", style: Theme.of(context).textTheme.bodyLarge),
             backgroundColor: HexColor("#ecd9c9"),
             bottomOpacity: 0.0,
             elevation: 0.0,
@@ -249,10 +249,11 @@ class _NewReportState extends State<NewReport> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet(context)),
-              );
+              pickImages(ImageSource.gallery);
+              // showModalBottomSheet(
+              //   context: context,
+              //   builder: ((builder) => bottomSheet(context)),
+              // );
             },
             child: Container(
               width: 300, // Set your desired width for the square box
@@ -356,7 +357,14 @@ class _NewReportState extends State<NewReport> {
             print(captionController.text);
             //if(_formKey.currentState!.validate()){
             if (base64Images != null) {
-
+              if (captionController.text.isEmpty || addressController.text.isEmpty){
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Description and address must be filled up'),
+                  ),
+                );
+                return;
+              }
               caseBloc.add(CaseReportButtonPressed(
                   description: captionController.text,
                   address: addressController.text,
