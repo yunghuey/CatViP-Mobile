@@ -78,7 +78,7 @@ class _SplashState extends State<Splash> {
               ),
               SizedBox(height: 10.0),
               Container(
-                child: Image.asset('assets/logo.png', width: 250.0),
+                child: Image.asset('assets/logo.png', width: 200.0),
                 alignment: Alignment.center,
               ),
               SizedBox(height: 10.0),

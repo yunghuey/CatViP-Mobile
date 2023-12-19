@@ -71,6 +71,13 @@ class _ProfileViewState extends State<ProfileView> {
     _pageController = PageController();
     super.initState();
   }
+
+  Future<void> refreshPage() async {
+    userBloc.add(StartLoadProfile());
+    catBloc.add(StartLoadCat());
+    postBloc.add(StartLoadOwnPost());
+  }
+
   late final msg = BlocBuilder<UserProfileBloc, UserProfileState>(
       builder: (context, state){
         if (state is UserProfileLoadingState){
@@ -149,42 +156,46 @@ class _ProfileViewState extends State<ProfileView> {
               user = state.user;
               expertMsg = user.validToApply! == 1 ? viewExpert : user.validToApply! == 0 ? applyExpert : checkExpert;
               message = user.username ?? "Welcome";
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _userDetails(),
-                    BlocBuilder<CatProfileBloc, CatProfileState>(
-                      builder: (context, state) {
-                        if (state is CatProfileLoadingState) {
-                          return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                        }
-                        else if (state is CatProfileLoadedState) {
-                          cats = state.cats;
-                          return _getAllCats();
-                        }
-                        else {
-                          return Container(child: const Text("Add your own cat now!", style: TextStyle(fontSize: 16))); // Handle other cases
-                        }
-                      },
-                    ),
-                    BlocBuilder<GetPostBloc, GetPostState>(
-                      builder: (context, state) {
-                        if (state is GetPostLoading) {
-                          return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                        } else if (state is GetPostLoaded) {
-                          listPost = state.postList.reversed.toList();
-                          return _getAllPosts();
-                        } else {
-                          return Center(
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Text("Create your first post today!",style: TextStyle(fontSize: 16)),
-                              )
-                          ); // Handle other cases
-                        }
-                      },
-                    ),
-                  ],
+              return RefreshIndicator(
+                onRefresh: refreshPage,
+                color: HexColor("#3c1e08"),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _userDetails(),
+                      BlocBuilder<CatProfileBloc, CatProfileState>(
+                        builder: (context, state) {
+                          if (state is CatProfileLoadingState) {
+                            return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                          }
+                          else if (state is CatProfileLoadedState) {
+                            cats = state.cats;
+                            return _getAllCats();
+                          }
+                          else {
+                            return Container(child: const Text("Add your own cat now!", style: TextStyle(fontSize: 16))); // Handle other cases
+                          }
+                        },
+                      ),
+                      BlocBuilder<GetPostBloc, GetPostState>(
+                        builder: (context, state) {
+                          if (state is GetPostLoading) {
+                            return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                          } else if (state is GetPostLoaded) {
+                            listPost = state.postList.reversed.toList();
+                            return _getAllPosts();
+                          } else {
+                            return Center(
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  child: Text("Create your first post today!",style: TextStyle(fontSize: 16)),
+                                )
+                            ); // Handle other cases
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else {
