@@ -249,10 +249,11 @@ class _NewReportState extends State<NewReport> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet(context)),
-              );
+              pickImages(ImageSource.gallery);
+              // showModalBottomSheet(
+              //   context: context,
+              //   builder: ((builder) => bottomSheet(context)),
+              // );
             },
             child: Container(
               width: 300, // Set your desired width for the square box
