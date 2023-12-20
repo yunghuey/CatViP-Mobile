@@ -145,14 +145,14 @@ class _NewReportState extends State<NewReport> {
             backgroundColor: HexColor("#ecd9c9"),
             bottomOpacity: 0.0,
             elevation: 0.0,
-            automaticallyImplyLeading: false,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              color: HexColor("#3c1e08"),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => OwnReport()));
-              },
-            ),
+            automaticallyImplyLeading: true,
+            // leading: IconButton(
+            //   icon: Icon(Icons.arrow_back),
+            //   color: HexColor("#3c1e08"),
+            //   onPressed: () {
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) => OwnReport()));
+            //   },
+            // ),
           ),
           body: SingleChildScrollView(
             child: Center(
@@ -327,7 +327,7 @@ class _NewReportState extends State<NewReport> {
                 );
               },
               child: Icon(
-                Icons.camera_alt,
+                Icons.add,
                 color: Colors.brown,
                 size: 28.0,
               ),
