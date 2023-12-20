@@ -11,11 +11,9 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../bloc/post/DeletePost/deletePost_bloc.dart';
 import '../../model/post/post.dart';
-import '../../pageRoutes/bottom_navigation_bar.dart';
 import '../../widgets/widgets.dart';
 import '../user/editpost_view.dart';
 import 'comment.dart';
-
 
 class OwnPosts extends StatefulWidget {
   static final GlobalKey<_OwnPostsState> ownPostsKey = GlobalKey<_OwnPostsState>();
@@ -52,7 +50,6 @@ class _OwnPostsState extends State<OwnPosts> {
         bottomOpacity: 0.0,
         elevation: 0.0,
         centerTitle: true,
-        //automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -72,7 +69,6 @@ class _OwnPostsState extends State<OwnPosts> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 
@@ -92,7 +88,6 @@ class _OwnPostsState extends State<OwnPosts> {
           itemCount: listPost.length,
           itemBuilder: (context, index) {
             final Post post = listPost[index];
-            print("Post: ${post.toJson()}");
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -187,7 +182,6 @@ class _OwnPostsState extends State<OwnPosts> {
                         setState(() {
                           post.likeCount = post.likeCount! + (isThumbsUpSelected ? 1 : -1);
                         });
-                        print('Is Thumbs Up Selected: $isThumbsUpSelected');
                       },
                     ),
                     SizedBox(width: 4.0),

@@ -104,11 +104,11 @@ class _CreateCatViewState extends State<CreateCatView> {
                   _insertImage(context),
                   msgimage,
                   _catNameField(),
-                  SizedBox(height: 5.0),
                   _catNameText(),
-                  _catgenderField(),
                   _catdobField(),
                   _catDescField(),
+                  SizedBox(height: 5.0),
+                  _catgenderField(),
                   SizedBox(height: 15.0),
                   formstatus,
                   _createCatButton(),
@@ -142,6 +142,7 @@ class _CreateCatViewState extends State<CreateCatView> {
         controller: catnameController,
         decoration:  InputDecoration(
             labelText: 'Cat Name',
+            prefixIcon: Icon(Icons.account_box_rounded, color: HexColor("#3c1e08"),),
             labelStyle: TextStyle(color: HexColor("#3c1e08")),
             focusColor: HexColor("#3c1e08"),
             enabledBorder: UnderlineInputBorder(
@@ -168,6 +169,7 @@ class _CreateCatViewState extends State<CreateCatView> {
       controller: catdescController,
       decoration:  InputDecoration(
           labelText: 'Cat Description/Biodata',
+          prefixIcon: Icon(Icons.text_format_outlined, color: HexColor("#3c1e08"),),
           labelStyle: TextStyle(color: HexColor("#3c1e08")),
           focusColor: HexColor("#3c1e08"),
           enabledBorder: UnderlineInputBorder(
@@ -268,6 +270,7 @@ class _CreateCatViewState extends State<CreateCatView> {
         controller: dateController,
         decoration: InputDecoration(
           labelText: "Date of birth",
+          prefixIcon: Icon(Icons.date_range_rounded, color: HexColor("#3c1e08"),),
           focusColor: HexColor("#3c1e08"),
           labelStyle: TextStyle(color: HexColor("#3c1e08")),
           enabledBorder: UnderlineInputBorder(

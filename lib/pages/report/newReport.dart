@@ -7,7 +7,6 @@ import 'package:CatViP/bloc/post/OwnCats/ownCats_state.dart';
 import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
 import 'package:CatViP/bloc/report%20case/new%20report%20case/newCase_bloc.dart';
 import 'package:CatViP/bloc/report%20case/new%20report%20case/newCase_event.dart';
-import 'package:CatViP/pages/home_page.dart';
 import 'package:CatViP/pages/report/current_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,12 +14,9 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../bloc/post/new_post/new_post_event.dart';
 import '../../bloc/post/new_post/new_post_state.dart';
 import '../../bloc/report case/new report case/newCase_state.dart';
 import '../../model/cat/cat_model.dart';
-import '../../model/post/postType.dart';
-import '../../pageRoutes/bottom_navigation_bar.dart';
 import 'getOwnReport.dart';
 
 class NewReport extends StatefulWidget {
@@ -130,10 +126,7 @@ class _NewReportState extends State<NewReport> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Successfully Report')),
               );
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => OwnReport()),
-              );
+              Navigator.pop(context, true);
             } else if (state is NewCaseFailState) {
               getMessage().then((message) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -148,18 +141,18 @@ class _NewReportState extends State<NewReport> {
         inAsyncCall: showSpinner,
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Repost Case", style: Theme.of(context).textTheme.bodyLarge),
+            title: Text("Report Case", style: Theme.of(context).textTheme.bodyLarge),
             backgroundColor: HexColor("#ecd9c9"),
             bottomOpacity: 0.0,
             elevation: 0.0,
-            automaticallyImplyLeading: false,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              color: HexColor("#3c1e08"),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => OwnReport()));
-              },
-            ),
+            automaticallyImplyLeading: true,
+            // leading: IconButton(
+            //   icon: Icon(Icons.arrow_back),
+            //   color: HexColor("#3c1e08"),
+            //   onPressed: () {
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) => OwnReport()));
+            //   },
+            // ),
           ),
           body: SingleChildScrollView(
             child: Center(
@@ -193,7 +186,6 @@ class _NewReportState extends State<NewReport> {
               ),
             ),
           ),
-          bottomNavigationBar: CustomBottomNavigationBar(),
         ),
       ),
     );
@@ -249,10 +241,11 @@ class _NewReportState extends State<NewReport> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet(context)),
-              );
+              pickImages(ImageSource.gallery);
+              // showModalBottomSheet(
+              //   context: context,
+              //   builder: ((builder) => bottomSheet(context)),
+              // );
             },
             child: Container(
               width: 300, // Set your desired width for the square box
@@ -334,7 +327,7 @@ class _NewReportState extends State<NewReport> {
                 );
               },
               child: Icon(
-                Icons.camera_alt,
+                Icons.add,
                 color: Colors.brown,
                 size: 28.0,
               ),
@@ -356,7 +349,14 @@ class _NewReportState extends State<NewReport> {
             print(captionController.text);
             //if(_formKey.currentState!.validate()){
             if (base64Images != null) {
-
+              if (captionController.text.isEmpty || addressController.text.isEmpty){
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Description and address must be filled up'),
+                  ),
+                );
+                return;
+              }
               caseBloc.add(CaseReportButtonPressed(
                   description: captionController.text,
                   address: addressController.text,
@@ -497,6 +497,7 @@ class _NewReportState extends State<NewReport> {
                     Radio<int>(
                       value: 1,
                       groupValue: selectedCatId == null ? 0 : 1,
+                      activeColor: HexColor('#3c1e08'),
                       onChanged: (value) {
                         setState(() {
                           selectedCatId = value == 1 ? (cats.isNotEmpty ? cats.first.id : null) : null;
@@ -516,6 +517,7 @@ class _NewReportState extends State<NewReport> {
                     Text('Yes'),
                     Radio<int>(
                       value: 0,
+                      activeColor: HexColor('#3c1e08'),
                       groupValue: selectedCatId == null ? 0 : 1,
                       onChanged: (value) {
                         setState(() {
@@ -568,7 +570,4 @@ class _NewReportState extends State<NewReport> {
       ),
     );
   }
-
-
-
 }

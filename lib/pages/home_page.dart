@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:CatViP/pages/chat/chatlist_view.dart';
 import 'package:CatViP/pages/post/comment.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CasesReport.dart';
+import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +14,6 @@ import '../bloc/post/ReportPost/reportPost_bloc.dart';
 import '../bloc/post/ReportPost/reportPost_event.dart';
 import '../bloc/post/ReportPost/reportPost_state.dart';
 import '../model/post/post.dart';
-import '../pageRoutes/bottom_navigation_bar.dart';
 import '../widgets/widgets.dart';
 
 
@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
   PageController _pageController = PageController();
   int _currentPage = 0;
 
-
   late List<Post> postList;
   @override
   void initState() {
@@ -56,22 +55,31 @@ class _HomePageState extends State<HomePage> {
       create: (context) => _postBloc,
       child: Scaffold(
         appBar: AppBar(
-          //flexibleSpace: _logoImage(),
-          title: Text('CatViP',style: Theme.of(context).textTheme.bodyLarge),
+          title:
+          Row(
+            children: [
+              Image.asset('assets/logo.png', fit: BoxFit.contain, height: 50),
+              SizedBox(width: 8.0,),
+              Text('CatViP',style: Theme.of(context).textTheme.bodyLarge),
+            ],
+          ),
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
           automaticallyImplyLeading: false,
           actions: [
             IconButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => ChatListView(),
+                ),);
+              },
               icon: Icon(Icons.messenger_outline, color: HexColor("#3c1e08"),),
               color: Colors.white,
             ),
           ],
         ),
         body: _buildListUser(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }
@@ -96,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator(color:  HexColor("#3c1e08")),
               );
             } else if (state is GetPostLoaded) {
-              postList = state.postList.reversed.toList();
+              postList = state.postList;
               return Theme(
                 data: Theme.of(context).copyWith(
                   colorScheme: Theme.of(context).colorScheme.copyWith(primary: HexColor("#3c1e08")),
@@ -135,10 +143,18 @@ class _HomePageState extends State<HomePage> {
                                               mainAxisSize: MainAxisSize.min,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  post.username!,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    // Navigator.push(
+                                                    //   context,
+                                                    //   MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
+                                                    // );
+                                                  },
+                                                  child: Text(
+                                                    post.username!,
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -384,53 +400,52 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget displayImage(Post post) {
-
     return Container(
       height: post.postImages != null && post.postImages!.isNotEmpty
           ? MediaQuery.of(context).size.width // Set height to screen width if there are images
           : 0, // Set height to 0 if postImages is null or empty
       child: post.postImages != null && post.postImages!.isNotEmpty
           ? Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: post.postImages!.length,
-              itemBuilder: (context, index) {
-                return AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Image.memory(
-                    base64Decode(post.postImages![index].image!),
-                    fit: BoxFit.cover,
-                  ),
-                );
-              },
-              onPageChanged: (int page) {
-                setState(() {
-                  _currentPage = page;
-                });
-              },
-            ),
-          ),
-          post.postImages!.length > 1
-              ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              post.postImages!.length,
-                  (index) => Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentPage == index
-                        ? Colors.blue // Highlight the current page indicator
-                        : Colors.grey,
-                  ),
+              children: [
+                Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: post.postImages!.length,
+                      itemBuilder: (context, index) {
+                        return AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Image.memory(
+                            base64Decode(post.postImages![index].image!),
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                      onPageChanged: (int page) {
+                        setState(() {
+                          _currentPage = page;
+                        });
+                      },
+                    ),
                 ),
-              ),
-            ),
+                post.postImages!.length > 1
+                    ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    post.postImages!.length,
+                        (index) => Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentPage == index
+                              ? HexColor("#3c1e08") // Highlight the current page indicator
+                              : Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
           )
               : Container(),
         ],

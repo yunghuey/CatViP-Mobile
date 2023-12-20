@@ -15,7 +15,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
 
-  static const CameraPosition initialCameraPosition = CameraPosition(target: LatLng(2.1960, 102.2405), zoom: 14.0);
+  static const CameraPosition initialCameraPosition = CameraPosition(target: LatLng(2.30833, 102.31767), zoom: 14.0);
   final String gApiKey = "AIzaSyCB7cpPFXRdOFprDVVtsOts8SM5zHRaulQ";
   Set<Marker> markerList = {};
   late double? userLat;

@@ -10,6 +10,8 @@ import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
 import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_bloc.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_state.dart';
+import 'package:CatViP/bloc/chat/chat_bloc.dart';
+import 'package:CatViP/bloc/chat/chat_state.dart';
 import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
@@ -18,10 +20,10 @@ import 'package:CatViP/bloc/user/relation_bloc.dart';
 import 'package:CatViP/bloc/user/relation_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/bloc/user/userprofile_state.dart';
-import 'package:CatViP/pageRoutes/navigator.dart';
 import 'package:CatViP/pages/splashscreen.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:CatViP/repository/cat_repo.dart';
+import 'package:CatViP/repository/chat_repo.dart';
 import 'package:CatViP/repository/expert_repo.dart';
 import 'package:CatViP/repository/postType_repo.dart';
 import 'package:CatViP/repository/post_repo.dart';
@@ -42,7 +44,6 @@ import 'bloc/post/ReportPost/reportPost_state.dart';
 import 'bloc/post/new_post/new_post_bloc.dart';
 import 'bloc/post/new_post/new_post_state.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
 import 'bloc/report case/EditCaseReport/editCaseReport_bloc.dart';
 import 'bloc/report case/EditCaseReport/editCaseReport_state.dart';
 import 'bloc/report case/RevokeCaseReport/revokeCase_bloc.dart';
@@ -129,6 +130,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<RevokeCaseBloc>(
           create: (context) => RevokeCaseBloc(RevokeCaseInitState(), ReportCaseRepository()),
         ),
+        BlocProvider<ChatBloc>(
+          create: (context) => ChatBloc(ChatInitState(), ChatRepository()),
+        ),
         BlocProvider<GetPostTypeBloc>(
           create: (context) => GetPostTypeBloc(GetPostTypeInitial(), PostTypeRepository()),
         ),
@@ -136,8 +140,6 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: title,
-        initialRoute: MyNavigator.initialRoute,
-        onGenerateRoute: MyNavigator.generateRoute,
         theme: ThemeData(
             scaffoldBackgroundColor: HexColor("#ecd9c9"),
             fontFamily: 'Times New Roman',

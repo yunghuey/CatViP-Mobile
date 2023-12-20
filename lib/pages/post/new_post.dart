@@ -5,6 +5,7 @@ import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_event.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_state.dart';
 import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
+import 'package:CatViP/pages/RoutePage.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,6 @@ import '../../bloc/post/new_post/new_post_event.dart';
 import '../../bloc/post/new_post/new_post_state.dart';
 import '../../model/cat/cat_model.dart';
 import '../../model/post/postType.dart';
-import '../../pageRoutes/bottom_navigation_bar.dart';
 
 class NewPost extends StatefulWidget {
   const NewPost({Key? key}) : super(key: key);
@@ -74,7 +74,6 @@ class _NewPostState extends State<NewPost> {
         });
 
         // Now base64Images list contains all base64-encoded strings of the selected images
-        print(base64Images);
       }
     } catch (e) {
       print("Error picking images: $e");
@@ -95,11 +94,9 @@ class _NewPostState extends State<NewPost> {
     try {
       List<int> imageBytes = await imageFile.readAsBytes();
       String base64String = base64Encode(Uint8List.fromList(imageBytes));
-      print(base64Encode(Uint8List.fromList(imageBytes)));
       //return base64String;
       return base64Encode(Uint8List.fromList(imageBytes));
     } catch (e) {
-      print("Error reading image as bytes: $e");
       return null;
     }
   }
@@ -143,14 +140,14 @@ class _NewPostState extends State<NewPost> {
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: HexColor("#3c1e08"),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-            },
-          ),
+          // automaticallyImplyLeading: false,
+          // leading: IconButton(
+          //   icon: Icon(Icons.arrow_back),
+          //   color: HexColor("#3c1e08"),
+          //   onPressed: () {
+          //     Navigator.push(context, MaterialPageRoute(builder: (context) => RoutePage()));
+          //   },
+          // ),
         ),
         body:  MultiBlocListener(
           listeners: [
@@ -164,7 +161,7 @@ class _NewPostState extends State<NewPost> {
 
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => RoutePage()),
                     );
                   }
                   else if (state is NewPostFailState) {
@@ -212,7 +209,6 @@ class _NewPostState extends State<NewPost> {
           ),
         ),
       ),
-        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
 
     );
@@ -268,10 +264,11 @@ class _NewPostState extends State<NewPost> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet(context)),
-              );
+              // showModalBottomSheet(
+              //   context: context,
+              //   builder: ((builder) => bottomSheet(context)),
+              // );
+              pickImages(ImageSource.gallery);
             },
             child: Container(
               width: 300, // Set your desired width for the square box
@@ -352,8 +349,8 @@ class _NewPostState extends State<NewPost> {
                   builder: ((builder) => bottomSheet(context)),
                 );
               },
-              child: Icon(
-                Icons.camera_alt,
+              child: const Icon(
+                Icons.add,
                 color: Colors.brown,
                 size: 28.0,
               ),
@@ -372,9 +369,14 @@ class _NewPostState extends State<NewPost> {
         height: 55.0,
         child: ElevatedButton(
           onPressed: () async {
-            print(captionController.text);
             //if(_formKey.currentState!.validate()){
               if (base64Images != null) {
+                
+                if (captionController.text.isEmpty){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Caption must be filled up'))
+                  );
+                }
 
                 createBloc.add(PostButtonPressed(
                   description: captionController.text.trim(),
@@ -384,7 +386,7 @@ class _NewPostState extends State<NewPost> {
                 ));
               }
               else {
-                print("image is null");
+                // image is null
                 createBloc.add(PostButtonPressed(
                   description: captionController.text.trim(),
                   postTypeId: selectedPostType?.id ?? 0,
@@ -449,33 +451,40 @@ class _NewPostState extends State<NewPost> {
               selectedPostType = postTypes.first;
             }
 
-            return Row(
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'PostType',
-                  style: TextStyle(color: HexColor("#3c1e08")),
+                  'Post Type',
+                  style: TextStyle(color: HexColor("#3c1e08"), fontSize: 15),
                 ),
-                SizedBox(height: 10.0),
-                Wrap(
-                  spacing: 8.0,
-                  children: postTypes.map((postType) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Radio<PostType>(
-                          value: postType,
-                          groupValue: selectedPostType,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedPostType = value!;
-                            });
-                          },
-                        ),
-                        Text(postType.name! ?? "no data"),
-                      ],
-                    );
-                  }).toList(),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                    SizedBox(height: 10.0),
+                    Wrap(
+                      spacing: 8.0,
+                      children: postTypes.map((postType) {
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Radio<PostType>(
+                              value: postType,
+                              activeColor: HexColor('#3c1e08'),
+                              groupValue: selectedPostType,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedPostType = value!;
+                                });
+                              },
+                            ),
+                            Text(postType.name! ?? "no data", style: TextStyle(fontSize: 15),),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
               ],
             );
@@ -496,13 +505,12 @@ class _NewPostState extends State<NewPost> {
         builder: (context, state) {
           if (state is GetOwnCatsLoading) {
             // You can return a loading indicator or other UI elements here
-            return CircularProgressIndicator();
+            return CircularProgressIndicator(color: HexColor("#3c1e08"),);
           } else if (state is GetOwnCatsError) {
             // You can return an error message or other UI elements here
             return Text('Error: ${state.error}');
           } else if (state is GetOwnCatsLoaded) {
             cats = state.cats;
-            print("success"); // Update the OwnCats list
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -564,7 +572,5 @@ class _NewPostState extends State<NewPost> {
       ),
     );
   }
-
-
 
 }

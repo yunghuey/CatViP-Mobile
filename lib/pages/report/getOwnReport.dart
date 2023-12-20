@@ -1,6 +1,7 @@
 import 'package:CatViP/bloc/post/ReportPost/reportPost_bloc.dart';
 import 'package:CatViP/bloc/post/ReportPost/reportPost_state.dart';
 import 'package:CatViP/model/caseReport/caseReport.dart';
+import 'package:CatViP/pages/chat/chatlist_view.dart';
 import 'package:CatViP/pages/report/newReport.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_bloc.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_event.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_state.dart';
-import '../../pageRoutes/bottom_navigation_bar.dart';
 import '../../widgets/widgets.dart';
 import 'UpdateCasesReport.dart';
 
@@ -74,14 +74,17 @@ class _OwnReportState extends State<OwnReport> {
           automaticallyImplyLeading: false,
           actions: [
             IconButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => ChatListView(),
+                ),);
+              },
               icon: Icon(Icons.messenger_outline, color: HexColor("#3c1e08"),),
               color: Colors.white,
             ),
           ],
         ),
         body: _buildListUser(),
-        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }
@@ -145,6 +148,9 @@ class _OwnReportState extends State<OwnReport> {
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => NewReport())
+                        ).then((result) {
+                              caseBloc.add(StartLoadOwnCase());
+                            }
                         );
                       },
                       child: Icon(Icons.add),
@@ -162,7 +168,7 @@ class _OwnReportState extends State<OwnReport> {
   Widget listCase(List<CaseReport> caseList){
     return Stack(
       children: [
-        ListView.builder(
+        ListView.separated(
           itemCount: caseList.length,
           itemBuilder: (context, index) {
             final CaseReport caseReport = caseList[index];
@@ -170,7 +176,9 @@ class _OwnReportState extends State<OwnReport> {
               return Container(); // Skip rendering this post
             }
             return Card(
-                margin: EdgeInsets.all(8.0),
+              elevation: 0,
+              color: HexColor("#ecd9c9"),
+              margin: EdgeInsets.all(8.0),
                 child: ListTile(
                   title: Text(caseReport.description!),
                   subtitle: Column(
@@ -196,6 +204,15 @@ class _OwnReportState extends State<OwnReport> {
                 ),
               );
           },
+          separatorBuilder: (context, index){
+            return Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 10,
+              endIndent: 10,
+              height: 5,
+            );
+          }
         ),
         Positioned(
           bottom: 16.0,

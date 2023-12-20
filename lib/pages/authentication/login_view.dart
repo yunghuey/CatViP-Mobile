@@ -1,6 +1,7 @@
 import 'package:CatViP/bloc/authentication/login/login_bloc.dart';
 import 'package:CatViP/bloc/authentication/login/login_event.dart';
 import 'package:CatViP/bloc/authentication/login/login_state.dart';
+import 'package:CatViP/pages/RoutePage.dart';
 import 'package:CatViP/pages/authentication/forgotpwd_view.dart';
 import 'package:CatViP/pages/authentication/signup_view.dart';
 import 'package:CatViP/pages/home_page.dart';
@@ -58,7 +59,7 @@ class _LoginViewState extends State<LoginView> {
           if (state is UserLoginSuccessState){
             Navigator.pushAndRemoveUntil(
                 context, MaterialPageRoute(
-                builder: (context) => const HomePage()), (Route<dynamic> route) => false
+                builder: (context) => const RoutePage()), (Route<dynamic> route) => false
             );
           }
         },
@@ -106,10 +107,9 @@ class _LoginViewState extends State<LoginView> {
         alignment: Alignment.topRight,
         child: TextButton(
           onPressed: (){
-            print("forgot password");
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPwd()));
           } ,
-          child: Text('Forgot password', style: Theme.of(context).textTheme.bodyMedium,),
+          child: Text('Forgot password', style: Theme.of(context).textTheme.bodyMedium?.copyWith(decoration: TextDecoration.underline),),
         )
       ),
     );
@@ -174,8 +174,6 @@ class _LoginViewState extends State<LoginView> {
         height: 55.0,
         child: ElevatedButton(
             onPressed: () {
-                print(usernameController.text);
-                print(pwdController.text);
                 if (usernameController.text != "" && pwdController.text != "" ){
                   authBloc.add(LoginButtonPressed(
                     username: usernameController.text,
