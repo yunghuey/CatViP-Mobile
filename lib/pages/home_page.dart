@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   late List<Post> postList;
   @override
   void initState() {
-    // TODO: implement initState
+    reportBloc = BlocProvider.of<ReportPostBloc>(context);
     _postBloc.add(GetPostList());
     super.initState();
   }
