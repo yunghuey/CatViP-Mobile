@@ -5,6 +5,7 @@ import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_event.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_state.dart';
 import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
+import 'package:CatViP/pages/RoutePage.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -139,14 +140,14 @@ class _NewPostState extends State<NewPost> {
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: HexColor("#3c1e08"),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-            },
-          ),
+          // automaticallyImplyLeading: false,
+          // leading: IconButton(
+          //   icon: Icon(Icons.arrow_back),
+          //   color: HexColor("#3c1e08"),
+          //   onPressed: () {
+          //     Navigator.push(context, MaterialPageRoute(builder: (context) => RoutePage()));
+          //   },
+          // ),
         ),
         body:  MultiBlocListener(
           listeners: [
@@ -160,7 +161,7 @@ class _NewPostState extends State<NewPost> {
 
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => RoutePage()),
                     );
                   }
                   else if (state is NewPostFailState) {
@@ -348,8 +349,8 @@ class _NewPostState extends State<NewPost> {
                   builder: ((builder) => bottomSheet(context)),
                 );
               },
-              child: Icon(
-                Icons.camera_alt,
+              child: const Icon(
+                Icons.add,
                 color: Colors.brown,
                 size: 28.0,
               ),

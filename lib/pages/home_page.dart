@@ -5,6 +5,7 @@ import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CasesReport.dart';
+import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -54,8 +55,14 @@ class _HomePageState extends State<HomePage> {
       create: (context) => _postBloc,
       child: Scaffold(
         appBar: AppBar(
-          //flexibleSpace: _logoImage(),
-          title: Text('CatViP',style: Theme.of(context).textTheme.bodyLarge),
+          title:
+          Row(
+            children: [
+              Image.asset('assets/logo.png', fit: BoxFit.contain, height: 50),
+              SizedBox(width: 8.0,),
+              Text('CatViP',style: Theme.of(context).textTheme.bodyLarge),
+            ],
+          ),
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
@@ -136,10 +143,18 @@ class _HomePageState extends State<HomePage> {
                                               mainAxisSize: MainAxisSize.min,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  post.username!,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    // Navigator.push(
+                                                    //   context,
+                                                    //   MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
+                                                    // );
+                                                  },
+                                                  child: Text(
+                                                    post.username!,
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
                                                   ),
                                                 ),
                                               ],

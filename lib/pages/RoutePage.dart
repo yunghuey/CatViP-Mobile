@@ -34,8 +34,6 @@ class _RoutePageState extends State<RoutePage> {
         onTap: (index){
           setState((){
             _currentIndex = index;
-            // _onItemTapped(index);
-
           });
         },
         items: const [
@@ -51,7 +49,7 @@ class _RoutePageState extends State<RoutePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            label: 'Add',
+            label: 'Post',
             backgroundColor: Colors.black,
           ),
           BottomNavigationBarItem(
