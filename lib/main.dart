@@ -56,7 +56,7 @@ void main() {
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
   OneSignal.Debug.setAlertLevel(OSLogLevel.none);
   OneSignal.initialize("2c9ce8b1-a075-4864-83a3-009c8497310e");
-  //OneSignal.login("12345");
+  //OneSignal.login("stephen");
   OneSignal.Notifications.requestPermission(true);
   OneSignal.Notifications.addPermissionObserver((state) {
     print("Has permission " + state.toString());
