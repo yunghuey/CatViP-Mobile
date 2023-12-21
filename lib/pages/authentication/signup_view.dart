@@ -1,3 +1,4 @@
+import 'package:CatViP/pages/RoutePage.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/home_page.dart';
 import 'package:CatViP/pages/user/MapScreen.dart';
@@ -82,7 +83,7 @@ class _SignUpViewState extends State<SignUpView> {
           if (state is RegisterSuccessState) {
             Navigator.pushAndRemoveUntil(
               context, MaterialPageRoute(
-              builder: (context) => HomePage()), (Route<dynamic> route) => false
+              builder: (context) => RoutePage()), (Route<dynamic> route) => false
             );
           } else if (state is UsernameFailState) {
             ScaffoldMessenger.of(context).showSnackBar(
