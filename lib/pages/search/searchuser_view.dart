@@ -398,11 +398,13 @@ class _SearchViewState extends State<SearchView> {
                     child: ElevatedButton(
                       onPressed: () {
                         ChatListModel chatlist = ChatListModel(
-                            userid: widget.userid ?? 0,
-                            username: user.username,
-                            fullname: user.fullname,
-                            profileImage: user.profileImage,
-                            latestMsg: "");
+                          userid: widget.userid ?? 0,
+                          username: user.username,
+                          fullname: user.fullname,
+                          profileImage: user.profileImage,
+                          latestMsg: "",
+                          unreadMessage: 0
+                        );
                         print("search user id = ${widget.userid}");
                         Navigator.push(
                             context,

@@ -49,9 +49,16 @@ class _ChatListViewState extends State<ChatListView> {
             return RefreshIndicator(
               onRefresh: refreshChat,
               color: HexColor("#3c1e08"),
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Text(state.message, style: TextStyle(fontSize: 17,), textAlign: TextAlign.center,),
+              child: Stack(
+                children: <Widget>[
+                  ListView(),
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Text(state.message, style: TextStyle(fontSize: 17,), textAlign: TextAlign.center,),
+                    ),
+                  ),
+                ],
               ),
             );
           }
@@ -99,6 +106,13 @@ class _ChatListViewState extends State<ChatListView> {
                         subtitle: Text(chat.latestMsg),
                       ),
                     ),
+                    chat.unreadMessage == 0 ? Container() :
+                    CircleAvatar(
+                      radius: 15,
+                      backgroundColor: HexColor("#3c1e08"),
+                      child: Text(chat.unreadMessage.toString(), style: TextStyle(color: Colors.white),),
+                    ),
+                    SizedBox(width: 8.0),
                 ],
               ),
 

@@ -4,6 +4,7 @@ class ChatListModel{
   String fullname;
   String? profileImage;
   String latestMsg;
+  int unreadMessage;
 
   ChatListModel({
     required this.userid,
@@ -11,6 +12,7 @@ class ChatListModel{
     required this.fullname,
     this.profileImage,
     required this.latestMsg,
+    required this.unreadMessage,
   });
 
   factory ChatListModel.fromJson(Map<String, dynamic> json){
@@ -20,6 +22,7 @@ class ChatListModel{
       fullname: json['fullName'],
       profileImage: json['profileImage'] ?? "",
       latestMsg: json['lastestChat'],
+      unreadMessage: json['unreadMessageCount'],
     );
   }
 }
