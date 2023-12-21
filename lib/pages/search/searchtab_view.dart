@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:CatViP/bloc/search/searchuser_bloc.dart';
 import 'package:CatViP/bloc/search/searchuser_event.dart';
 import 'package:CatViP/bloc/search/searchuser_state.dart';
 import 'package:CatViP/model/user/user_model.dart';
+import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -67,6 +67,13 @@ class _SearchUserViewState extends State<SearchUserView> {
               ),
             );
           }
+          else if (state is SearchUserLoadingState){
+            return Center(
+              child: CircularProgressIndicator(
+                color: HexColor("#3c1e08"),
+              ),
+            );
+          }
           else if (state is SearchUserLoadedState){
             print("get user ${state.searchList}");
             userlist = state.searchList;
@@ -107,7 +114,8 @@ class _SearchUserViewState extends State<SearchUserView> {
           UserModel user = userlist[index];
           return InkWell(
             onTap: (){
-
+              int userid = user.id!;
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SearchView(userid: userid)));
             },
             child: Container(
               margin: EdgeInsets.all(5.0),

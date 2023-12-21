@@ -6,12 +6,12 @@ import 'package:CatViP/bloc/post/DeletePost/deletePost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
+import 'package:CatViP/bloc/search/searchuser_bloc.dart';
+import 'package:CatViP/bloc/search/searchuser_event.dart';
+import 'package:CatViP/bloc/search/searchuser_state.dart';
 import 'package:CatViP/bloc/user/relation_bloc.dart';
 import 'package:CatViP/bloc/user/relation_event.dart';
 import 'package:CatViP/bloc/user/relation_state.dart';
-import 'package:CatViP/bloc/user/userprofile_bloc.dart';
-import 'package:CatViP/bloc/user/userprofile_event.dart';
-import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/model/chat/ChatListModel.dart';
 import 'package:CatViP/model/post/post.dart';
@@ -38,7 +38,7 @@ class _SearchViewState extends State<SearchView> {
   late List<CatModel> cats;
   late List<Post> listPost;
   late UserModel user;
-  late UserProfileBloc userBloc;
+  late SearchUserBloc searchBloc;
   late GetPostBloc postBloc;
   late CatProfileBloc catBloc;
   late RelationBloc relBloc;
@@ -50,8 +50,9 @@ class _SearchViewState extends State<SearchView> {
   void initState() {
     // TODO: implement initState
     userid = widget.userid;
-    userBloc = BlocProvider.of<UserProfileBloc>(context);
-    userBloc.add(LoadSearchUserEvent(userid: userid));
+    print("inside search user ${userid}");
+    searchBloc = BlocProvider.of<SearchUserBloc>(context);
+    searchBloc.add(SearchUserProfileEvent(userid: userid));
     catBloc = BlocProvider.of<CatProfileBloc>(context);
     catBloc.add(SearchReloadAllCatEvent(userID: userid));
     postBloc = BlocProvider.of<GetPostBloc>(context);
@@ -62,7 +63,7 @@ class _SearchViewState extends State<SearchView> {
   }
 
   Future<void> refreshPage() async {
-    userBloc.add(LoadSearchUserEvent(userid: userid));
+    searchBloc.add(SearchUserProfileEvent(userid: userid));
     catBloc.add(SearchReloadAllCatEvent(userID: userid));
     postBloc.add(LoadSearchAllPost(userid: userid));
   }
@@ -70,144 +71,188 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: HexColor("#ecd9c9"),
-        bottomOpacity: 0.0,
-        elevation: 0.0,
-        title: BlocBuilder<UserProfileBloc, UserProfileState>(
-          builder: (context, state){
-            if (state is SearchProfileLoadedState) {
-              final username = state.user.fullname ?? "Search";
-              return Text(
-                username,
-                style: Theme.of(context).textTheme.bodyLarge,
-              );
-            } else {
-              return Text( "Search", style: Theme.of(context).textTheme.bodyLarge,);
-            }
-          },
-        ),
-      ),
-      body:
-      BlocListener<RelationBloc, RelationState>(
-        listener: (context,state){
-          if (state is UpdateFollowingState){
-            user.isFollowed = true;
-          }
-          else if (state is UpdateUnfollowingState){
-            user.isFollowed = false;
-          } else if (state is RelationFailState){
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message))
-            );
-          }
-        },
-        child:  SingleChildScrollView(
-          child: Column(
-            children: [
-              BlocBuilder<UserProfileBloc, UserProfileState>(
-                builder: (context, state){
-                  if (state is UserProfileLoadingState){
-                    return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-                  } else if (state is UserProfileErrorState){
-                    return Container(
-                      margin: const EdgeInsets.all(18.0),
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(state.message,
-                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),
-                      ),
-                    );
-                  } else if (state is SearchProfileLoadedState){
-                    user = state.user;
-                    if (!isSet){
-                      btntext = user.isFollowed! == true ? "Following" : "Follow";
-                      isSet = true;
-                    }
-                    return _userDetails();
-                  }
-                  return Container();
-                },
-              ),
-              BlocBuilder<CatProfileBloc, CatProfileState>(
-                  builder: (context, state){
-                    if (state is CatProfileLoadingState) {
-                      return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                    } else if (state is CatProfileLoadedState) {
-                      cats = state.cats;
-                      return _getAllCats();
-                    } else {
-                      return Container(child: const Text("No cats has been added yet", style: TextStyle(fontSize: 17),)); // Handle other cases
-                    }
-                    return Container();
-                  }
-              ),
-              BlocBuilder<GetPostBloc, GetPostState>(
-                  builder: (context, state) {
-                    if (state is GetPostLoading) {
-                      return Center(
-                          child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                    }
-                    else if (state is GetPostLoaded) {
-                      listPost = state.postList.reversed.toList();
-                      print("frontend listPost length ${listPost.length}");
-                      return _getAllPosts();
-                    }
-                    return Center(
-                      child: Container(
-                        child: Text("No post is created yet", style: TextStyle(fontSize: 17),
-                        ),
-                      ),
-                    ); // Handle other cases
-                  }
-              ),
-            ],
+        appBar: AppBar(
+          backgroundColor: HexColor("#ecd9c9"),
+          bottomOpacity: 0.0,
+          elevation: 0.0,
+          title: BlocBuilder<SearchUserBloc, SearchUserState>(
+            builder: (context, state) {
+              if (state is SearchUserProfileLoaded) {
+                final username = state.user.fullname ?? "Search";
+                return Text(
+                  username,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                );
+              } else {
+                return Text(
+                  "Search",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                );
+              }
+            },
           ),
         ),
-      ), // bloclistner
-    );
+        body: BlocListener<RelationBloc, RelationState>(
+          listener: (context, state) {
+            if (state is UpdateFollowingState) {
+              user.isFollowed = true;
+            } else if (state is UpdateUnfollowingState) {
+              user.isFollowed = false;
+            } else if (state is RelationFailState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+            }
+          },
+          child: BlocBuilder<SearchUserBloc, SearchUserState>(
+            builder: (context, state) {
+              if (state is SearchUserLoadingState) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: HexColor("#3c1e08"),
+                  ),
+                );
+              }
+              else if (state is SearchUserProfileError) {
+                return Container(
+                  margin: const EdgeInsets.all(18.0),
+                  padding: const EdgeInsets.all(5.0),
+                  child: Text(
+                    state.message,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  ),
+                );
+              }
+              else if (state is SearchUserProfileLoaded) {
+                print("Load");
+                user = state.user;
+                if (!isSet) {
+                  btntext = user.isFollowed! ? "Following" : "Follow";
+                  isSet = true;
+                }
+                return RefreshIndicator(
+                  onRefresh: refreshPage,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _userDetails(),
+                        BlocBuilder<CatProfileBloc, CatProfileState>(
+                          builder: (context, state) {
+                            if (state is CatProfileLoadingState) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: HexColor("#3c1e08"),
+                                ),
+                              );
+                            } else if (state is CatProfileLoadedState) {
+                              cats = state.cats;
+                              return _getAllCats();
+                            } else {
+                              return Container(
+                                child: const Text(
+                                  "No cats has been added yet",
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        BlocBuilder<GetPostBloc, GetPostState>(
+                          builder: (context, state) {
+                            if (state is GetPostLoading) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: HexColor("#3c1e08"),
+                                ),
+                              );
+                            } else if (state is GetPostLoaded) {
+                              listPost = state.postList.reversed.toList();
+                              return _getAllPosts();
+                            } else {
+                              return Center(
+                                child: Container(
+                                  child: Text(
+                                    "No post is created yet",
+                                    style: TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              else{
+                return RefreshIndicator(onRefresh: refreshPage,
+                  child: Center(
+                    child: Column(
+                      children: [
+                        CircularProgressIndicator(
+                          color: HexColor("#3c1e08"),
+                        ),
+                        Text("Searching....."),
+                      ],
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ));
   }
 
-  Widget _profileImage(){
+  Widget _profileImage() {
     return Container(
         height: 100,
         width: 100,
         decoration: BoxDecoration(
           color: Colors.white,
-          shape:BoxShape.circle,
+          shape: BoxShape.circle,
           image: DecorationImage(
-            image:
-            user.profileImage != ""
-                ? MemoryImage(base64Decode(user.profileImage!)) as ImageProvider<Object> :
-            AssetImage('assets/profileimage.png'),
+            image: user.profileImage != ""
+                ? MemoryImage(base64Decode(user.profileImage!))
+            as ImageProvider<Object>
+                : AssetImage('assets/profileimage.png'),
             fit: BoxFit.cover,
           ),
-        )
-    );
+        ));
   }
 
-  Widget _followers(){
+  Widget _followers() {
     return Column(
       children: [
-        Text(user.follower.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+        Text(
+          user.follower.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
         Text("Followers"),
       ],
     );
   }
 
-  Widget _following(){
+  Widget _following() {
     return Column(
       children: [
-        Text(user.following.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+        Text(
+          user.following.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
         Text("Following"),
       ],
     );
   }
 
-  Widget _tipsPost(){
-    if (user.isExpert == true){
+  Widget _tipsPost() {
+    if (user.isExpert == true) {
       return Column(
         children: [
-          Text(user.expertTips.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+          Text(
+            user.expertTips.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
           Text("Tips"),
         ],
       );
@@ -260,71 +305,86 @@ class _SearchViewState extends State<SearchView> {
                   child: Container(
                     padding: EdgeInsets.all(5),
                     child: ElevatedButton(
-                      onPressed: (){
-                        if (btntext == "Follow"){
+                      onPressed: () {
+                        if (btntext == "Follow") {
                           relBloc.add(FollowButtonPressed(userID: userid));
                           setState(() {
-                            user.follower =  user.follower! + 1;
-                            btntext = (btntext == "Follow") ? "Following" : "Follow";
+                            user.follower = user.follower! + 1;
+                            btntext =
+                            (btntext == "Follow") ? "Following" : "Follow";
                           });
-                        } else{
+                        } else {
                           showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
                               title: const Text('Unfollow'),
-                              content: Text('Do you want to unfollow ${user.fullname}?'),
+                              content: Text(
+                                  'Do you want to unfollow ${user.fullname}?'),
                               actions: <Widget>[
                                 TextButton(
-                                  onPressed: () => Navigator.pop(context, 'Cancel'),
-                                  child: Text('Cancel',style: TextStyle(color: HexColor('#3c1e08'))),
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: Text('Cancel',
+                                      style: TextStyle(
+                                          color: HexColor('#3c1e08'))),
                                   style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.resolveWith<HexColor>(
-                                      (Set<MaterialState> states){
-                                        if(states.contains(MaterialState.pressed))
-                                          return HexColor("#ecd9c9");
-                                        return HexColor("#F2EFEA");
-                                      }
-                                    ),
-                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    backgroundColor: MaterialStateProperty
+                                        .resolveWith<HexColor>(
+                                            (Set<MaterialState> states) {
+                                          if (states
+                                              .contains(MaterialState.pressed))
+                                            return HexColor("#ecd9c9");
+                                          return HexColor("#F2EFEA");
+                                        }),
+                                    padding:
+                                    MaterialStateProperty.all<EdgeInsets>(
+                                        EdgeInsets.all(10.0)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10.0)
-                                        )
-                                    ),
+                                            borderRadius:
+                                            BorderRadius.circular(10.0))),
                                   ),
                                 ),
                                 TextButton(
                                   onPressed: () => {
-                                    relBloc.add(UnfollowButtonPressed(userID: userid)),
+                                    relBloc.add(
+                                        UnfollowButtonPressed(userID: userid)),
                                     Navigator.pop(context),
                                     setState(() {
-                                        user.follower =  user.follower! - 1;
-                                        btntext = (btntext == "Follow") ? "Following" : "Follow";
+                                      user.follower = user.follower! - 1;
+                                      btntext = (btntext == "Follow")
+                                          ? "Following"
+                                          : "Follow";
                                     })
-                                },
-                                  child:  Text('Yes',style: TextStyle(color: Colors.white)),
+                                  },
+                                  child: Text('Yes',
+                                      style: TextStyle(color: Colors.white)),
                                   style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0)
-                                      )
-                                    ),
+                                    backgroundColor:
+                                    MaterialStateProperty.all<HexColor>(
+                                        HexColor("#3c1e08")),
+                                    padding:
+                                    MaterialStateProperty.all<EdgeInsets>(
+                                        EdgeInsets.all(10.0)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(10.0))),
                                   ),
-
                                 ),
                               ],
                             ),
                           );
                         }
-
-
                       },
                       child: Text(btntext),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#F2EFEA")),
-                        foregroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+                        backgroundColor: MaterialStateProperty.all<HexColor>(
+                            HexColor("#F2EFEA")),
+                        foregroundColor: MaterialStateProperty.all<HexColor>(
+                            HexColor("#3c1e08")),
                       ),
                     ),
                   ),
@@ -336,23 +396,30 @@ class _SearchViewState extends State<SearchView> {
                   child: Container(
                     padding: EdgeInsets.all(5),
                     child: ElevatedButton(
-                      onPressed: (){
-                      //   chat
+                      onPressed: () {
                         ChatListModel chatlist = ChatListModel(
                             userid: widget.userid ?? 0,
                             username: user.username,
                             fullname: user.fullname,
                             profileImage: user.profileImage,
-                            latestMsg: ""
-                        );
+                            latestMsg: "");
                         print("search user id = ${widget.userid}");
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SingleChatView(user: chatlist, existChat: false,)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SingleChatView(
+                                  user: chatlist,
+                                  existChat: false,
+                                )));
                       },
                       child: Text("Message"),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#F2EFEA")),
-                        foregroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                      ),),
+                        backgroundColor: MaterialStateProperty.all<HexColor>(
+                            HexColor("#F2EFEA")),
+                        foregroundColor: MaterialStateProperty.all<HexColor>(
+                            HexColor("#3c1e08")),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -371,7 +438,7 @@ class _SearchViewState extends State<SearchView> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: ListView.builder(
-            itemCount:cats.length,
+            itemCount: cats.length,
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
@@ -383,13 +450,17 @@ class _SearchViewState extends State<SearchView> {
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: InkWell(
-                          onTap: (){
+                          onTap: () {
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => CatProfileView(currentcat: cats[index],fromOwner: false,)))
-                                .then((value) {
-                                    catBloc.add(SearchReloadAllCatEvent(userID: userid));
-                                    postBloc.add(LoadSearchAllPost(userid: userid));
+                                MaterialPageRoute(
+                                    builder: (context) => CatProfileView(
+                                      currentcat: cats[index],
+                                      fromOwner: false,
+                                    ))).then((value) {
+                              catBloc
+                                  .add(SearchReloadAllCatEvent(userID: userid));
+                              postBloc.add(LoadSearchAllPost(userid: userid));
                             });
                           },
                           child: CircleAvatar(
@@ -398,7 +469,9 @@ class _SearchViewState extends State<SearchView> {
                             child: CircleAvatar(
                               radius: 38,
                               backgroundImage: cats[index].profileImage != ""
-                                  ? MemoryImage(base64Decode(cats[index].profileImage))  as ImageProvider<Object>
+                                  ? MemoryImage(base64Decode(
+                                  cats[index].profileImage))
+                              as ImageProvider<Object>
                                   : AssetImage('assets/profileimage.png'),
                             ),
                           ),
@@ -423,7 +496,8 @@ class _SearchViewState extends State<SearchView> {
         padding: const EdgeInsets.all(20.0),
         child: ListView.builder(
           shrinkWrap: true, // Added shrinkWrap
-          physics: NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+          physics:
+          NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
           itemCount: listPost.length,
           itemBuilder: (context, index) {
             final Post post = listPost[index];
@@ -438,7 +512,8 @@ class _SearchViewState extends State<SearchView> {
                         radius: 16,
                         backgroundColor: Colors.transparent,
                         backgroundImage: post.profileImage != ""
-                            ? Image.memory(base64Decode(post.profileImage!)).image
+                            ? Image.memory(base64Decode(post.profileImage!))
+                            .image
                             : AssetImage('assets/profileimage.png'),
                       ),
                       Expanded(
@@ -491,7 +566,8 @@ class _SearchViewState extends State<SearchView> {
                       actionTypeId: post.currentUserAction!,
                       onFavoriteChanged: (bool isThumbsUpSelected) {
                         setState(() {
-                          post.likeCount = post.likeCount! + (isThumbsUpSelected ? 1 : -1);
+                          post.likeCount =
+                              post.likeCount! + (isThumbsUpSelected ? 1 : -1);
                         });
                         print('Is Thumbs Up Selected: $isThumbsUpSelected');
                       },
@@ -539,7 +615,8 @@ class _SearchViewState extends State<SearchView> {
                           child: post.commentCount! > 0
                               ? Text(
                             'View all ${post.commentCount} comments',
-                            style: const TextStyle(fontSize: 14, color: Colors.black),
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.black),
                           )
                               : SizedBox.shrink(),
                         ),
@@ -548,7 +625,8 @@ class _SearchViewState extends State<SearchView> {
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text(
                           func.getFormattedDate(post.dateTime!),
-                          style: const TextStyle(fontSize: 12, color: Colors.black),
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black),
                         ),
                       ),
                     ],
@@ -562,17 +640,18 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
-  Widget displayImage(Post post){
+  Widget displayImage(Post post) {
     return post.postImages![0].image! != ""
         ? AspectRatio(
-          aspectRatio: 1.0,
-          child: Image.memory(
-            base64Decode(post.postImages![0].image!),
-            fit: BoxFit.cover,
-          ),
+      aspectRatio: 1.0,
+      child: Image.memory(
+        base64Decode(post.postImages![0].image!),
+        fit: BoxFit.cover,
+      ),
     )
         : Container();
   }
+
   void refreshPosts() {
     postBloc.add(StartLoadOwnPost());
   }
@@ -609,7 +688,6 @@ class _SearchViewState extends State<SearchView> {
   //     reverse: true,
   //   );
   // } */
-
 }
 
 class _FavoriteButton extends StatefulWidget {
@@ -672,14 +750,14 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
             });
 
             // Update the action type for the specific post
-            if(thumbsUpSelected == true) {
+            if (thumbsUpSelected == true) {
               int newActionTypeId = 1;
               _postBloc.add(UpdateActionPost(
                 postId: postId,
                 actionTypeId: newActionTypeId,
               ));
               onFavoriteChanged(thumbsUpSelected);
-            } else if(thumbsUpSelected == false) {
+            } else if (thumbsUpSelected == false) {
               int newActionTypeId = 2;
               _postBloc.add(UpdateActionPost(
                 postId: postId,
@@ -704,7 +782,7 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
             });
 
             // Update the action type for the specific post
-            if(thumbsDownSelected == true) {
+            if (thumbsDownSelected == true) {
               _postBloc.add(UpdateActionPost(
                 postId: postId,
                 actionTypeId: 2,
@@ -713,7 +791,9 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
             }
           },
           icon: Icon(
-            thumbsDownSelected ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
+            thumbsDownSelected
+                ? Icons.thumb_down
+                : Icons.thumb_down_alt_outlined,
             color: thumbsDownSelected ? Colors.red : Colors.black,
             size: 24.0,
           ),
@@ -722,4 +802,3 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
     );
   }
 }
-

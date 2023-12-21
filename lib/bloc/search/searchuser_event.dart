@@ -8,6 +8,11 @@ class SearchUserEvent extends Equatable {
 class SearchInitEvent extends SearchUserEvent {}
 
 class SearchUserPressed extends SearchUserEvent {
-  String name;
+  final String name;
   SearchUserPressed({ required this.name });
+}
+
+class SearchUserProfileEvent extends SearchUserEvent {
+  final int userid;
+  SearchUserProfileEvent({ required this.userid });
 }

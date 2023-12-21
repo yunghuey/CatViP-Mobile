@@ -54,29 +54,5 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState>{
           emit(UserProfileErrorState(message: "Error in updating"));
         }
     });
-
-    on<SearchUserPressed>((event, emit) async{
-      emit(UserProfileLoadingState());
-      List<UserModel>? isFound = await repo.getSearchResult(event.name);
-      if (isFound.length > 0){
-        emit(SearchSuccessState(searchList: isFound));
-      } else {
-        emit(SearchFailState(message: "No user is found"));
-      }
-    });
-
-    on<LoadSearchUserEvent>((event, emit) async {
-      emit(UserProfileLoadingState());
-      UserModel? isFound = await repo.getSearchUserInfo(event.userid);
-      if (isFound != null){
-        emit(SearchProfileLoadedState(user: isFound));
-      } else {
-        emit(UserProfileErrorState(message: "Unable to load user profile"));
-      }
-    });
-
-    on<ResetSearchEvent>((event, emit){
-      emit(ResetSearchState());
-    });
   }
 }
