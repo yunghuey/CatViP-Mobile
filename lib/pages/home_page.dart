@@ -39,8 +39,8 @@ class _HomePageState extends State<HomePage> {
   Set<int> reportedPostIds = {};
   PageController _pageController = PageController();
   int _currentPage = 0;
-
   late List<Post> postList;
+
   @override
   void initState() {
     reportBloc = BlocProvider.of<ReportPostBloc>(context);
@@ -93,310 +93,405 @@ class _HomePageState extends State<HomePage> {
       color: HexColor("#ecd9c9"),
       child: BlocProvider(
         create: (context) => _postBloc,
-        child: BlocBuilder<GetPostBloc, GetPostState>(
-          builder: (context, state) {
-            if (state is GetPostError) {
-              return Center(
-                child: Text(state.error!),
-              );
-            } else if (state is GetPostInitial || state is GetPostLoading) {
-              return Center(
-                child: CircularProgressIndicator(color:  HexColor("#3c1e08")),
-              );
-            } else if (state is GetPostLoaded) {
-              postList = state.postList;
-              return Theme(
-                data: Theme.of(context).copyWith(
-                  colorScheme: Theme.of(context).colorScheme.copyWith(primary: HexColor("#3c1e08")),
-                ),
-                child: RefreshIndicator(
-                  onRefresh: refreshPosts,
-                  child: Stack(
-                    children: [
-                      ListView.builder(
-                        itemCount: postList.length,
-                        itemBuilder: (context, index) {
-                          final Post post = postList[index];
-                          print("Post: ${post.toJson()}");
-                          return Card(
-                            color: HexColor("#ecd9c9"),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (post.postImages != null &&
-                                      post.postImages!.isNotEmpty)
-                                    Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 16,
-                                          backgroundColor: Colors.transparent,
-                                          backgroundImage: post.profileImage != ""
-                                              ? Image.memory(base64Decode(post.profileImage!)).image
-                                              : AssetImage('assets/profileimage.png'),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(left: 8),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    // Navigator.push(
-                                                    //   context,
-                                                    //   MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
-                                                    // );
-                                                  },
-                                                  child: Text(
-                                                    post.username!,
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+          child: BlocBuilder<GetPostBloc, GetPostState>(
+            builder: (context, state) {
+              if (state is GetPostError) {
+                return Center(
+                  child: Text(state.error!),
+                );
+              } else if (state is GetPostInitial || state is GetPostLoading) {
+                return Center(
+                  child: CircularProgressIndicator(color:  HexColor("#3c1e08")),
+                );
+              } else if (state is GetPostLoaded) {
+                postList = state.postList;
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: Theme.of(context).colorScheme.copyWith(primary: HexColor("#3c1e08")),
+                  ),
+                  child: RefreshIndicator(
+                    onRefresh: refreshPosts,
+                    child: Stack(
+                      children: [
+                        ListView.builder(
+                          itemCount: postList.length,
+                          itemBuilder: (context, index) {
+                            final Post post = postList[index];
+                            if(post.isAds == true) {
+                              return displayAds(post);
+                            }else {
+                              return Card(
+                                color: HexColor("#ecd9c9"),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      if (post.postImages != null &&
+                                          post.postImages!.isNotEmpty)
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 16,
+                                              backgroundColor: Colors
+                                                  .transparent,
+                                              backgroundImage: post
+                                                  .profileImage != ""
+                                                  ? Image
+                                                  .memory(base64Decode(
+                                                  post.profileImage!))
+                                                  .image
+                                                  : AssetImage(
+                                                  'assets/profileimage.png'),
                                             ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: Text("Report"),
-                                                  content: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      TextField(
-                                                        controller: reportController,
-                                                        decoration: InputDecoration(
-                                                          hintText: "Enter your report...",
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize
+                                                      .min,
+                                                  crossAxisAlignment: CrossAxisAlignment
+                                                      .start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        // Navigator.push(
+                                                        //   context,
+                                                        //   MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
+                                                        // );
+                                                      },
+                                                      child: Text(
+                                                        post.username!,
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight
+                                                              .bold,
                                                         ),
                                                       ),
-                                                      SizedBox(height: 16),
-                                                      TextButton(
-                                                        onPressed: () async {
-                                                          // Handle the report logic here
-                                                          String reportText = reportController.text;
-                                                          reportBloc.add(
-                                                              ReportButtonPressed(
-                                                                postId: post.id!,
-                                                                description: reportText,
-                                                              )
-                                                          );
-
-                                                          // Wait for the completion of the ReportButtonPressed event
-                                                          await reportBloc.stream.firstWhere((state) =>
-                                                          state is ReportPostSuccessState || state is ReportPostFailState,
-                                                          );
-
-                                                          if (!(reportBloc.state is ReportPostFailState)) {
-                                                            setState(() {
-                                                              reportedPostIds.add(post.id!);
-                                                              reportController.clear();
-                                                            });
-                                                          }
-                                                          print("Report: $reportText");
-
-                                                          reportController.clear();
-                                                          await Future.delayed(Duration(milliseconds: 100));
-                                                          // Close the dialog
-                                                          Navigator.of(context).pop();
-                                                        },
-                                                        child: Text("Report"),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                          icon: const Icon(Icons.more_vert),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            post.isCurrentUserPost == false
+                                                ? report(post)
+                                                : Container(),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  SizedBox(height: 4.0),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.only(
-                                      top: 6,
-                                    ),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: ' ',
+                                      SizedBox(height: 4.0),
+                                      Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.only(
+                                          top: 6,
+                                        ),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: ' ',
+                                              ),
+                                              TextSpan(
+                                                text: post.description
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16.0,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          TextSpan(
-                                            text: post.description.toString(),
-                                            style: TextStyle(
+                                        ),
+                                      ),
+                                      SizedBox(height: 4.0),
+                                      displayImage(post),
+                                      Row(
+                                        children: [
+                                          _FavoriteButton(
+                                            postId: post.id!,
+                                            actionTypeId: post
+                                                .currentUserAction!,
+                                            onFavoriteChanged: (
+                                                bool isThumbsUpSelected) {
+                                              if (post.likeCount != 0 ||
+                                                  isThumbsUpSelected) {
+                                                setState(() {
+                                                  post.likeCount =
+                                                      post.likeCount! +
+                                                          (isThumbsUpSelected
+                                                              ? 1
+                                                              : -1);
+                                                  hasBeenLiked = true;
+                                                });
+                                              } else {
+                                                print(
+                                                    'Is Thumbs Up Selected: $isThumbsUpSelected');
+                                              }
+                                            },
+                                          ),
+                                          SizedBox(width: 4.0),
+                                          IconButton(
+                                            onPressed: () =>
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Comments(
+                                                            postId: post.id!),
+                                                  ),
+                                                ),
+                                            icon: Icon(
+                                              Icons.comment_bank_outlined,
                                               color: Colors.black,
-                                              fontSize: 16.0,
+                                              size: 24.0,
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 4.0),
-                                  displayImage(post),
-                                  Row(
-                                    children: [
-                                      _FavoriteButton(
-                                        postId: post.id!,
-                                        actionTypeId: post.currentUserAction!,
-                                        onFavoriteChanged: (bool isThumbsUpSelected) {
-                                          if(post.likeCount != 0 || isThumbsUpSelected) {
-                                            setState(() {
-                                              post.likeCount = post.likeCount! +
-                                                  (isThumbsUpSelected ? 1 : -1);
-                                              hasBeenLiked = true;
-                                            });
-                                          }else{
-                                            print('Is Thumbs Up Selected: $isThumbsUpSelected');
-                                          }
-                                        },
-                                      ),
-                                      SizedBox(width: 4.0),
-                                      IconButton(
-                                        onPressed: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => Comments(postId: post.id!),
-                                          ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
                                         ),
-                                        icon: Icon(
-                                          Icons.comment_bank_outlined,
-                                          color: Colors.black,
-                                          size: 24.0,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Text(
+                                              "${post.likeCount
+                                                  .toString()} likes",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w800,
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Comments(postId: post
+                                                            .id!),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets
+                                                    .symmetric(vertical: 4),
+                                                child: post.commentCount! > 0
+                                                    ? Text(
+                                                  'View all ${post
+                                                      .commentCount} comments',
+                                                  style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.black),
+                                                )
+                                                    : SizedBox.shrink(),
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: const EdgeInsets
+                                                  .symmetric(vertical: 4),
+                                              child: Text(
+                                                func.getFormattedDate(
+                                                    post.dateTime!),
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "${post.likeCount.toString()} likes",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 16.0,
-                                          ),
-                                        ),
-                                     /*   Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.only(
-                                            top: 6,
-                                          ),
-                                          child: RichText(
-                                            text: TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: post.mentionedCats?.isNotEmpty == true ? post.mentionedCats![0].catName ?? post.username! : post.username!,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                    fontSize: 16.0,
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text: ' ',
-                                                ),
-                                                TextSpan(
-                                                  text: post.description.toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 16.0,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),*/
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Comments(postId: post.id!),
-                                              ),
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(vertical: 4),
-                                            child: post.commentCount! > 0
-                                                ? Text(
-                                              'View all ${post.commentCount} comments',
-                                              style: const TextStyle(fontSize: 14, color: Colors.black),
-                                            )
-                                                : SizedBox.shrink(),
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(vertical: 4),
-                                          child: Text(
-                                            func.getFormattedDate(post.dateTime!),
-                                            style: const TextStyle(fontSize: 12, color: Colors.black),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: FloatingActionButton(
-                            backgroundColor: Colors.brown,
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => CaseReports())
+                                ),
                               );
-                            },
-                            child: Icon(Icons.warning_amber),
+                            }
+                          },
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: FloatingActionButton(
+                              backgroundColor: Colors.brown,
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) => CaseReports())
+                                );
+                              },
+                              child: Icon(Icons.warning_amber),
+                            ),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.brown,
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => CaseReports())
+                        );
+                      },
+                      child: Icon(Icons.warning_amber),
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+    );
+  }
+
+  Widget report(Post post){
+    reportBloc = BlocProvider.of<ReportPostBloc>(context);
+    return BlocProvider.value(
+      value: reportBloc,
+      child: BlocListener<ReportPostBloc, ReportPostState>(
+        listener: (context, state) async {
+          if (state is ReportPostSuccessState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Report submitted successfully!"),
+                duration: Duration(seconds: 2),
+              ),
+            );
+            // Schedule the pop operation in the next frame
+            await Future.delayed(Duration.zero);
+            // Check if the context is still valid before popping
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+
+          } else if (state is ReportPostFailState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                duration: Duration(seconds: 2),
+              ),
+            );
+            // Schedule the pop operation in the next frame
+            await Future.delayed(Duration.zero);
+            // Check if the context is still valid before popping
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          }
+        },
+        child: IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Report"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                          TextField(
+                            controller: reportController,
+                            decoration: InputDecoration(
+                              hintText: "Enter your report...",
+                            ),
+                          ),
+                      SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () async {
+                          String reportText = reportController.text;
+                         reportBloc.add(
+                            ReportButtonPressed(
+                              postId: post.id!,
+                              description: reportText,
+                            ),
+                          );
+
+                          setState(() {
+                            reportController.clear();
+                          });
+
+                          await Future.delayed(Duration(milliseconds: 100));
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("Report"),
                       ),
                     ],
                   ),
-                ),
-              );
-            } else {
-              return Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.brown,
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => CaseReports())
-                      );
-                    },
-                    child: Icon(Icons.warning_amber),
-                  ),
-                ),
-              );
-            }
+                );
+              },
+            );
           },
+          icon: const Icon(Icons.more_vert),
         ),
       ),
     );
+  }
+
+  Widget displayAds(Post post){
+    return Card(
+      color: HexColor("#ecd9c9"),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // if (post.postImages != null &&
+            //     post.postImages!.isNotEmpty)
+              Row(
+                children: [
+                  // CircleAvatar(
+                  //   radius: 16,
+                  //   backgroundColor: Colors.transparent,
+                  //   backgroundImage: post.profileImage != ""
+                  //       ? Image.memory(base64Decode(post.profileImage!)).image
+                  //       : AssetImage('assets/profileimage.png'),
+                  // ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
+                              // );
+                            },
+                            child: Text(
+                              post.username!,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // post.isCurrentUserPost == false
+                  //     ? report(post)
+                  //     : Container(),
+                ],
+              ),
+            SizedBox(height: 4.0),
+            displayImage(post),
+          ],
+        ),
+      ),
+    );
+
   }
 
   Widget displayImage(Post post) {
