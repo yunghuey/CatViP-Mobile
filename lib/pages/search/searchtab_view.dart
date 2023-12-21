@@ -1,30 +1,30 @@
 import 'dart:convert';
 
-import 'package:CatViP/bloc/user/userprofile_bloc.dart';
-import 'package:CatViP/bloc/user/userprofile_event.dart';
-import 'package:CatViP/bloc/user/userprofile_state.dart';
+import 'package:CatViP/bloc/search/searchuser_bloc.dart';
+import 'package:CatViP/bloc/search/searchuser_event.dart';
+import 'package:CatViP/bloc/search/searchuser_state.dart';
 import 'package:CatViP/model/user/user_model.dart';
-import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class SearchTab extends StatefulWidget {
-  const SearchTab({super.key});
+class SearchUserView extends StatefulWidget {
+  const SearchUserView({super.key});
 
   @override
-  State<SearchTab> createState() => _SearchTabState();
+  State<SearchUserView> createState() => _SearchUserViewState();
 }
 
-class _SearchTabState extends State<SearchTab> {
-  late UserProfileBloc userBloc;
+class _SearchUserViewState extends State<SearchUserView> {
   TextEditingController nameController = TextEditingController();
-  late List<UserModel> searchList;
+  List<UserModel> userlist = [];
+  late SearchUserBloc searchBloc;
+
   @override
   void initState() {
-    userBloc = BlocProvider.of<UserProfileBloc>(context);
-
     // TODO: implement initState
+    searchBloc = BlocProvider.of<SearchUserBloc>(context);
+    searchBloc.add(SearchInitEvent());
     super.initState();
   }
 
@@ -46,7 +46,6 @@ class _SearchTabState extends State<SearchTab> {
                 nameField(),
                 IconButton(onPressed: (){
                   if (nameController.text.length > 0){
-                    userBloc.add(SearchUserPressed(name: nameController.text.trim()));
                   }
                 }, icon: Icon(Icons.search)),
               ],
@@ -54,28 +53,27 @@ class _SearchTabState extends State<SearchTab> {
           ),
         ),
       ),
-      body: Container(
-        child: BlocBuilder<UserProfileBloc, UserProfileState>(
-          builder: (context, state){
-            if (state is SearchFailState){
-              return Container(
-                margin: const EdgeInsets.all(18.0),
-                padding: const EdgeInsets.all(5.0),
-                child: Text(state.message,
-                  style: TextStyle(
+      body:
+      BlocBuilder<SearchUserBloc, SearchUserState>(
+        builder: (context, state){
+          if (state is SearchUserEmptyState){
+            return Container(
+              margin: const EdgeInsets.all(18.0),
+              padding: const EdgeInsets.all(5.0),
+              child: const Text("This user does not exists",
+                style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17),
-                ),
-              );
-            } else if (state is SearchSuccessState){
-              searchList = state.searchList;
-              return resultList();
-            } else if (state is UserProfileLoadingState){
-              return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-            }
-            return Container();
+              ),
+            );
           }
-        ),
+          else if (state is SearchUserLoadedState){
+            print("get user ${state.searchList}");
+            userlist = state.searchList;
+            return _resultList();
+          }
+          return Container();
+        }
       ),
     );
   }
@@ -91,50 +89,47 @@ class _SearchTabState extends State<SearchTab> {
           focusColor: HexColor("#3c1e08"),
         ),
         onChanged: (text){
-          if (text.length > 0){
-            userBloc.add(SearchUserPressed(name: text.trim()));
-          } else{
-            userBloc.add(ResetSearchEvent());
+          print("text: ${text}");
+          if (text.length > 0) {
+            searchBloc.add(SearchUserPressed(name: text.trim()));
           }
         },
       ),
     );
   }
 
-  Widget resultList(){
+  Widget _resultList(){
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(17.0),
       child: ListView.builder(
-        itemCount: searchList.length,
-        itemBuilder: (context,index){
-          var user = searchList[index];
+        itemCount: userlist.length,
+        itemBuilder: (context, index){
+          UserModel user = userlist[index];
           return InkWell(
             onTap: (){
-              int userid = user.id ?? 0;
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SearchView(userid: userid)));
+
             },
             child: Container(
               margin: EdgeInsets.all(5.0),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 32,
-                      backgroundColor: Colors.white,
-                      backgroundImage: user.profileImage != ""
-                          ? MemoryImage(base64Decode(user.profileImage!))  as ImageProvider<Object>
-                          : AssetImage('assets/profileimage.png'),
-                    ),
-                    Expanded(
-                      child: ListTile(
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 32,
+                    backgroundColor: Colors.white,
+                    backgroundImage: user.profileImage != ""
+                        ? MemoryImage(base64Decode(user.profileImage!))  as ImageProvider<Object>
+                        : AssetImage('assets/profileimage.png'),
+                  ),
+                  Expanded(
+                    child: ListTile(
+                      title: ListTile(
                         title: Text(user.fullname),
                         subtitle: Text(user.username),
-                      ),
+                      )
                     ),
-                  ],
-                ),
-              ),
+                  )
+                ],
+              )
             ),
           );
         }

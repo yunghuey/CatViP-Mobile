@@ -16,6 +16,8 @@ import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
+import 'package:CatViP/bloc/search/searchuser_bloc.dart';
+import 'package:CatViP/bloc/search/searchuser_state.dart';
 import 'package:CatViP/bloc/user/relation_bloc.dart';
 import 'package:CatViP/bloc/user/relation_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
@@ -135,6 +137,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<GetPostTypeBloc>(
           create: (context) => GetPostTypeBloc(GetPostTypeInitial(), PostTypeRepository()),
+        ),
+        BlocProvider<SearchUserBloc>(
+          create: (context) => SearchUserBloc(SearchUserInitState(), UserRepository()),
         ),
       ],
       child: MaterialApp(

@@ -17,7 +17,7 @@ class _RoutePageState extends State<RoutePage> {
 
   final List<Widget> _tablist = [
     HomePage(),
-    SearchTab(),
+    SearchUserView(),
     NewPost(),
     OwnReport(),
     ProfileView(),
