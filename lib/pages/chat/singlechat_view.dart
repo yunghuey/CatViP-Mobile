@@ -11,6 +11,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:CatViP/repository/APIConstant.dart';
 
 class SingleChatView extends StatefulWidget {
   final ChatListModel user;
@@ -29,6 +30,7 @@ class _SingleChatViewState extends State<SingleChatView> {
   String? username = "";
   int isInitialized = 0;
   String _receivedMessage = "";
+
   @override
   void initState() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
@@ -37,13 +39,17 @@ class _SingleChatViewState extends State<SingleChatView> {
     } else{
       chatBloc.add(CheckMessageHistoryEvent(userid: widget.user.userid));
     }
-
-
     hubConnection = HubConnectionBuilder()
-        .withUrl('http://10.131.78.121:7015/chathub')
+        .withUrl('${APIConstant.ipaddress}chathub')
         .build();
     _setConnection();
     super.initState();
+  }
+
+  @override
+  void dispose(){
+    chatBloc.add(HandleUnreadEvent(userid: widget.user.userid));
+    super.dispose();
   }
 
   Future<String?> getCurrentUsername() async{
@@ -152,16 +158,18 @@ class _SingleChatViewState extends State<SingleChatView> {
           ),
           suffixIcon: IconButton(
               onPressed: (){
-                MessageModel newmsg = MessageModel(
-                    message: msgController.text,
-                    isCurrentUserSent: true,
-                    dateTime: DateTime.now().toString()
-                );
-                setState(() {
-                  messagelist.add(newmsg);
-                  _sendPrivateMessage();
-                });
-                msgController.text = "";
+                if (msgController.text.length > 0){
+                  MessageModel newmsg = MessageModel(
+                      message: msgController.text.trim(),
+                      isCurrentUserSent: true,
+                      dateTime: DateTime.now().toString()
+                  );
+                  setState(() {
+                    messagelist.add(newmsg);
+                    _sendPrivateMessage();
+                  });
+                  msgController.text = "";
+                }
               },
               icon: const Icon(Icons.send),
           ),

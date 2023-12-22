@@ -26,7 +26,7 @@ class _ChatListViewState extends State<ChatListView> {
   }
 
   Future<void> refreshChat() async {
-    chatBloc.add(ChatListLoadEvent());
+      chatBloc.add(ChatListLoadEvent());
   }
 
   @override
@@ -43,9 +43,11 @@ class _ChatListViewState extends State<ChatListView> {
         builder: (context, state){
           if (state is ChatLoadingState){
             return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-          } else if (state is ChatListLoaded){
+          }
+          else if (state is ChatListLoaded){
             return resultList(state.chatlist);
-          } else if (state is ChatListEmpty){
+          }
+          else if (state is ChatListEmpty){
             return RefreshIndicator(
               onRefresh: refreshChat,
               color: HexColor("#3c1e08"),
@@ -62,9 +64,7 @@ class _ChatListViewState extends State<ChatListView> {
               ),
             );
           }
-          return Container(
-            child: Text("test") ,
-          );
+          return Container();
         },
       ),
     );
@@ -83,8 +83,11 @@ class _ChatListViewState extends State<ChatListView> {
             return InkWell(
               onTap: (){
                 Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SingleChatView(user:chat, existChat: true,))).then((value) => {    chatBloc.add(ChatListLoadEvent())
-                } );
+                  MaterialPageRoute(builder: (context) => SingleChatView(
+                    user:chat, existChat: true,))
+                ).then((value){
+                  // refreshChat();
+                });
               //   navigate to single user chat
               },
               child: Card(
@@ -115,10 +118,8 @@ class _ChatListViewState extends State<ChatListView> {
                     SizedBox(width: 8.0),
                 ],
               ),
-
               ),
             );
-
           },
           separatorBuilder: (context, index){
             return Divider(

@@ -47,5 +47,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState>{
       }
     });
 
+    on<HandleUnreadEvent>((event, emit) async {
+      bool isUpdated = await repo.updateLastSeen(event.userid);
+      if (isUpdated){
+        emit(SettledUnreadState());
+        emit(ChatLoadingState());
+        List<ChatListModel>? hasList = await repo.getAllChatList();
+        if (hasList.length >0){
+          emit(ChatListLoaded(chatlist: hasList));
+        } else{
+          emit(ChatListEmpty(message: "You have not send a message before. Find a friend to chat today!"));
+        }
+      }
+      else {
+        emit(UnsettledUnreadState());
+      }
+    });
+
   }
 }

@@ -20,3 +20,8 @@ class CheckMessageHistoryEvent extends ChatEvent {
   final int userid;
   CheckMessageHistoryEvent({required this.userid });
 }
+
+class HandleUnreadEvent extends ChatEvent {
+  final int userid;
+  HandleUnreadEvent({ required this.userid});
+}
