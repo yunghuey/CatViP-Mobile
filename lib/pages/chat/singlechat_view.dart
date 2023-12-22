@@ -11,6 +11,8 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:CatViP/repository/APIConstant.dart';
+
 
 class SingleChatView extends StatefulWidget {
   final ChatListModel user;
@@ -37,10 +39,8 @@ class _SingleChatViewState extends State<SingleChatView> {
     } else{
       chatBloc.add(CheckMessageHistoryEvent(userid: widget.user.userid));
     }
-
-
     hubConnection = HubConnectionBuilder()
-        .withUrl('http://10.131.78.121:7015/chathub')
+        .withUrl('${APIConstant.ipaddress}chathub')
         .build();
     _setConnection();
     super.initState();
