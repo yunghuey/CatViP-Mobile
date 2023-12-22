@@ -20,8 +20,6 @@ class Widgets extends ChangeNotifier {
       // Date is the same as the local date, calculate time difference in hours and minutes
       final timeDifference = now.difference(dateTime);
 
-      print('timeDifference.inDays: ${timeDifference.inDays}');
-
       if (timeDifference.inHours > 0) {
         // If the time difference is in hours, display hours
         return "${timeDifference.inHours} ${timeDifference.inHours == 1 ? 'hour' : 'hours'} ago";

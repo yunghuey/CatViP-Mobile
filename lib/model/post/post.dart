@@ -23,6 +23,10 @@ class Post {
     required this.dislikeCount,
     required this.postImages,
     required this.mentionedCats,
+    required this.price,
+    required this.adsUrl,
+    required this.isCurrentUserPost,
+    required this.isAds,
     required this.error,
   });
 
@@ -44,6 +48,10 @@ class Post {
   int? dislikeCount;
   List<PostImage>? postImages;
   List<MentionedCat>? mentionedCats;
+  double? price;
+  String? adsUrl;
+  bool? isCurrentUserPost;
+  bool? isAds;
 
   factory Post.fromJson(Map<String, dynamic> json) {
     print("JSON Data: $json");
@@ -66,9 +74,9 @@ class Post {
 
     return Post(
       error: json["error"],
-      id: json["id"],  // id : 1
+      id: json["id"],  // id: 1
       description: json["description"],
-      dateTime: DateTime.parse(json["dateTime"]),
+      dateTime: json["dateTime"] != null ? DateTime.parse(json["dateTime"]) : null,
       userId: json["userId"],
       username: json["username"],
       profileImage: json["profileImage"],
@@ -79,7 +87,10 @@ class Post {
       dislikeCount: json["dislikeCount"],
       postImages: images,
       mentionedCats: cats,
-
+      price: json["price"],
+      adsUrl: json["adsUrl"],
+      isCurrentUserPost: json["isCurrentUserPost"],
+      isAds: json["isAds"],
     );
   }
 

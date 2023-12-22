@@ -1,4 +1,5 @@
 class APIConstant {
+  static const String ipaddress = "http://10.131.78.121:7015/";
   // change this to your own ipaddress number
   // Stephen's IP
   // static const String URL = "http://10.131.76.30:7015/api/";
@@ -8,8 +9,7 @@ class APIConstant {
 
 
   // yung huey IP
-   static const String URL = "http://10.131.74.245:7015/api/";
-// const String URL = "http://172.16.88.4:7015/api/";
+   static const String URL = "${ipaddress}api/";
 
   // auth module
   static String get LoginURL => "${APIConstant.URL}Auth/login";

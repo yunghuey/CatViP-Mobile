@@ -22,7 +22,7 @@ class ReportPostBloc extends Bloc<ReportPostEvents, ReportPostState>{
         if (isCreated) {
           emit(ReportPostSuccessState());
         } else {
-          emit(ReportPostFailState(message: "Fail to create post"));
+          emit(ReportPostFailState(message: "Failed to report post"));
         }
 
       } catch (e) {

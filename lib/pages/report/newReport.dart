@@ -51,28 +51,72 @@ class _NewReportState extends State<NewReport> {
 
   Future<void> pickImages(ImageSource source, {int maxImages = 5}) async {
     try {
-      List<XFile>? images = await ImagePicker().pickMultiImage(
-        imageQuality: 70,
-        maxWidth: 800,
-      );
+      List<XFile>? images;
 
-      if (images != null && images.isNotEmpty) {
+      if (source == ImageSource.camera) {
+        // If the source is the camera, use pickImage to capture a single image
+        XFile? image = await ImagePicker().pickImage(
+          imageQuality: 70,
+          maxWidth: 800,
+          source: source,
+        );
 
-        for (XFile image in images) {
+        if (image != null) {
           String? base64String = await _getImageBase64(File(image.path));
 
           if (base64String != null) {
             base64Images.add(base64String);
           }
+
+          setState(() {
+            if (selectedImages.length < maxImages) {
+              selectedImages = List.from(selectedImages)..addAll([image]);
+            } else {
+              // Display a snackbar or alert message when the limit is exceeded
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Maximum $maxImages images allowed.'),
+                ),
+              );
+            }
+          });
         }
+      } else {
+        // If the source is not the camera, use pickMultiImage
+        images = await ImagePicker().pickMultiImage(
+          imageQuality: 70,
+          maxWidth: 800,
+        );
 
-        setState(() {
-          selectedImages = List.from(selectedImages)..addAll(images);
-        });
+        if (images != null && images.isNotEmpty) {
+          List<XFile> newImages = [];
 
-        // Now base64Images list contains all base64-encoded strings of the selected images
-        print(base64Images);
+          for (XFile image in images) {
+            String? base64String = await _getImageBase64(File(image.path));
+
+            if (base64String != null) {
+              base64Images.add(base64String);
+            }
+
+            newImages.add(image);
+          }
+
+          setState(() {
+            if (selectedImages.length + newImages.length <= maxImages) {
+              selectedImages = List.from(selectedImages)..addAll(newImages);
+            } else {
+              // Display a snackbar or alert message when the limit is exceeded
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Maximum $maxImages images allowed.'),
+                ),
+              );
+            }
+          });
+        }
       }
+
+      // Now base64Images list contains all base64-encoded strings of the selected images
     } catch (e) {
       print("Error picking images: $e");
     }
@@ -241,11 +285,11 @@ class _NewReportState extends State<NewReport> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              pickImages(ImageSource.gallery);
-              // showModalBottomSheet(
-              //   context: context,
-              //   builder: ((builder) => bottomSheet(context)),
-              // );
+              //pickImages(ImageSource.gallery);
+              showModalBottomSheet(
+                context: context,
+                builder: ((builder) => bottomSheet(context)),
+              );
             },
             child: Container(
               width: 300, // Set your desired width for the square box
