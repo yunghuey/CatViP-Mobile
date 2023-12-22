@@ -93,6 +93,15 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> refreshPosts() async {
     _postBloc.add(StartLoadOwnPost());
+    await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
+
+    // Retrieve the updated post list
+    final updatedState = _postBloc.state;
+    if (updatedState is GetPostLoaded) {
+      setState(() {
+        postList = updatedState.postList;
+      });
+    }
   }
 
   Widget _buildListUser() {
