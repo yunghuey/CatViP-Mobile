@@ -160,6 +160,7 @@ class _ProfileViewState extends State<ProfileView> {
                 onRefresh: refreshPage,
                 color: HexColor("#3c1e08"),
                 child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
                   child: Column(
                     children: [
                       _userDetails(),
@@ -200,10 +201,16 @@ class _ProfileViewState extends State<ProfileView> {
               );
             }
             else {
-              refreshPage();
               return RefreshIndicator(
-                  onRefresh: refreshPage,
-                  child: Container()); // Handle other cases
+                onRefresh: refreshPage,
+                color: HexColor("#3c1e08"),
+                child: Stack(
+                  children: <Widget>[
+                    ListView(),
+                    Container(),
+                  ],
+                ),
+              );
             }
           },
         ),
