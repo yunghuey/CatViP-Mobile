@@ -29,14 +29,3 @@ class ResetSearchState extends UserProfileState {}
 class UserProfileUpdating extends UserProfileState {}
 
 class UserProfileUpdated extends UserProfileState {}
-
-class SearchSuccessState extends UserProfileState {
-  List<UserModel> searchList;
-  SearchSuccessState({ required this.searchList });
-}
-
-class SearchFailState extends UserProfileState {
-  String message;
-  SearchFailState({ required this.message});
-}
-

@@ -198,8 +198,12 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                 ),
               );
-            } else {
-              return Container(); // Handle other cases
+            }
+            else {
+              refreshPage();
+              return RefreshIndicator(
+                  onRefresh: refreshPage,
+                  child: Container()); // Handle other cases
             }
           },
         ),
