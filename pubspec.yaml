@@ -56,6 +56,7 @@ dependencies:
   flutter_google_places: ^0.3.0
   grouped_list: ^4.2.0
   signalr_core: ^1.1.1
+  url_launcher: ^6.2.2
 
 
 
