@@ -60,4 +60,26 @@ class ChatRepository{
       return [];
     }
   }
+
+  Future<bool> updateLastSeen(int userid) async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      if (token!.isNotEmpty) {
+        var url =  Uri.parse(APIConstant.UpdateLastSeenURL + userid.toString());
+        var header = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${token}",
+        };
+        var response = await http.put(url, headers: header);
+        if (response.statusCode == 200) {
+          return true;
+        }
+      }
+      return false;
+    } catch (e){
+      print(e.toString());
+      return false;
+    }
+  }
 }

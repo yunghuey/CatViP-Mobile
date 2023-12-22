@@ -31,6 +31,7 @@ class _SingleChatViewState extends State<SingleChatView> {
   String? username = "";
   int isInitialized = 0;
   String _receivedMessage = "";
+
   @override
   void initState() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
@@ -44,6 +45,12 @@ class _SingleChatViewState extends State<SingleChatView> {
         .build();
     _setConnection();
     super.initState();
+  }
+
+  @override
+  void dispose(){
+    chatBloc.add(HandleUnreadEvent(userid: widget.user.userid));
+    super.dispose();
   }
 
   Future<String?> getCurrentUsername() async{
@@ -152,16 +159,18 @@ class _SingleChatViewState extends State<SingleChatView> {
           ),
           suffixIcon: IconButton(
               onPressed: (){
-                MessageModel newmsg = MessageModel(
-                    message: msgController.text,
-                    isCurrentUserSent: true,
-                    dateTime: DateTime.now().toString()
-                );
-                setState(() {
-                  messagelist.add(newmsg);
-                  _sendPrivateMessage();
-                });
-                msgController.text = "";
+                if (msgController.text.length > 0){
+                  MessageModel newmsg = MessageModel(
+                      message: msgController.text.trim(),
+                      isCurrentUserSent: true,
+                      dateTime: DateTime.now().toString()
+                  );
+                  setState(() {
+                    messagelist.add(newmsg);
+                    _sendPrivateMessage();
+                  });
+                  msgController.text = "";
+                }
               },
               icon: const Icon(Icons.send),
           ),

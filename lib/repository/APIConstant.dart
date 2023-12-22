@@ -1,15 +1,12 @@
 class APIConstant {
   static const String ipaddress = "http://10.131.78.121:7015/";
-  // change this to your own ipaddress number
-  // Stephen's IP
-  // static const String URL = "http://10.131.76.30:7015/api/";
-
    //wafir's Melaka IP
-   //  static const String URL = "http://192.168.0.126:7015/api/";
+   //  static const String ipaddress = "http://192.168.0.126:7015/";
 
 
   // yung huey IP
    static const String URL = "${ipaddress}api/";
+
 
   // auth module
   static String get LoginURL => "${APIConstant.URL}Auth/login";
@@ -65,8 +62,5 @@ class APIConstant {
   // chat module
    static String get GetChatListURL => "${APIConstant.URL}Chat/GetChatUsers";
    static String get GetChatByUserURL => "${APIConstant.URL}Chat/GetChats/";
-
-
-
-
+   static String get UpdateLastSeenURL => "${APIConstant.URL}Chat/UpdateLastSeen/";
 }
