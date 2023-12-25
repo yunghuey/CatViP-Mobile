@@ -5,6 +5,7 @@ import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CasesReport.dart';
+import 'package:CatViP/pages/report/MapCaseReports.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -331,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CaseReports()));
+                                      builder: (context) => MapCaseReports()));
                             },
                             child: Icon(Icons.warning_amber),
                           ),
