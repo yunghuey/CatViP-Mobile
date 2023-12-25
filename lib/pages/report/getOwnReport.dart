@@ -38,7 +38,6 @@ class _OwnReportState extends State<OwnReport> {
   final List<CaseReport> caseReports = [];
 
 
-
   void _editReport(CaseReport caseReport) {
     Navigator.push(
       context,
@@ -54,8 +53,9 @@ class _OwnReportState extends State<OwnReport> {
   @override
   void initState() {
     // TODO: implement initState
-    reportBloc = BlocProvider.of<ReportPostBloc>(context);
+    //caseBloc = BlocProvider.of<GetCaseBloc>(context);
     caseBloc.add(StartLoadOwnCase());
+    print("hello");
     super.initState();
   }
 
@@ -98,72 +98,57 @@ class _OwnReportState extends State<OwnReport> {
   }
 
   Widget _buildListUser() {
-    return Container(
-      color: HexColor("#ecd9c9"),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<GetCaseBloc>.value(value: caseBloc),
-          BlocProvider<ReportPostBloc>(
-            create: (context) => reportBloc,
-          ),
-        ],
-        child: MultiBlocListener(
-          listeners: [
-            BlocListener<ReportPostBloc, ReportPostState>(
-              listener: (context, state) {
-                if (state is ReportPostSuccessState) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Your report has been submitted")),
-                  );
-                } else if (state is ReportPostFailState) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("You can't report your own post")),
-                  );
-                }
-              },
-              child: Container(), // You can leave this empty or use it for UI if needed
-            ),
-            // Add BlocListener for CaseReportBloc here if needed
-          ],
-          child: BlocBuilder<GetCaseBloc, GetCaseState>(
-            builder: (context, state) {
-              if (state is GetCaseError) {
-                return Center(
-                  child: Text(state.error!),
-                );
-              } else if (state is GetCaseInitial || state is GetCaseLoading) {
-                return Center(
-                  child: CircularProgressIndicator(color:  HexColor("#3c1e08"),),
-                );
-              } else if (state is GetCaseLoaded) {
-                List<CaseReport> caseList = state.caseList;
-                return listCase(caseList);
-              } else {
-                return Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.brown,
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => NewReport())
-                        ).then((result) {
-                              caseBloc.add(StartLoadOwnCase());
-                            }
-                        );
-                      },
-                      child: Icon(Icons.add),
+    return BlocProvider<GetCaseBloc>(
+      create: (context) => caseBloc,
+      child: Container(
+        color: HexColor("#ecd9c9"),
+        child: BlocBuilder<GetCaseBloc, GetCaseState>(
+          builder: (context, state) {
+            if (state is GetCaseError) {
+              return Center(
+                child: Text(state.error!),
+              );
+            } else if (state is GetCaseInitial || state is GetCaseLoading) {
+              return Center(
+                child: CircularProgressIndicator(color: HexColor("#3c1e08")),
+              );
+            } else if (state is GetCaseLoaded) {
+              List<CaseReport> caseList = state.caseList;
+              return Column(
+                children: [
+                  Expanded(
+                    child: listCase(caseList),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.brown,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NewReport()),
+                          ).then((result) {
+                            caseBloc.add(StartLoadOwnCase());
+                          });
+                        },
+                        child: Icon(Icons.add),
+                      ),
                     ),
                   ),
-                );
-              }
-            },
-          ),
+                ],
+              );
+            } else {
+              // Handle other states if needed
+              return Container();
+            }
+          },
         ),
       ),
     );
   }
+
 
   Widget listCase(List<CaseReport> caseList){
     return Stack(

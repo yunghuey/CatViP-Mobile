@@ -1,9 +1,9 @@
 class APIConstant {
 
   //static const String ipaddress = "http://10.131.78.121:7015/";
+  //static const String ipaddress = "http://192.168.0.126:7015/";
+  static const String ipaddress = "http://192.168.0.112:7015/";
 
-  //static const String ipaddress = "http://10.131.78.121:7015/";
-  static const String ipaddress = "http://192.168.0.126:7015/";
   // change this to your own ipaddress number
   // Stephen's IP
   // static const String URL = "http://10.131.76.30:7015/api/";
