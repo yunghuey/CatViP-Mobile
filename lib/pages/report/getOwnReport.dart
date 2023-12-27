@@ -2,6 +2,7 @@ import 'package:CatViP/bloc/post/ReportPost/reportPost_bloc.dart';
 import 'package:CatViP/bloc/post/ReportPost/reportPost_state.dart';
 import 'package:CatViP/model/caseReport/caseReport.dart';
 import 'package:CatViP/pages/chat/chatlist_view.dart';
+import 'package:CatViP/pages/chat/messenger_icon.dart';
 import 'package:CatViP/pages/report/newReport.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,7 +80,7 @@ class _OwnReportState extends State<OwnReport> {
                   builder: (context) => ChatListView(),
                 ),);
               },
-              icon: Icon(Icons.messenger_outline, color: HexColor("#3c1e08"),),
+              icon: MessengerIcon(),
               color: Colors.white,
             ),
           ],

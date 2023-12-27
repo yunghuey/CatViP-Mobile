@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:CatViP/bloc/chat/chat_bloc.dart';
 import 'package:CatViP/bloc/chat/chat_event.dart';
+import 'package:CatViP/bloc/report%20case/ReportCaseCount/CaseReportCountEvent.dart';
+import 'package:CatViP/bloc/report%20case/ReportCaseCount/CaseReportCountBloc.dart';
 import 'package:CatViP/pages/chat/chatlist_view.dart';
 import 'package:CatViP/pages/chat/messenger_icon.dart';
 import 'package:CatViP/pages/post/comment.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
+import 'package:CatViP/pages/report/CaseIcon.dart';
 import 'package:CatViP/pages/report/CasesReport.dart';
 import 'package:CatViP/pages/report/MapCaseReports.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
@@ -33,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   final GetPostBloc _postBloc = GetPostBloc();
   late ReportPostBloc reportBloc;
   late ChatBloc chatBloc;
+  late CaseReportCountBloc caseCountBloc;
   int? selectedPostIndex;
   late final int? postId;
   final Widgets func = Widgets();
@@ -52,6 +56,8 @@ class _HomePageState extends State<HomePage> {
     chatBloc.add(UnreadInitEvent());
     reportBloc = BlocProvider.of<ReportPostBloc>(context);
     _postBloc.add(GetPostList());
+    caseCountBloc = BlocProvider.of<CaseReportCountBloc>(context);
+    caseCountBloc.add(CaseCountInitEvent());
     super.initState();
   }
 
@@ -96,6 +102,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> refreshPosts() async {
     chatBloc.add(UnreadInitEvent());
+    caseCountBloc.add(CaseCountInitEvent());
     _postBloc.add(StartLoadOwnPost());
     await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
 
@@ -176,10 +183,10 @@ class _HomePageState extends State<HomePage> {
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () {
-                                                      // Navigator.push(
-                                                      //   context,
-                                                      //   MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
-                                                      // );
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
+                                                      );
                                                     },
                                                     child: Text(
                                                       post.username!,
@@ -329,17 +336,7 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.bottomRight,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: FloatingActionButton(
-                            heroTag: "casereporttag",
-                            backgroundColor: Colors.brown,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MapCaseReports()));
-                            },
-                            child: Icon(Icons.warning_amber),
-                          ),
+                          child: MissingCaseIcon(),
                         ),
                       ),
                     ],
@@ -351,16 +348,7 @@ class _HomePageState extends State<HomePage> {
                 alignment: Alignment.bottomRight,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.brown,
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CaseReports()));
-                    },
-                    child: Icon(Icons.warning_amber),
-                  ),
+                  child: MissingCaseIcon(),
                 ),
               );
             }
@@ -480,10 +468,10 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
+                            );
                           },
                           child: Text(
                             post.username!,
