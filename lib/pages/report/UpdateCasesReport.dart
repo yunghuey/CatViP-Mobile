@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:CatViP/bloc/report%20case/EditCaseReport/editCaseReport_bloc.dart';
 import 'package:CatViP/model/caseReport/caseReport.dart';
 import 'package:CatViP/model/caseReport/caseReportImages.dart';

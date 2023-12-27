@@ -13,7 +13,7 @@ class GetCaseBloc extends Bloc<GetCaseEvent, GetCaseState> {
   GetCaseBloc() : super(GetCaseInitial()) {
     on<GetCaseList>((event, emit) async {
       try {
-        emit(GetCaseLoading());
+        //emit(GetCaseLoading());
         final List<CaseReport> caseList = await reportCaseRepo.fetchCases();
         emit(GetCaseLoaded(caseList: caseList));
 

@@ -8,6 +8,7 @@ import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CasesReport.dart';
+import 'package:CatViP/pages/report/MapCaseReports.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,6 +97,15 @@ class _HomePageState extends State<HomePage> {
   Future<void> refreshPosts() async {
     chatBloc.add(UnreadInitEvent());
     _postBloc.add(StartLoadOwnPost());
+    await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
+
+    // Retrieve the updated post list
+    final updatedState = _postBloc.state;
+    if (updatedState is GetPostLoaded) {
+      setState(() {
+        postList = updatedState.postList;
+      });
+    }
   }
 
   Widget _buildListUser() {
@@ -326,7 +336,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CaseReports()));
+                                      builder: (context) => MapCaseReports()));
                             },
                             child: Icon(Icons.warning_amber),
                           ),
