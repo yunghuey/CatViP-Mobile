@@ -38,3 +38,12 @@ class CreateNewChatState extends ChatState{}
 class SettledUnreadState extends ChatState {}
 
 class UnsettledUnreadState extends ChatState {}
+
+class UnreadChatState extends ChatState{
+  final int num;
+  UnreadChatState({ required this.num});
+}
+
+class EmptyUnreadChatState extends ChatState{ }
+
+class UnreadInitState extends ChatState {}
