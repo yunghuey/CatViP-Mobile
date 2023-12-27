@@ -76,24 +76,10 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       create: (context) => caseBloc,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Current Location', style: TextStyle(color: HexColor("#3c1e08"))),
+          title: Text('Cases Around You', style: TextStyle(color: HexColor("#3c1e08"))),
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
-          actions: [
-            TextButton(
-              onPressed: () {
-                print('TextButton pressed');
-                Navigator.pop(
-                  context,
-                  {'latitude': latitude, 'longitude': longitude, 'address': address},
-                );
-              },
-              child: Text(
-                  'SAVE', style: Theme.of(context).textTheme.bodyLarge
-              ),
-            ),
-          ],
         ),
         body: BlocListener<GetCaseBloc, GetCaseState>(
           listener: (context, state) {
@@ -229,9 +215,6 @@ class _MapCaseReportsState extends State<MapCaseReports> {
 
 
   void _onMarkerTapped(CaseReport tappedReport) {
-    // Handle marker tap event here, e.g., navigate to a specific page
-    // You can use the tappedReport to get information about the tapped marker
-
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -240,21 +223,4 @@ class _MapCaseReportsState extends State<MapCaseReports> {
     );
   }
 
-
-  // Future<void> _getAddressFromLatLng(LatLng latLng) async {
-  //   List<Placemark> placeMark = await placemarkFromCoordinates(
-  //     latLng.latitude,
-  //     latLng.longitude,
-  //   );
-  //   Placemark place = placeMark.isNotEmpty ? placeMark.first : Placemark();
-  //
-  //   address = '${place.name},'
-  //       '${place.street},'
-  //       ' ${place.subLocality},'
-  //       ' ${place.locality},'
-  //       ' ${place.postalCode},'
-  //       ' ${place.country}';
-  //   latitude = latLng.latitude;
-  //   longitude = latLng.longitude;
-  // }
 }

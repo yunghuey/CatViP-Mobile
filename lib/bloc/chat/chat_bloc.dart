@@ -65,11 +65,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState>{
     });
 
     on<UnreadInitEvent>((event, emit) async{
-      print("count message");
       int num = await repo.getUnreadChatCount();
       if (num == 0){
         emit(EmptyUnreadChatState());
-      } else{
+      } else {
         emit(UnreadChatState(num: num));
       }
     });

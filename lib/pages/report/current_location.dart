@@ -32,27 +32,9 @@ class _CurrentLocationState extends State<CurrentLocation> {
         backgroundColor: HexColor("#ecd9c9"),
         bottomOpacity: 0.0,
         elevation: 0.0,
-        actions: [
+        actions:[
           TextButton(
             onPressed: () {
-              // Handle the button press
-              // if (address.isEmpty == true){
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //       SnackBar(
-              //         content: Text("Please pick a location",
-              //           style: TextStyle(
-              //             color: HexColor("#FF6464"),
-              //             fontSize: 20,
-              //             fontWeight: FontWeight.bold,
-              //           ),
-              //         ),
-              //         backgroundColor: HexColor("#FFE382"),
-              //       )
-              //   );
-              //   return;
-              // }
-
-              print('TextButton pressed');
               Navigator.pop(
                   context,
                   {'latitude': latitude, 'longitude': longitude, 'address':address}

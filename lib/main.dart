@@ -16,6 +16,8 @@ import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
+import 'package:CatViP/bloc/report%20case/ReportCaseCount/CaseReportCountBloc.dart';
+import 'package:CatViP/bloc/report%20case/ReportCaseCount/CaseReportCountState.dart';
 import 'package:CatViP/bloc/search/searchuser_bloc.dart';
 import 'package:CatViP/bloc/search/searchuser_state.dart';
 import 'package:CatViP/bloc/user/relation_bloc.dart';
@@ -140,6 +142,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<SearchUserBloc>(
           create: (context) => SearchUserBloc(SearchUserInitState(), UserRepository()),
+        ),
+        BlocProvider<CaseReportCountBloc>(
+          create: (context) => CaseReportCountBloc(CaseReportInitState(), ReportCaseRepository()),
         ),
       ],
       child: MaterialApp(

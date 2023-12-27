@@ -18,26 +18,23 @@ class _MessengerIconState extends State<MessengerIcon> {
   late ChatBloc chatBloc;
 
   @override
-  void initState() {
-    // chatBloc = BlocProvider.of<ChatBloc>(context);
-    // chatBloc.add(UnreadInitEvent());
-    super.initState();
-  }
-  @override
   Widget build(BuildContext context) {
     return
     BlocBuilder<ChatBloc, ChatState>(
       builder: (context, state){
         if (state is UnreadChatState){
-           return Badge.Badge(
-             badgeContent: Text(state.num.toString(), style: TextStyle(color: Colors.white)),
-             badgeStyle: Badge.BadgeStyle(
-               shape: Badge.BadgeShape.circle,
-               badgeColor: HexColor("#3c1e08"),
-             ),
-             child: Icon(
-               Icons.messenger_outline,
-               color: HexColor("#3c1e08"),
+           return Container(
+             margin: const EdgeInsets.only(right: 10.0),
+             child: Badge.Badge(
+               badgeContent: Text(state.num.toString(), style: TextStyle(color: Colors.white)),
+               badgeStyle: Badge.BadgeStyle(
+                 shape: Badge.BadgeShape.circle,
+                 badgeColor: HexColor("#3c1e08"),
+               ),
+               child: Icon(
+                 Icons.messenger_outline,
+                 color: HexColor("#3c1e08"),
+               ),
              ),
            );
         }
