@@ -10,6 +10,7 @@ import '../../bloc/report case/GetOwnCase/getOwnCase_bloc.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_event.dart';
 import '../../bloc/report case/GetOwnCase/getOwnCase_state.dart';
 import '../../model/caseReport/caseReport.dart';
+import 'ReportDetails.dart';
 
 
 class MapCaseReports extends StatefulWidget {
@@ -216,6 +217,9 @@ class _MapCaseReportsState extends State<MapCaseReports> {
         markerId: MarkerId(report.id.toString()),
         position: LatLng(report.latitude!, report.longitude!),
         // ... (Other marker properties)
+        onTap: () {
+          _onMarkerTapped(report);
+        }
       );
     }).toSet());
 
@@ -223,20 +227,34 @@ class _MapCaseReportsState extends State<MapCaseReports> {
   }
 
 
-  Future<void> _getAddressFromLatLng(LatLng latLng) async {
-    List<Placemark> placeMark = await placemarkFromCoordinates(
-      latLng.latitude,
-      latLng.longitude,
-    );
-    Placemark place = placeMark.isNotEmpty ? placeMark.first : Placemark();
 
-    address = '${place.name},'
-        '${place.street},'
-        ' ${place.subLocality},'
-        ' ${place.locality},'
-        ' ${place.postalCode},'
-        ' ${place.country}';
-    latitude = latLng.latitude;
-    longitude = latLng.longitude;
+  void _onMarkerTapped(CaseReport tappedReport) {
+    // Handle marker tap event here, e.g., navigate to a specific page
+    // You can use the tappedReport to get information about the tapped marker
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReportDetail(caseReport: tappedReport),
+      ),
+    );
   }
+
+
+  // Future<void> _getAddressFromLatLng(LatLng latLng) async {
+  //   List<Placemark> placeMark = await placemarkFromCoordinates(
+  //     latLng.latitude,
+  //     latLng.longitude,
+  //   );
+  //   Placemark place = placeMark.isNotEmpty ? placeMark.first : Placemark();
+  //
+  //   address = '${place.name},'
+  //       '${place.street},'
+  //       ' ${place.subLocality},'
+  //       ' ${place.locality},'
+  //       ' ${place.postalCode},'
+  //       ' ${place.country}';
+  //   latitude = latLng.latitude;
+  //   longitude = latLng.longitude;
+  // }
 }
