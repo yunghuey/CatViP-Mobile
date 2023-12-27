@@ -1,13 +1,9 @@
 class APIConstant {
+  // yunghuey
   static const String ipaddress = "http://10.131.78.121:7015/";
-
-  // static const String ipaddress = "http://10.131.78.121:7015/";
-   //wafir's Melaka IP
-   //  static const String ipaddress = "http://192.168.0.126:7015/";
-
-
-  // yung huey IP
-   static const String URL = "${ipaddress}api/";
+  // wafir
+  // static const String ipaddress = "http://192.168.0.126:7015/";
+  static const String URL = "${ipaddress}api/";
 
 
   // auth module
