@@ -56,6 +56,7 @@ class APIConstant {
     static String get RevokeCaseReportsURL => "${APIConstant.URL}caseReport/revokecasereport/";
     static String get CreateCaseReportCommentURL => "${APIConstant.URL}caseReport/createcomment";
     static String get GetCaseReportCommentsURL => "${APIConstant.URL}caseReport/GetCaseReportComments/";
+    static String get GetCaseReportsCountURL => "${APIConstant.URL}caseReport/GetNearByCaseReportsCount";
 
   // chat module
    static String get GetChatListURL => "${APIConstant.URL}Chat/GetChatUsers";
