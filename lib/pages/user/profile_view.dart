@@ -749,7 +749,8 @@ class _ProfileViewState extends State<ProfileView> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentPage == index
-                        ? Colors.blue // Highlight the current page indicator
+                        ? HexColor(
+                        "#3c1e08") // Highlight the current page indicator
                         : Colors.grey,
                   ),
                 ),

@@ -183,6 +183,7 @@ class _HomePageState extends State<HomePage> {
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () {
+                                                      // if (post.username == )
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
