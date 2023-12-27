@@ -37,21 +37,19 @@ class _MapScreenState extends State<MapScreen> {
           actions: [
            IconButton(
                onPressed: (){
-           //   get string, lat and log
-
-              if (userAddress!.isEmpty == true){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text("Please pick a location",
-                        style: TextStyle(
-                          color: HexColor("#FF6464"),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      backgroundColor: HexColor("#FFE382"),
-                  )
-                );
+                  if (userAddress!.isEmpty == true){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text("Please pick a location",
+                            style: TextStyle(
+                              color: HexColor("#FF6464"),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          backgroundColor: HexColor("#FFE382"),
+                      )
+                    );
                 return;
               }
               Navigator.pop(context, { 'lat': userLat, 'lng': userLng, 'address': userAddress });
@@ -71,15 +69,17 @@ class _MapScreenState extends State<MapScreen> {
             },
           ),
           Container(
-              margin: const EdgeInsets.only(left: 10),
-              child: ElevatedButton(
-                onPressed: _handlePressedButton,
-                child: Text("Search address"),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                ),
-              )
-          ),
+            margin: const EdgeInsets.only(left: 5),
+            child: ElevatedButton(
+              onPressed: _handlePressedButton,
+              child: Icon(Icons.search),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+                shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
+                padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10)), // Adjust the size of the button
+              ),
+            ),
+          )
         ],
       ),
     );

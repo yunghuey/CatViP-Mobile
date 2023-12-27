@@ -25,3 +25,6 @@ class HandleUnreadEvent extends ChatEvent {
   final int userid;
   HandleUnreadEvent({ required this.userid});
 }
+
+//unread message count
+class UnreadInitEvent extends ChatEvent{}

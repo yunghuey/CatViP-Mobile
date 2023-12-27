@@ -82,4 +82,29 @@ class ChatRepository{
       return false;
     }
   }
+
+  Future<int> getUnreadChatCount() async {
+    try{
+      var pref = await SharedPreferences.getInstance();
+      String? token = pref.getString("token");
+      if (token!.isNotEmpty) {
+        var url = Uri.parse(APIConstant.GetCountUnreadURL);
+        var header = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${token}",
+        };
+        var response = await http.get(url, headers: header);
+
+        if (response.statusCode == 200) {
+          return int.parse(response.body);
+        } else {
+          print(response.statusCode);
+        }
+      }
+      return 0;
+    } catch(e){
+      print("error in getting message list ${e.toString()}");
+      return 0;
+    }
+  }
 }

@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:CatViP/bloc/chat/chat_bloc.dart';
+import 'package:CatViP/bloc/chat/chat_event.dart';
 import 'package:CatViP/pages/chat/chatlist_view.dart';
+import 'package:CatViP/pages/chat/messenger_icon.dart';
 import 'package:CatViP/pages/post/comment.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
@@ -28,6 +31,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GetPostBloc _postBloc = GetPostBloc();
   late ReportPostBloc reportBloc;
+  late ChatBloc chatBloc;
   int? selectedPostIndex;
   late final int? postId;
   final Widgets func = Widgets();
@@ -43,6 +47,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    chatBloc = BlocProvider.of<ChatBloc>(context);
+    chatBloc.add(UnreadInitEvent());
     reportBloc = BlocProvider.of<ReportPostBloc>(context);
     _postBloc.add(GetPostList());
     super.initState();
@@ -76,13 +82,9 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(
                     builder: (context) => ChatListView(),
                   ),
-                );
+                ).then((value) => refreshPosts());
               },
-              icon: Icon(
-                Icons.messenger_outline,
-                color: HexColor("#3c1e08"),
-              ),
-              color: Colors.white,
+              icon: MessengerIcon(),
             ),
           ],
         ),
@@ -92,6 +94,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> refreshPosts() async {
+    chatBloc.add(UnreadInitEvent());
     _postBloc.add(StartLoadOwnPost());
   }
 
@@ -317,6 +320,7 @@ class _HomePageState extends State<HomePage> {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: FloatingActionButton(
+                            heroTag: "casereporttag",
                             backgroundColor: Colors.brown,
                             onPressed: () {
                               Navigator.push(
