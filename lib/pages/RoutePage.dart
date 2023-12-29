@@ -40,27 +40,27 @@ class _RoutePageState extends State<RoutePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.brown,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: 'Explore',
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.brown,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
             label: 'Post',
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.brown,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list_alt),
             label: 'Report',
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.brown,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.brown,
           ),
         ],
       ),

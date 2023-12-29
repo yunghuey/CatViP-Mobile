@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> refreshPosts() async {
     chatBloc.add(UnreadInitEvent());
     caseCountBloc.add(CaseCountInitEvent());
-    _postBloc.add(StartLoadOwnPost());
+    _postBloc.add(GetPostList());
     await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
 
     // Retrieve the updated post list
@@ -186,7 +186,13 @@ class _HomePageState extends State<HomePage> {
                                                       // if (post.username == )
                                                       Navigator.push(
                                                         context,
-                                                        MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    SearchView(
+                                                                      userid: post
+                                                                          .userId!,
+                                                                    )),
                                                       );
                                                     },
                                                     child: Text(
@@ -201,6 +207,27 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                           ),
+                                          post.postTypeId == 1
+                                              ? Container(
+                                                  color: Colors.brown,
+                                                  padding: EdgeInsets.all(
+                                                      4.0), // Adjust the padding as needed
+                                                  child: Text(
+                                                    "Daily Sharing",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                )
+                                              : Container(
+                                                  color: Colors.brown,
+                                                  padding: EdgeInsets.all(
+                                                      4.0), // Adjust the padding as needed
+                                                  child: Text(
+                                                    "Expert Tips",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
                                           post.isCurrentUserPost == false
                                               ? report(post)
                                               : Container(),
@@ -376,7 +403,10 @@ class _HomePageState extends State<HomePage> {
             await Future.delayed(Duration.zero);
             // Check if the context is still valid before popping
             if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
+              setState(() {
+                Navigator.of(context).pop();
+              });
+
             }
           } else if (state is ReportPostFailState) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -471,7 +501,10 @@ class _HomePageState extends State<HomePage> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => SearchView(userid: post.userId!,)),
+                              MaterialPageRoute(
+                                  builder: (context) => SearchView(
+                                        userid: post.userId!,
+                                      )),
                             );
                           },
                           child: Text(
@@ -578,7 +611,8 @@ class _HomePageState extends State<HomePage> {
                 width: MediaQuery.of(context).size.width,
                 height: 60, // Adjust the height as needed
                 color: Colors.brown.withOpacity(0.7), // Brown background color
-                padding: EdgeInsets.all(16.0), // Increased padding for visibility
+                padding:
+                    EdgeInsets.all(16.0), // Increased padding for visibility
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
