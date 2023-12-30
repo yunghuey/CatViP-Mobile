@@ -6,7 +6,6 @@ import 'package:CatViP/bloc/post/OwnCats/ownCats_event.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_state.dart';
 import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
 import 'package:CatViP/pages/RoutePage.dart';
-import 'package:CatViP/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -30,7 +29,6 @@ class NewPost extends StatefulWidget {
 }
 
 class _NewPostState extends State<NewPost> {
-
   //Controllers for input
   TextEditingController captionController = TextEditingController();
   TextEditingController postTypeController = TextEditingController();
@@ -38,14 +36,12 @@ class _NewPostState extends State<NewPost> {
 
   List<PostType> postTypes = [];
   List<CatModel> cats = [];
-  final _formKey = GlobalKey<FormState>();
   late NewPostBloc createBloc;
   late OwnCatsBloc catBloc;
   late GetPostTypeBloc postTypeBloc;
   PostType? selectedPostType;
   int? selectedCatId;
   File? image;
-  final _picker = ImagePicker();
   bool showSpinner = false;
   late final String message;
   List<XFile> selectedImages = [];
@@ -133,8 +129,6 @@ class _NewPostState extends State<NewPost> {
     return message;
   }
 
-
-
   Future<String?> _getImageBase64(File imageFile) async {
     try {
       List<int> imageBytes = await imageFile.readAsBytes();
@@ -154,12 +148,14 @@ class _NewPostState extends State<NewPost> {
     }
   }
 
-
   late var msg = Container();
   late final status = BlocBuilder<NewPostBloc, NewPostState>(
-    builder: (context, state){
-      if (state is NewPostLoadingState){
-        return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+    builder: (context, state) {
+      if (state is NewPostLoadingState) {
+        return Center(
+            child: CircularProgressIndicator(
+          color: HexColor("#3c1e08"),
+        ));
       }
       return Container();
     },
@@ -194,68 +190,66 @@ class _NewPostState extends State<NewPost> {
           //   },
           // ),
         ),
-        body:  MultiBlocListener(
+        body: MultiBlocListener(
           listeners: [
             BlocListener<NewPostBloc, NewPostState>(
               // ignore: curly_braces_in_flow_control_structures
-                listener: (context, state) {
-                  if (state is NewPostSuccessState) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Successfully Post'))
-                    ); //   navigate to View All Cat
+              listener: (context, state) {
+                if (state is NewPostSuccessState) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          'Successfully Post'))); //   navigate to View All Cat
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RoutePage()),
-                    );
-                  }
-                  else if (state is NewPostFailState) {
-                    getMessage().then((message) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(message))
-                      );
-                    });
-                  }
-                },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RoutePage()),
+                  );
+                } else if (state is NewPostFailState) {
+                  getMessage().then((message) {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(message)));
+                  });
+                }
+              },
             ),
-
           ],
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Column(
-                    children: <Widget>[
-                      insertImage(context),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      caption(),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      postType(),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      if (selectedPostType != null && selectedPostType?.id == 1)
-                      OwnCats(),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      postButton(),
-                    ],
+          child: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Column(
+                      children: <Widget>[
+                        insertImage(context),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        caption(),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        postType(),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        if (selectedPostType != null &&
+                            selectedPostType?.id == 1)
+                          OwnCats(),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        postButton(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
-      ),
-
     );
   }
 
@@ -286,15 +280,23 @@ class _NewPostState extends State<NewPost> {
                 onPressed: () {
                   pickImages(ImageSource.camera);
                 },
-                label: Text("Camera", style: TextStyle(color:HexColor("#3c1e08")),),
+                label: Text(
+                  "Camera",
+                  style: TextStyle(color: HexColor("#3c1e08")),
+                ),
               ),
-              SizedBox(width: 20.0,),
+              SizedBox(
+                width: 20.0,
+              ),
               TextButton.icon(
                 icon: Icon(Icons.image, color: HexColor("#3c1e08")),
                 onPressed: () {
                   pickImages(ImageSource.gallery);
                 },
-                label: Text("Gallery", style: TextStyle(color:HexColor("#3c1e08")),),
+                label: Text(
+                  "Gallery",
+                  style: TextStyle(color: HexColor("#3c1e08")),
+                ),
               ),
             ],
           )
@@ -316,73 +318,15 @@ class _NewPostState extends State<NewPost> {
               //pickImages(ImageSource.gallery);
             },
             child: Container(
-              width: 300, // Set your desired width for the square box
-              height: 300, // Set your desired height for the square box
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.brown,
-                  width: 2.0,
+                width: 300, // Set your desired width for the square box
+                height: 300, // Set your desired height for the square box
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.brown,
+                    width: 2.0,
+                  ),
                 ),
-              ),
-              child: PageView.builder(
-                itemCount: selectedImages.length,
-                itemBuilder: (context, index) {
-                  return Stack(
-                    children: [
-                      Container(
-                        width: 300,
-                        height: 300,
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: FutureBuilder<String?>(
-                            future: _getImageBase64(File(selectedImages[index].path)),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.done &&
-                                  snapshot.hasData) {
-                                return Image.memory(
-                                  base64Decode(snapshot.data!),
-                                  width: 300,
-                                  height: 300,
-                                  fit: BoxFit.cover,
-                                );
-                              } else {
-                                return Center(
-                                  child: Text('Loading Image'),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 8.0,
-                        right: 8.0,
-                        child: GestureDetector(
-                          onTap: () {
-                            // Remove the image at the given index
-                            setState(() {
-                              selectedImages.removeAt(index);
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(4.0),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.red,
-                            ),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
+                child: ImageView()),
           ),
           Positioned(
             bottom: 20.0,
@@ -406,6 +350,74 @@ class _NewPostState extends State<NewPost> {
     );
   }
 
+  Widget ImageView() {
+    if (selectedImages.length == 0) {
+      return Center(
+        child: Text(
+          'Pick Image',
+        ));
+    } else {
+      return PageView.builder(
+        itemCount: selectedImages.length,
+        itemBuilder: (context, index) {
+          return Stack(
+            children: [
+              Container(
+                width: 300,
+                height: 300,
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: FutureBuilder<String?>(
+                    future: _getImageBase64(File(selectedImages[index].path)),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.hasData) {
+                        return Image.memory(
+                          base64Decode(snapshot.data!),
+                          width: 300,
+                          height: 300,
+                          fit: BoxFit.cover,
+                        );
+                      } else {
+                        return Center(
+                          child: Text('Loading Image'),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 8.0,
+                right: 8.0,
+                child: GestureDetector(
+                  onTap: () {
+                    // Remove the image at the given index
+                    setState(() {
+                      selectedImages.removeAt(index);
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red,
+                    ),
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   Widget postButton() {
     return Padding(
       padding: const EdgeInsets.all(17.0),
@@ -415,44 +427,44 @@ class _NewPostState extends State<NewPost> {
         child: ElevatedButton(
           onPressed: () async {
             //if(_formKey.currentState!.validate()){
-              if (base64Images != null) {
-                
-                if (captionController.text.isEmpty){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Caption must be filled up'))
-                  );
-                }
+            if (base64Images != null) {
+              if (captionController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Caption must be filled up')));
+              }
 
-                createBloc.add(PostButtonPressed(
-                  description: captionController.text.trim(),
-                  postTypeId: selectedPostType?.id ?? 0,
-                  image: base64Images,
-                  catIds: selectedCats,
-                ));
-              }
-              else {
-                // image is null
-                createBloc.add(PostButtonPressed(
-                  description: captionController.text.trim(),
-                  postTypeId: selectedPostType?.id ?? 0,
-                  image: [],
-                  catIds: selectedCats,
-                ));
-              }
+              createBloc.add(PostButtonPressed(
+                description: captionController.text.trim(),
+                postTypeId: selectedPostType?.id ?? 0,
+                image: base64Images,
+                catIds: selectedCats,
+              ));
+            } else {
+              // image is null
+              createBloc.add(PostButtonPressed(
+                description: captionController.text.trim(),
+                postTypeId: selectedPostType?.id ?? 0,
+                image: [],
+                catIds: selectedCats,
+              ));
+            }
 
             //}
           },
-
           style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder( borderRadius: BorderRadius.circular(24.0),)
-            ),
-            backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24.0),
+            )),
+            backgroundColor:
+                MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
           ),
           child: const Padding(
             padding: EdgeInsets.all(12.0),
-            child: Text('POST', style: TextStyle(fontSize: 16),),
+            child: Text(
+              'POST',
+              style: TextStyle(fontSize: 16),
+            ),
           ),
         ),
       ),
@@ -464,7 +476,7 @@ class _NewPostState extends State<NewPost> {
       padding: const EdgeInsets.only(top: 5.0),
       child: TextFormField(
         controller: captionController,
-        decoration:  InputDecoration(
+        decoration: InputDecoration(
             labelText: 'Caption',
             labelStyle: TextStyle(color: HexColor("#3c1e08")),
             focusColor: HexColor("#3c1e08"),
@@ -472,9 +484,8 @@ class _NewPostState extends State<NewPost> {
               borderSide: BorderSide(color: HexColor("#a4a4a4")),
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color:  HexColor("#3c1e08")),
-            )
-        ),
+              borderSide: BorderSide(color: HexColor("#3c1e08")),
+            )),
       ),
     );
   }
@@ -506,7 +517,6 @@ class _NewPostState extends State<NewPost> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     SizedBox(height: 10.0),
                     Wrap(
                       spacing: 8.0,
@@ -524,7 +534,10 @@ class _NewPostState extends State<NewPost> {
                                 });
                               },
                             ),
-                            Text(postType.name! ?? "no data", style: TextStyle(fontSize: 15),),
+                            Text(
+                              postType.name! ?? "no data",
+                              style: TextStyle(fontSize: 15),
+                            ),
                           ],
                         );
                       }).toList(),
@@ -550,7 +563,9 @@ class _NewPostState extends State<NewPost> {
         builder: (context, state) {
           if (state is GetOwnCatsLoading) {
             // You can return a loading indicator or other UI elements here
-            return CircularProgressIndicator(color: HexColor("#3c1e08"),);
+            return CircularProgressIndicator(
+              color: HexColor("#3c1e08"),
+            );
           } else if (state is GetOwnCatsError) {
             // You can return an error message or other UI elements here
             return Text('Error: ${state.error}');
@@ -560,12 +575,14 @@ class _NewPostState extends State<NewPost> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DropdownButtonFormField<int>(
-                  value: selectedCatId, // Replace with the selected cat variable
+                  value:
+                      selectedCatId, // Replace with the selected cat variable
                   onChanged: (value) {
                     setState(() {
                       if (!selectedCats.contains(value)) {
                         selectedCatId = value;
-                        selectedCats.add(value!); // Add the selected cat to the list
+                        selectedCats
+                            .add(value!); // Add the selected cat to the list
                       } else {
                         // Display an error message or take appropriate action
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -579,7 +596,8 @@ class _NewPostState extends State<NewPost> {
                   items: cats.map((cat) {
                     return DropdownMenuItem<int>(
                       value: cat.id,
-                      child: Text(cat.name! ?? "no data"), // Replace with the actual field you want to display
+                      child: Text(cat.name! ??
+                          "no data"), // Replace with the actual field you want to display
                     );
                   }).toList(),
                   decoration: InputDecoration(
@@ -606,7 +624,8 @@ class _NewPostState extends State<NewPost> {
                   itemCount: selectedCats.length,
                   itemBuilder: (context, index) {
                     int catId = selectedCats[index];
-                    CatModel cat = cats.firstWhere((element) => element.id == catId);
+                    CatModel cat =
+                        cats.firstWhere((element) => element.id == catId);
                     return Chip(
                       label: Text(cat.name!),
                       onDeleted: () {
@@ -626,6 +645,4 @@ class _NewPostState extends State<NewPost> {
       ),
     );
   }
-
-
 }
