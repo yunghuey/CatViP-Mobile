@@ -54,7 +54,7 @@ import 'bloc/report case/RevokeCaseReport/revokeCase_bloc.dart';
 import 'bloc/report case/RevokeCaseReport/revokeCase_state.dart';
 import 'bloc/report case/new report case/newCase_bloc.dart';
 import 'bloc/report case/new report case/newCase_state.dart';
-
+  
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);

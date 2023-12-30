@@ -42,6 +42,7 @@ class _SearchUserViewState extends State<SearchUserView> {
             margin: EdgeInsets.only(top: 15),
             color: HexColor("#D0D4CA"),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 nameField(),
                 IconButton(onPressed: (){
