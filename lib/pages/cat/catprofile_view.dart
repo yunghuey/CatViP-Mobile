@@ -57,14 +57,15 @@ class _CatProfileViewState extends State<CatProfileView> {
         elevation: 0.0,
         actions: widget.fromOwner == true ? [
           IconButton(
-            icon: Icon(Icons.menu, color: HexColor("#3c1e08"),),
+            icon: Icon(Icons.edit, color: HexColor("#3c1e08"),),
             onPressed: (){
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context){
-                  return _menu();
-                },
-              );
+              Navigator.push(
+                context, MaterialPageRoute(builder: (context)=>EditCatView(currentCat: widget.currentcat))
+              ).then((value) {
+                if (value != null) {
+                  catBloc.add(ReloadOneCatEvent(catid: value));
+                }
+              });
             },
           )
         ] : [],
