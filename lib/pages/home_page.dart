@@ -476,50 +476,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // if (post.postImages != null &&
-            //     post.postImages!.isNotEmpty)
-            Row(
-              children: [
-                // CircleAvatar(
-                //   radius: 16,
-                //   backgroundColor: Colors.transparent,
-                //   backgroundImage: post.profileImage != ""
-                //       ? Image.memory(base64Decode(post.profileImage!)).image
-                //       : AssetImage('assets/profileimage.png'),
-                // ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchView(
-                                        userid: post.userId!,
-                                      )),
-                            );
-                          },
-                          child: Text(
-                            post.username!,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // post.isCurrentUserPost == false
-                //     ? report(post)
-                //     : Container(),
-              ],
-            ),
+            displayImage(post),
             Container(
                 child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -529,7 +486,6 @@ class _HomePageState extends State<HomePage> {
               ),
             )),
             SizedBox(height: 4.0),
-            displayImage(post),
           ],
         ),
       ),
@@ -611,7 +567,7 @@ class _HomePageState extends State<HomePage> {
                 padding:
                     EdgeInsets.all(16.0), // Increased padding for visibility
                 child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       'Shop Now!',
