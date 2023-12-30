@@ -35,25 +35,33 @@ class ExpertIntro extends StatelessWidget {
                     style: TextStyle(fontSize: 15),
                   ),
                 ),
+                const SizedBox(height: 8.0),
                 const Center(
                   child: const Text("It is easy to apply, just show out your qualifications that you are proud off!",
                     style: TextStyle(fontSize: 15),
                   ),
                 ),
-                ElevatedButton(
-                    onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> ExpertFormView()));
-                    },
-                    child: Text(
-                        "Apply Now",
-                        style: TextStyle(fontSize: 15, color: HexColor("#3c1e08"),),
-                    ),
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder( borderRadius: BorderRadius.circular(10.0),)
-                      ),
-                      backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
-                    ),
+                const SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Expanded(child: TextButton(
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> ExpertFormView()));
+                        },
+                        child: Text(
+                            "Apply Now",
+                            style: TextStyle(fontSize: 16, color: Colors.white,),
+                        ),
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all(EdgeInsets.all(16)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder( borderRadius: BorderRadius.circular(10.0),)
+                          ),
+                          backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+                        ),
+                    ))
+                    ,
+                  ],
                 ),
 
               ],
