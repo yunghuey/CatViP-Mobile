@@ -153,15 +153,15 @@ class _CatProfileViewState extends State<CatProfileView> {
 
   Widget _catDesc(){
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(cat.desc),
-        ],
+      padding: const EdgeInsets.only(left: 20.0),
+      child: Row(
+          children: [
+            Text('"${cat.desc}"'),
+          ],
       ),
     );
   }
+
   Widget _catProfile(){
     DateTime currentDate = DateTime.now();
     DateTime bday = DateTime.parse(cat.dob);
@@ -170,10 +170,11 @@ class _CatProfileViewState extends State<CatProfileView> {
     int age = difference.inDays;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Age: ${age.toString()} days", style: TextStyle(fontSize: 17)),
+        SizedBox(height: 10),
         Text("Birthday: ${formatteddate.toString()}", style: TextStyle(fontSize: 15)),
-
       ],
     );
   }
