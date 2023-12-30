@@ -10,14 +10,11 @@ import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CaseIcon.dart';
-import 'package:CatViP/pages/report/CasesReport.dart';
-import 'package:CatViP/pages/report/MapCaseReports.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import '../bloc/post/ReportPost/reportPost_bloc.dart';
 import '../bloc/post/ReportPost/reportPost_event.dart';
 import '../bloc/post/ReportPost/reportPost_state.dart';
@@ -613,7 +610,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.brown.withOpacity(0.7), // Brown background color
                 padding:
                     EdgeInsets.all(16.0), // Increased padding for visibility
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
