@@ -259,13 +259,15 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
                 ),
               );
             },
-            style: TextButton.styleFrom(
-              backgroundColor: HexColor("#3c1e08"),
-              padding: EdgeInsets.all(16),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(HexColor("#ecd9c9")),
+              padding: MaterialStateProperty.all(EdgeInsets.all(16)),
+              side: MaterialStateProperty.all(
+                  BorderSide(color: HexColor("#3c1e08"))), // Add border color
             ),
             child: Text(
               'Revoke',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: HexColor("#3c1e08")),
             ),
           ),
         ),
