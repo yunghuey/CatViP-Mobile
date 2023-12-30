@@ -1,5 +1,4 @@
 import 'package:CatViP/bloc/cat/catprofile_event.dart';
-import 'package:CatViP/bloc/cat/catprofile_event.dart';
 import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/repository/cat_repo.dart';
