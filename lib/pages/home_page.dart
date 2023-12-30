@@ -719,7 +719,7 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
           },
           icon: Icon(
             thumbsUpSelected ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-            color: thumbsUpSelected ? Colors.blue : Colors.black,
+            color: thumbsUpSelected ? HexColor("#3c1e08") : Colors.black,
             size: 24.0,
           ),
         ),
@@ -748,7 +748,7 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
             thumbsDownSelected
                 ? Icons.thumb_down
                 : Icons.thumb_down_alt_outlined,
-            color: thumbsDownSelected ? Colors.red : Colors.black,
+            color: thumbsDownSelected ? HexColor("#3c1e08") : Colors.black,
             size: 24.0,
           ),
         ),
