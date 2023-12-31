@@ -74,7 +74,8 @@ class _ExpertFormViewState extends State<ExpertFormView> {
               Text("Your application has been submitted."
                   " It needs a two working days to process."))
             );
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileView()));
+            Navigator.pop(context); // Pop back the first time
+            Navigator.pop(context);
           } else if (state is AppliedFailState){
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message))
