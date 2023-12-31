@@ -47,8 +47,18 @@ class _NewPostState extends State<NewPost> {
   List<XFile> selectedImages = [];
   List<String> base64Images = [];
   List<int> selectedCats = [];
+  bool canAddImage = true;
 
   Future<void> pickImages(ImageSource source, {int maxImages = 5}) async {
+    Navigator.pop(context);
+    if (selectedImages.length >= maxImages) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Maximum $maxImages images allowed.'),
+        ),
+      );
+      return;
+    }
     try {
       List<XFile>? images;
 
@@ -66,21 +76,9 @@ class _NewPostState extends State<NewPost> {
           if (base64String != null) {
             base64Images.add(base64String);
           }
-
-          setState(() {
-            if (selectedImages.length < maxImages) {
-              selectedImages = List.from(selectedImages)..addAll([image]);
-            } else {
-              // Display a snackbar or alert message when the limit is exceeded
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Maximum $maxImages images allowed.'),
-                ),
-              );
-            }
-          });
         }
-      } else {
+      }
+      else {
         // If the source is not the camera, use pickMultiImage
         images = await ImagePicker().pickMultiImage(
           imageQuality: 70,
@@ -115,6 +113,9 @@ class _NewPostState extends State<NewPost> {
         }
       }
 
+      if (selectedImages.length >= maxImages){
+        canAddImage = false;
+      }
       // Now base64Images list contains all base64-encoded strings of the selected images
     } catch (e) {
       print("Error picking images: $e");
@@ -171,6 +172,15 @@ class _NewPostState extends State<NewPost> {
     selectedPostType = getInitialPostType();
   }
 
+  late final formstatus = BlocBuilder<NewPostBloc, NewPostState>(
+    builder: (context, state){
+      if (state is NewPostLoadingState){
+        return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+      }
+      return Container();
+    },
+  );
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -188,12 +198,9 @@ class _NewPostState extends State<NewPost> {
               // ignore: curly_braces_in_flow_control_structures
               listener: (context, state) {
                 if (state is NewPostSuccessState) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                          'Successfully Post'))); //   navigate to View All Cat
-                  Navigator.pop(
-                    context,
-                    MaterialPageRoute(builder: (context) => RoutePage()),
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RoutePage()));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Successfully Post'))
                   );
                 }
               },
@@ -209,23 +216,18 @@ class _NewPostState extends State<NewPost> {
                     child: Column(
                       children: <Widget>[
                         insertImage(context),
-                        SizedBox(
-                          height: 8.0,
-                        ),
+                        SizedBox(height: 8.0,),
                         caption(),
-                        SizedBox(
-                          height: 8.0,
-                        ),
+                        SizedBox(height: 8.0,),
                         postType(),
-                        SizedBox(
-                          height: 8.0,
-                        ),
+                        SizedBox(height: 8.0,),
                         if (selectedPostType != null &&
                             selectedPostType?.id == 1)
                           OwnCats(),
                         SizedBox(
                           height: 8.0,
                         ),
+                        formstatus,
                         postButton(),
                       ],
                     ),
@@ -301,7 +303,6 @@ class _NewPostState extends State<NewPost> {
                 context: context,
                 builder: ((builder) => bottomSheet(context)),
               );
-              //pickImages(ImageSource.gallery);
             },
             child: Container(
                 width: 300, // Set your desired width for the square box
@@ -324,11 +325,9 @@ class _NewPostState extends State<NewPost> {
                   builder: ((builder) => bottomSheet(context)),
                 );
               },
-              child: const Icon(
-                Icons.add,
-                color: Colors.brown,
-                size: 28.0,
-              ),
+              child: canAddImage == true
+                  ? const Icon(Icons.add,color: Colors.brown, size: 28.0,)
+                  : Container(),
             ),
           ),
         ],
@@ -379,9 +378,11 @@ class _NewPostState extends State<NewPost> {
                 right: 8.0,
                 child: GestureDetector(
                   onTap: () {
-                    // Remove the image at the given index
                     setState(() {
                       selectedImages.removeAt(index);
+                      if (selectedImages.length < 5){
+                        canAddImage = true;
+                      }
                     });
                   },
                   child: Container(

@@ -31,10 +31,12 @@ class _CommentsState extends State<Comments> {
 
   @override
   void initState() {
-    _postBloc.add(GetPostComments(postId: postId));
-    super.initState();
+  refreshPage();
+  super.initState();
   }
-
+  Future<void> refreshPage() async {
+    _postBloc.add(GetPostComments(postId: postId));
+  }
   @override
   void dispose() {
     _postBloc
@@ -90,101 +92,111 @@ class _CommentsState extends State<Comments> {
   }
 
   Widget CommentCard() {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 18,
-        horizontal: 16,
-      ),
-      child: BlocProvider(
-        create: (context) => _postBloc,
-        child:
-            BlocBuilder<GetPostBloc, GetPostState>(builder: (context, state) {
-          if (state is GetPostCommentError) {
-            return Center(
-              child: Text(state.error!),
-            );
-          } else if (state is GetPostCommentInitial) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: HexColor("#3c1e08"),
-              ),
-            );
-          } else if (state is GetPostCommentLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                color: HexColor("#3c1e08"),
-              ),
-            );
-          } else if (state is GetPostCommentLoaded) {
-            List<PostComment> reversedComments =
-                List.from(state.postComments.reversed);
-            return ListView.builder(
-              itemCount: reversedComments.length,
-              itemBuilder: (context, index) {
-                PostComment postComment = reversedComments[index];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: postComment.profileImage != ""
-                            ? Image.memory(
-                                    base64Decode(postComment.profileImage!))
-                                .image
-                            : AssetImage('assets/profileimage.png'),
-                        radius: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
+    return
+      RefreshIndicator(
+        onRefresh:  refreshPage,
+        color: HexColor("#3c1e08"),
+        child: Stack(
+          children: <Widget>[
+            ListView(),
+            Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 18,
+              horizontal: 16,
+            ),
+            child: BlocProvider(
+              create: (context) => _postBloc,
+              child:
+                  BlocBuilder<GetPostBloc, GetPostState>(builder: (context, state) {
+                if (state is GetPostCommentError) {
+                  return Center(
+                    child: Text(state.error!),
+                  );
+                } else if (state is GetPostCommentInitial) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: HexColor("#3c1e08"),
+                    ),
+                  );
+                } else if (state is GetPostCommentLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: HexColor("#3c1e08"),
+                    ),
+                  );
+                } else if (state is GetPostCommentLoaded) {
+                  List<PostComment> reversedComments =
+                      List.from(state.postComments.reversed);
+                  return ListView.builder(
+                    itemCount: reversedComments.length,
+                    itemBuilder: (context, index) {
+                      PostComment postComment = reversedComments[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
                           children: [
-                            RichText(
-                              text: TextSpan(children: [
-                                TextSpan(
-                                    text: postComment.username,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    )),
-                                TextSpan(
-                                  text: ' ',
-                                ),
-                                TextSpan(
-                                    text: postComment.description,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                    ))
-                              ]),
+                            CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              backgroundImage: postComment.profileImage != ""
+                                  ? Image.memory(
+                                          base64Decode(postComment.profileImage!))
+                                      .image
+                                  : AssetImage('assets/profileimage.png'),
+                              radius: 20,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                func.getFormattedDate(
-                                    DateTime.parse(postComment.dateTime!)),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                          text: postComment.username,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          )),
+                                      TextSpan(
+                                        text: ' ',
+                                      ),
+                                      TextSpan(
+                                          text: postComment.description,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                          ))
+                                    ]),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Text(
+                                      func.getFormattedDate(
+                                          DateTime.parse(postComment.dateTime!)),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             )
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                );
-              },
-            );
-          } else {
-            return Container();
-          }
-        }),
-      ),
-    );
+                      );
+                    },
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+            ),
+          ),
+    ],
+    ),
+      );
   }
 }
