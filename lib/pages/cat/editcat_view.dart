@@ -428,15 +428,11 @@ class _EditCatViewState extends State<EditCatView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 120.0,
-            height: 45.0,
-            child: ElevatedButton(
-              child: Text("Update", style: TextStyle(fontSize: 15),),
+          Expanded(
+            child: TextButton(
+              child: Text("Update", style: TextStyle(fontSize: 15, color: Colors.white),),
               style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder( borderRadius: BorderRadius.circular(15.0),)
-                ),
+                padding: MaterialStateProperty.all(EdgeInsets.all(16)),
                 backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
               ),
               onPressed: (){
@@ -478,11 +474,9 @@ class _EditCatViewState extends State<EditCatView> {
 
             ),
           ),
-          SizedBox(width: 16),
-          SizedBox(
-            width: 120.0,
-            height: 45.0,
-            child: ElevatedButton(
+          SizedBox(width: 4.0),
+          Expanded(
+            child: TextButton(
               onPressed: (){
                 showDialog<String>(
                   context: context,
@@ -529,10 +523,10 @@ class _EditCatViewState extends State<EditCatView> {
               },
               child: Text("Delete",style: TextStyle(fontSize: 15, color: HexColor("#3c1e08"))),
               style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder( borderRadius: BorderRadius.circular(15.0),)
-                ),
                 backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
+                padding: MaterialStateProperty.all(EdgeInsets.all(16)),
+                side: MaterialStateProperty.all(
+                  BorderSide(color: HexColor("#3c1e08"))),
               ),
             )
 

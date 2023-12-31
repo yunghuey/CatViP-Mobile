@@ -10,14 +10,11 @@ import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CaseIcon.dart';
-import 'package:CatViP/pages/report/CasesReport.dart';
-import 'package:CatViP/pages/report/MapCaseReports.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import '../bloc/post/ReportPost/reportPost_bloc.dart';
 import '../bloc/post/ReportPost/reportPost_event.dart';
 import '../bloc/post/ReportPost/reportPost_state.dart';
@@ -479,50 +476,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // if (post.postImages != null &&
-            //     post.postImages!.isNotEmpty)
-            Row(
-              children: [
-                // CircleAvatar(
-                //   radius: 16,
-                //   backgroundColor: Colors.transparent,
-                //   backgroundImage: post.profileImage != ""
-                //       ? Image.memory(base64Decode(post.profileImage!)).image
-                //       : AssetImage('assets/profileimage.png'),
-                // ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchView(
-                                        userid: post.userId!,
-                                      )),
-                            );
-                          },
-                          child: Text(
-                            post.username!,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // post.isCurrentUserPost == false
-                //     ? report(post)
-                //     : Container(),
-              ],
-            ),
+            displayImage(post),
             Container(
                 child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -532,7 +486,6 @@ class _HomePageState extends State<HomePage> {
               ),
             )),
             SizedBox(height: 4.0),
-            displayImage(post),
           ],
         ),
       ),
@@ -613,8 +566,8 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.brown.withOpacity(0.7), // Brown background color
                 padding:
                     EdgeInsets.all(16.0), // Increased padding for visibility
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       'Shop Now!',
@@ -719,7 +672,7 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
           },
           icon: Icon(
             thumbsUpSelected ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-            color: thumbsUpSelected ? Colors.blue : Colors.black,
+            color: thumbsUpSelected ? HexColor("#3c1e08") : Colors.black,
             size: 24.0,
           ),
         ),
@@ -748,7 +701,7 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
             thumbsDownSelected
                 ? Icons.thumb_down
                 : Icons.thumb_down_alt_outlined,
-            color: thumbsDownSelected ? Colors.red : Colors.black,
+            color: thumbsDownSelected ? HexColor("#3c1e08") : Colors.black,
             size: 24.0,
           ),
         ),

@@ -1,5 +1,4 @@
 import 'package:CatViP/bloc/post/ReportPost/reportPost_bloc.dart';
-import 'package:CatViP/bloc/post/ReportPost/reportPost_state.dart';
 import 'package:CatViP/model/caseReport/caseReport.dart';
 import 'package:CatViP/pages/chat/chatlist_view.dart';
 import 'package:CatViP/pages/chat/messenger_icon.dart';
@@ -194,7 +193,7 @@ class _OwnReportState extends State<OwnReport> {
             trailing: IconButton(
               icon: Icon(Icons.chevron_right),
               onPressed: () {
-                // Handle delete button press
+                _editReport(caseReport);
               },
             ),
             onTap: () {

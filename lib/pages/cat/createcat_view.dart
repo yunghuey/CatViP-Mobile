@@ -413,50 +413,52 @@ class _CreateCatViewState extends State<CreateCatView> {
   }
 
   Widget _createCatButton() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: SizedBox(
-        width: 400.0,
-        height: 55.0,
-        child: ElevatedButton(
-          onPressed: () async {
-            if(_formKey.currentState!.validate()){
-              // success validation
-              if (image != null) {
-                Uint8List? imageData = await _getImageBytes(image!);
-                if (imageData != null){
-                  String base64String = base64Encode(Uint8List.fromList(imageData));
-                  print(base64String);
-                //   continue create cat process
-                  bool gender_ = _gender == 1 ? true : false;
-                  CatModel cat = CatModel(
-                    id: 0,
-                    name: catnameController.text.trim(),
-                    desc: catdescController.text.trim(),
-                    dob: dateController.text,
-                    gender: gender_,
-                    profileImage: base64String
-                  );
-
-                createBloc.add(CreateButtonPressed(cat: cat));
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: SizedBox(
+          width: 400.0,
+          height: 55.0,
+          child: ElevatedButton(
+            onPressed: () async {
+              if(_formKey.currentState!.validate()){
+                // success validation
+                if (image != null) {
+                  Uint8List? imageData = await _getImageBytes(image!);
+                  if (imageData != null){
+                    String base64String = base64Encode(Uint8List.fromList(imageData));
+                    print(base64String);
+                  //   continue create cat process
+                    bool gender_ = _gender == 1 ? true : false;
+                    CatModel cat = CatModel(
+                      id: 0,
+                      name: catnameController.text.trim(),
+                      desc: catdescController.text.trim(),
+                      dob: dateController.text,
+                      gender: gender_,
+                      profileImage: base64String
+                    );
+    
+                  createBloc.add(CreateButtonPressed(cat: cat));
+                  }
+                } else {
+                  setState(() {
+                    msgimage = Container(child: Text("Please insert an image", style: TextStyle(color: Colors.red),));
+                  });
                 }
-              } else {
-                setState(() {
-                  msgimage = Container(child: Text("Please insert an image", style: TextStyle(color: Colors.red),));
-                });
               }
-            }
-          },
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder( borderRadius: BorderRadius.circular(24.0),)
+            },
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder( borderRadius: BorderRadius.circular(24.0),)
+              ),
+              backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+    
             ),
-            backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Text('Create cat account', style: TextStyle(fontSize: 16),),
+            child: const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text('Create New Cat', style: TextStyle(fontSize: 16),),
+            ),
           ),
         ),
       ),

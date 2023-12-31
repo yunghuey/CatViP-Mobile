@@ -57,14 +57,15 @@ class _CatProfileViewState extends State<CatProfileView> {
         elevation: 0.0,
         actions: widget.fromOwner == true ? [
           IconButton(
-            icon: Icon(Icons.menu, color: HexColor("#3c1e08"),),
+            icon: Icon(Icons.edit, color: HexColor("#3c1e08"),),
             onPressed: (){
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context){
-                  return _menu();
-                },
-              );
+              Navigator.push(
+                context, MaterialPageRoute(builder: (context)=>EditCatView(currentCat: widget.currentcat))
+              ).then((value) {
+                if (value != null) {
+                  catBloc.add(ReloadOneCatEvent(catid: value));
+                }
+              });
             },
           )
         ] : [],
@@ -152,15 +153,15 @@ class _CatProfileViewState extends State<CatProfileView> {
 
   Widget _catDesc(){
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(cat.desc),
-        ],
+      padding: const EdgeInsets.only(left: 20.0),
+      child: Row(
+          children: [
+            Text('"${cat.desc}"'),
+          ],
       ),
     );
   }
+
   Widget _catProfile(){
     DateTime currentDate = DateTime.now();
     DateTime bday = DateTime.parse(cat.dob);
@@ -169,10 +170,11 @@ class _CatProfileViewState extends State<CatProfileView> {
     int age = difference.inDays;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Age: ${age.toString()} days", style: TextStyle(fontSize: 17)),
+        SizedBox(height: 10),
         Text("Birthday: ${formatteddate.toString()}", style: TextStyle(fontSize: 15)),
-
       ],
     );
   }
@@ -505,7 +507,7 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
           },
           icon: Icon(
             thumbsUpSelected ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-            color: thumbsUpSelected ? Colors.blue : Colors.black,
+            color: thumbsUpSelected ? HexColor("#3c1e08") : Colors.black,
             size: 24.0,
           ),
         ),
@@ -529,7 +531,7 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
           },
           icon: Icon(
             thumbsDownSelected ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
-            color: thumbsDownSelected ? Colors.red : Colors.black,
+            color: thumbsDownSelected ? HexColor("#3c1e08") : Colors.black,
             size: 24.0,
           ),
         ),

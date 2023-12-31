@@ -17,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../bloc/post/new_post/new_post_state.dart';
 import '../../bloc/report case/new report case/newCase_state.dart';
 import '../../model/cat/cat_model.dart';
-import 'getOwnReport.dart';
 
 class NewReport extends StatefulWidget {
   const NewReport({Key? key}) : super(key: key);
@@ -27,7 +26,6 @@ class NewReport extends StatefulWidget {
 }
 
 class _NewReportState extends State<NewReport> {
-
   //Controllers for input
   TextEditingController captionController = TextEditingController();
   TextEditingController postTypeController = TextEditingController();
@@ -39,7 +37,6 @@ class _NewReportState extends State<NewReport> {
   late NewCaseBloc caseBloc;
   int? selectedCatId;
   File? image;
-  final _picker = ImagePicker();
   bool showSpinner = false;
   late final String message;
   final TextEditingController addressController = TextEditingController();
@@ -145,9 +142,12 @@ class _NewReportState extends State<NewReport> {
 
   late var msg = Container();
   late final status = BlocBuilder<NewPostBloc, NewPostState>(
-    builder: (context, state){
-      if (state is NewPostLoadingState){
-        return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+    builder: (context, state) {
+      if (state is NewPostLoadingState) {
+        return Center(
+            child: CircularProgressIndicator(
+          color: HexColor("#3c1e08"),
+        ));
       }
       return Container();
     },
@@ -185,7 +185,8 @@ class _NewReportState extends State<NewReport> {
         inAsyncCall: showSpinner,
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Report Case", style: Theme.of(context).textTheme.bodyLarge),
+            title: Text("Report Case",
+                style: Theme.of(context).textTheme.bodyLarge),
             backgroundColor: HexColor("#ecd9c9"),
             bottomOpacity: 0.0,
             elevation: 0.0,
@@ -203,7 +204,8 @@ class _NewReportState extends State<NewReport> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
                     child: Column(
                       children: <Widget>[
                         insertImage(context),
@@ -262,15 +264,23 @@ class _NewReportState extends State<NewReport> {
                 onPressed: () {
                   pickImages(ImageSource.camera);
                 },
-                label: Text("Camera", style: TextStyle(color:HexColor("#3c1e08")),),
+                label: Text(
+                  "Camera",
+                  style: TextStyle(color: HexColor("#3c1e08")),
+                ),
               ),
-              SizedBox(width: 20.0,),
+              SizedBox(
+                width: 20.0,
+              ),
               TextButton.icon(
                 icon: Icon(Icons.image, color: HexColor("#3c1e08")),
                 onPressed: () {
                   pickImages(ImageSource.gallery);
                 },
-                label: Text("Gallery", style: TextStyle(color:HexColor("#3c1e08")),),
+                label: Text(
+                  "Gallery",
+                  style: TextStyle(color: HexColor("#3c1e08")),
+                ),
               ),
             ],
           )
@@ -300,64 +310,7 @@ class _NewReportState extends State<NewReport> {
                   width: 2.0,
                 ),
               ),
-              child: PageView.builder(
-                itemCount: selectedImages.length,
-                itemBuilder: (context, index) {
-                  return Stack(
-                    children: [
-                      Container(
-                        width: 300,
-                        height: 300,
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: FutureBuilder<String?>(
-                            future: _getImageBase64(File(selectedImages[index].path)),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.done &&
-                                  snapshot.hasData) {
-                                return Image.memory(
-                                  base64Decode(snapshot.data!),
-                                  width: 300,
-                                  height: 300,
-                                  fit: BoxFit.cover,
-                                );
-                              } else {
-                                return Center(
-                                  child: Text('Loading Image'),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 8.0,
-                        right: 8.0,
-                        child: GestureDetector(
-                          onTap: () {
-                            // Remove the image at the given index
-                            setState(() {
-                              selectedImages.removeAt(index);
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(4.0),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.red,
-                            ),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+              child: ImageView(),
             ),
           ),
           Positioned(
@@ -382,6 +335,73 @@ class _NewReportState extends State<NewReport> {
     );
   }
 
+  Widget ImageView() {
+    if (selectedImages.isEmpty) {
+      return Center(
+        child: Text("Pick Image"),
+      );
+    } else {
+      return PageView.builder(
+        itemCount: selectedImages.length,
+        itemBuilder: (context, index) {
+          return Stack(
+            children: [
+              Container(
+                width: 300,
+                height: 300,
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: FutureBuilder<String?>(
+                    future: _getImageBase64(File(selectedImages[index].path)),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.hasData) {
+                        return Image.memory(
+                          base64Decode(snapshot.data!),
+                          width: 300,
+                          height: 300,
+                          fit: BoxFit.cover,
+                        );
+                      } else {
+                        return Center(
+                          child: Text('Loading Image'),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 8.0,
+                right: 8.0,
+                child: GestureDetector(
+                  onTap: () {
+                    // Remove the image at the given index
+                    setState(() {
+                      selectedImages.removeAt(index);
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red,
+                    ),
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   Widget reportButton() {
     return Padding(
       padding: const EdgeInsets.all(17.0),
@@ -393,7 +413,8 @@ class _NewReportState extends State<NewReport> {
             print(captionController.text);
             //if(_formKey.currentState!.validate()){
             if (base64Images != null) {
-              if (captionController.text.isEmpty || addressController.text.isEmpty){
+              if (captionController.text.isEmpty ||
+                  addressController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Description and address must be filled up'),
@@ -407,11 +428,8 @@ class _NewReportState extends State<NewReport> {
                   longitude: longitude,
                   latitude: latitude,
                   image: base64Images,
-                  catId: selectedCatId ?? 0
-              ));
-
-            }
-            else {
+                  catId: selectedCatId ?? 0));
+            } else {
               print("image is null");
               caseBloc.add(CaseReportButtonPressed(
                   description: captionController.text,
@@ -419,23 +437,25 @@ class _NewReportState extends State<NewReport> {
                   longitude: longitude,
                   latitude: latitude,
                   image: base64Images,
-                  catId: selectedCatId ?? 0
-              ));
+                  catId: selectedCatId ?? 0));
             }
 
             //}
           },
-
           style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder( borderRadius: BorderRadius.circular(24.0),)
-            ),
-            backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24.0),
+            )),
+            backgroundColor:
+                MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
           ),
           child: const Padding(
             padding: EdgeInsets.all(12.0),
-            child: Text('REPORT', style: TextStyle(fontSize: 16),),
+            child: Text(
+              'REPORT',
+              style: TextStyle(fontSize: 16),
+            ),
           ),
         ),
       ),
@@ -472,12 +492,13 @@ class _NewReportState extends State<NewReport> {
         IconButton(
           icon: Icon(Icons.location_on), // You can change the icon as needed
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> CurrentLocation()))
-            .then((value) => {
-              latitude = value['latitude'],
-              longitude = value['longitude'],
-              addressController.text = value['address'],
-            });
+            Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CurrentLocation()))
+                .then((value) => {
+                      latitude = value['latitude'],
+                      longitude = value['longitude'],
+                      addressController.text = value['address'],
+                    });
             print('Location icon pressed');
           },
         ),
@@ -502,8 +523,6 @@ class _NewReportState extends State<NewReport> {
       ],
     );
   }
-
-
 
   Widget OwnCats() {
     catBloc.add(GetOwnCats());
@@ -544,7 +563,9 @@ class _NewReportState extends State<NewReport> {
                       activeColor: HexColor('#3c1e08'),
                       onChanged: (value) {
                         setState(() {
-                          selectedCatId = value == 1 ? (cats.isNotEmpty ? cats.first.id : null) : null;
+                          selectedCatId = value == 1
+                              ? (cats.isNotEmpty ? cats.first.id : null)
+                              : null;
 
                           if (selectedCatId == null) {
                             Future.delayed(Duration.zero, () {

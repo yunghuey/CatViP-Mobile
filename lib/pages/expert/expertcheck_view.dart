@@ -14,14 +14,10 @@ import 'package:intl/intl.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
-
 class ExpertCheckView extends StatefulWidget {
   int formstatus;
 
-  ExpertCheckView({
-    required this.formstatus,
-    Key? key
-  }):super(key:key);
+  ExpertCheckView({required this.formstatus, Key? key}) : super(key: key);
   @override
   State<ExpertCheckView> createState() => _ExpertCheckViewState();
 }
@@ -37,115 +33,143 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
     expBloc = BlocProvider.of<ExpertBloc>(context);
     expBloc.add(LoadExpertApplicationEvent());
     formstatus = widget.formstatus;
-    if (formstatus == 2){
+    if (formstatus == 2) {
       btnText = "Reapply";
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Expert Application", style: Theme.of(context).textTheme.bodyLarge,),
-        backgroundColor: HexColor("#ecd9c9"),
-        bottomOpacity: 0.0,
-        elevation: 0.0,
-      ),
-      body:
-      BlocListener<ExpertBloc, ExpertState>(
-        listener: (context, state){
-          if (state is RevokeFailState){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileView()));
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Revoke failed. Please try again later"))
-            );
-          } else if (state is RevokeSuccessState){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileView()));
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Application has been removed"))
-            );
-          }
-        },
-        child: BlocBuilder<ExpertBloc, ExpertState>(
-            builder: (context, state){
-              if (state is ExpertLoadingState){
-                return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-              } else if (state is LoadedFormState){
-                formList = state.form;
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _applicationList(),
-                    ],
-                  ),
-                );
-              }
-              return Container(child: Text("No application retrieved"),);
-            }
+        appBar: AppBar(
+          title: Text(
+            "Expert Application",
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          backgroundColor: HexColor("#ecd9c9"),
+          bottomOpacity: 0.0,
+          elevation: 0.0,
         ),
-      )
-
-
-    );
+        body: BlocListener<ExpertBloc, ExpertState>(
+          listener: (context, state) {
+            if (state is RevokeFailState) {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => ProfileView()));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("Revoke failed. Please try again later")));
+            } else if (state is RevokeSuccessState) {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => ProfileView()));
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Application has been removed")));
+            }
+          },
+          child:
+              BlocBuilder<ExpertBloc, ExpertState>(builder: (context, state) {
+            if (state is ExpertLoadingState) {
+              return Center(
+                  child: CircularProgressIndicator(
+                color: HexColor("#3c1e08"),
+              ));
+            } else if (state is LoadedFormState) {
+              formList = state.form;
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _applicationList(),
+                  ],
+                ),
+              );
+            }
+            return Container(
+              child: Text("No application retrieved"),
+            );
+          }),
+        ));
   }
 
-  Widget _applicationList(){
+  Widget _applicationList() {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: ListView.builder(
           itemCount: 1,
           shrinkWrap: true,
-          itemBuilder: (context, index){
+          itemBuilder: (context, index) {
             final form = formList;
             return Container(
               margin: const EdgeInsets.all(15),
               padding: const EdgeInsets.only(bottom: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Status : ${form.status}"),
-                  Text("Application Date: ${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(form.applyDateTime))}"),
-                  Row(
-                    children: [
-                      Text("Document: "),
-                      TextButton(onPressed: (){
-                        createPdf(form.document);
-                      }, child: Text("View document",
-                          style: TextStyle(
-                            color: HexColor("#3c1e08"),
-                            decoration: TextDecoration.underline,
-                            fontWeight: FontWeight.bold,
-                          )
-                        )
-                      )
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Status : ${form.status}",
+                        style: TextStyle(fontSize: 16)),
+                    SizedBox(height: 16,),
+                    Text(
+                      "Application Date: ${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(form.applyDateTime))}",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Row(
+                      children: [
+                        Text("Document: ", style: TextStyle(fontSize: 16)),
+                        TextButton(
+                            onPressed: () {
+                              createPdf(form.document);
+                            },
+                            child: Text("View document",
+                                style: TextStyle(
+                                    color: HexColor("#3c1e08"),
+                                    decoration: TextDecoration.underline,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16)))
+                      ],
+                    ),
+                    Text("Description: ${form.description}", style: TextStyle(fontSize: 16)),
+                    if (form.status == "Rejected") ... [
+                      SizedBox(height: 16,),
+                      Text("Rejected reason: ${form.rejectedReason}", style: TextStyle(fontSize: 16))
                     ],
-                  ),
-                  Text("Description: ${form.description}"),
-                  if(form.status == "Rejected") Text("Rejected reason: ${form.rejectedReason}"),
-                  ElevatedButton(
-                      onPressed: (){
-                        int formId = form.id;
-                        if (btnText == "Reapply"){
-                          reapplyApplication();
-                        } else{
-                          removeApplication(formId);
-                        }
-                      },
-                      child: Text(btnText,  style: TextStyle(color: HexColor("#3c1e08"))),
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9"),),
-                        side: MaterialStateProperty.all(BorderSide(width: 2.0, color: HexColor("#3c1e08"),),),
-                      ),
-                  ),
-                ],
+                    SizedBox(height: 16,),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: TextButton(
+                          onPressed: () {
+                            int formId = form.id;
+                            if (btnText == "Reapply") {
+                              reapplyApplication();
+                            } else {
+                              removeApplication(formId);
+                            }
+                          },
+                          child: Text(btnText,
+                              style: TextStyle(color: HexColor("#3c1e08"))),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<HexColor>(
+                              HexColor("#ecd9c9"),
+                            ),
+                            side: MaterialStateProperty.all(
+                              BorderSide(
+                                width: 2.0,
+                                color: HexColor("#3c1e08"),
+                              ),
+                            ),
+                          ),
+                        )),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
-          }
-      ),
+          }),
     );
   }
 
-  void reapplyApplication(){
+  void reapplyApplication() {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -158,7 +182,8 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> ExpertFormView()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ExpertFormView()));
             },
             child: const Text('Yes'),
           ),
@@ -167,7 +192,7 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
     );
   }
 
-  void removeApplication(int formId){
+  void removeApplication(int formId) {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -188,8 +213,9 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
       ),
     );
   }
+
   Future<void> createPdf(String base64String) async {
-    try{
+    try {
       print(base64String);
       var bytes = base64Decode(base64String);
       final output = await getTemporaryDirectory();
@@ -198,10 +224,9 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
       debugPrint("${output.path}/expert.pdf");
       await OpenFilex.open("${output.path}/expert.pdf");
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Your file is corrupted and unable to read. Please revoke the application and apply again."))
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Your file is corrupted and unable to read. Please revoke the application and apply again.")));
     }
-
   }
 }

@@ -3,7 +3,6 @@ import 'package:CatViP/bloc/authentication/login/login_state.dart';
 import 'package:CatViP/repository/auth_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // the AuthBloc contain AuthEvents class and AuthState class
 class AuthBloc extends Bloc<AuthEvents, AuthState>{

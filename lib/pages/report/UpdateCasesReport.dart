@@ -18,7 +18,6 @@ import '../post/own_post.dart';
 import 'getOwnReport.dart';
 
 class UpdateCasesReport extends StatefulWidget {
-
   final CaseReport caseReport;
   const UpdateCasesReport({super.key, required this.caseReport});
 
@@ -27,7 +26,6 @@ class UpdateCasesReport extends StatefulWidget {
 }
 
 class _UpdateCasesReportState extends State<UpdateCasesReport> {
-
   late final CaseReport caseReport;
   File? image;
   List<String> base64image = [];
@@ -39,7 +37,6 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
   final _picker = ImagePicker();
   late CompleteCaseBloc completeCaseBloc;
   late RevokeCaseBloc revokeCaseBloc;
-
 
   //
   // Future<Uint8List?> _getImageBytes(File imageFile) async {
@@ -54,16 +51,14 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
 
   @override
   void initState() {
+    caseReport = widget.caseReport;
+    images = caseReport.caseReportImages!;
+    id = caseReport.id!;
+    description = caseReport.description!;
+    completeCaseBloc = BlocProvider.of<CompleteCaseBloc>(context);
+    revokeCaseBloc = BlocProvider.of<RevokeCaseBloc>(context);
 
-      caseReport = widget.caseReport;
-      images = caseReport.caseReportImages!;
-      id = caseReport.id!;
-      description = caseReport.description!;
-      completeCaseBloc = BlocProvider.of<CompleteCaseBloc>(context);
-      revokeCaseBloc = BlocProvider.of<RevokeCaseBloc>(context);
-
-      super.initState();
-
+    super.initState();
   }
 
   @override
@@ -77,7 +72,6 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
             MaterialPageRoute(builder: (context) => OwnPosts()),
           );
           // Navigator.pop(context, true);
-
         } else if (state is EditPostFailState) {
           print('Failed to save post');
         }
@@ -113,26 +107,29 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
   Widget caseReportImage() {
     return Container(
       height: images != null && images.isNotEmpty
-          ? MediaQuery.of(context).size.width // Set height to screen width if there are images
+          ? MediaQuery.of(context)
+              .size
+              .width // Set height to screen width if there are images
           : 0, // Set height to 0 if postImages is null or empty
-      child: caseReport.caseReportImages != null && caseReport.caseReportImages!.isNotEmpty
+      child: caseReport.caseReportImages != null &&
+              caseReport.caseReportImages!.isNotEmpty
           ? PageView.builder(
-        itemCount: caseReport.caseReportImages!.length,
-        itemBuilder: (context, index) {
-          return AspectRatio(
-            aspectRatio: 1.0,
-            child: Image.memory(
-              base64Decode(caseReport.caseReportImages![index].images!),
-              fit: BoxFit.cover,
-            ),
-          );
-        },
-      )
+              itemCount: caseReport.caseReportImages!.length,
+              itemBuilder: (context, index) {
+                return AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Image.memory(
+                    base64Decode(caseReport.caseReportImages![index].images!),
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+            )
           : Container(), // Show an empty container if postImages is null or empty
     );
   }
 
-  Widget descriptionText(){
+  Widget descriptionText() {
     return Column(
       children: [
         Row(
@@ -141,7 +138,8 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CaseReportCommentView(caseReportId: id!),
+                  builder: (context) =>
+                      CaseReportCommentView(caseReportId: id!),
                 ),
               ),
               icon: Icon(
@@ -153,20 +151,25 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
           ],
         ),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Description:',
               style: TextStyle(
-                fontSize: 18.0,
+                fontSize: 14.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(width: 4.0,),
-            Text(
-              description,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+            SizedBox(
+              width: 4.0,
+            ),
+            Expanded(
+              child: Text(
+                description,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -177,96 +180,98 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
 
   Widget Buttons() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        TextButton(
-          onPressed: () async {
-              completeCaseBloc.add(
-                  CompleteButtonPressed(
-                      postId: id
-                  )
-              );
+        Expanded(
+          child: TextButton(
+            onPressed: () async {
+              completeCaseBloc.add(CompleteButtonPressed(postId: id));
               await Future.delayed(Duration(milliseconds: 500));
-              Navigator.push(
-                  context,
+              Navigator.push(context,
                   MaterialPageRoute(builder: (context) => OwnReport()));
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Report completed')));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('Report completed')));
             },
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.green,
-            padding: EdgeInsets.all(16),
-          ),
-          child: Text(
-            'Complete',
-            style: TextStyle(color: Colors.white),
+            style: TextButton.styleFrom(
+              backgroundColor: HexColor("#3c1e08"),
+              padding: EdgeInsets.all(16),
+            ),
+            child: Text(
+              'Complete',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ),
-        TextButton(
-          onPressed: () {
-            showDialog<String>(
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                title: const Text('Revoke Post'),
-                content: const Text('Are you sure to revoke this report?'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'Cancel'),
-                    child: Text('Cancel',style: TextStyle(color: HexColor('#3c1e08'))),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<HexColor>(
-                              (Set<MaterialState> states){
-                            if(states.contains(MaterialState.pressed))
-                              return HexColor("#ecd9c9");
-                            return HexColor("#F2EFEA");
-                          }
-                      ),
-                      padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0)
-                          )
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    child:  Text('Yes',style: TextStyle(color: Colors.white)),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                      padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0)
-                          )
+        SizedBox(
+            width: 4.0), // This will create a small space between the buttons
+        Expanded(
+          child: TextButton(
+            onPressed: () {
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Revoke Post'),
+                  content: const Text('Are you sure to revoke this report?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: Text('Cancel',
+                          style: TextStyle(color: HexColor('#3c1e08'))),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<HexColor>(
+                                (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed))
+                            return HexColor("#ecd9c9");
+                          return HexColor("#F2EFEA");
+                        }),
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            EdgeInsets.all(10.0)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0))),
                       ),
                     ),
-                    onPressed: () async {
-                      revokeCaseBloc.add(RevokeCaseButtonPressed(postId: id));
-                      await Future.delayed(Duration(milliseconds: 500));
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => OwnReport()));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Report revoked')));
+                    TextButton(
+                      child: Text('Yes', style: TextStyle(color: Colors.white)),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<HexColor>(
+                            HexColor("#3c1e08")),
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            EdgeInsets.all(10.0)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0))),
+                      ),
+                      onPressed: () async {
+                        revokeCaseBloc.add(RevokeCaseButtonPressed(postId: id));
+                        await Future.delayed(Duration(milliseconds: 500));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OwnReport()));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Report revoked')));
                       },
-                  ),
-                ],
-              ),
-            );
-
-          },
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.red,
-            padding: EdgeInsets.all(16),
-          ),
-          child: Text(
-            'Revoke',
-            style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              );
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(HexColor("#ecd9c9")),
+              padding: MaterialStateProperty.all(EdgeInsets.all(16)),
+              side: MaterialStateProperty.all(
+                  BorderSide(color: HexColor("#3c1e08"))), // Add border color
+            ),
+            child: Text(
+              'Revoke',
+              style: TextStyle(color: HexColor("#3c1e08")),
+            ),
           ),
         ),
       ],
     );
   }
-
-
 }
-

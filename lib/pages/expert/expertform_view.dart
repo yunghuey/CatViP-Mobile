@@ -135,7 +135,7 @@ class _ExpertFormViewState extends State<ExpertFormView> {
       children: [
         Text("Upload your relevant document. Format must be in pdf"),
         TextButton(
-          child: Text("Choose file", style: TextStyle(color: HexColor("#3c1e08")),),
+          child: Text("Choose file", style: TextStyle(color: HexColor("#3c1e08"), decoration: TextDecoration.underline),),
           onPressed: () {
             uploadPdf();
           },
