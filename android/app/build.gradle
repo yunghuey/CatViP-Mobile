@@ -49,8 +49,8 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         //minSdkVersion flutter.minSdkVersion
         multiDexEnabled true
-//        minSdkVersion flutter.minSdkVersion
-        minSdkVersion 20
+//        minSdkVersion 20 - this one not sure why auto change to minsdkversion triggered when i download
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

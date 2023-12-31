@@ -43,7 +43,7 @@ class _OwnPostsState extends State<OwnPosts> {
     retrieveSharedPreference();
     return Scaffold(
       appBar: AppBar(
-        title: Text('MY POSTS',style: Theme.of(context).textTheme.bodyText1!.copyWith(
+        title: Text('MY POSTS',style: Theme.of(context).textTheme.bodyMedium!.copyWith(
       fontWeight: FontWeight.bold,
       fontSize: 20.0,),),
         backgroundColor: HexColor("#ecd9c9"),
