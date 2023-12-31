@@ -63,12 +63,10 @@ class _ProfileViewState extends State<ProfileView> {
     logoutbloc = BlocProvider.of<LogoutBloc>(context);
     logoutbloc.add(LogoutResetEvent());
     userBloc = BlocProvider.of<UserProfileBloc>(context);
-    userBloc.add(StartLoadProfile());
     catBloc = BlocProvider.of<CatProfileBloc>(context);
-    catBloc.add(StartLoadCat());
     postBloc = BlocProvider.of<GetPostBloc>(context);
-    postBloc.add(StartLoadOwnPost());
     deleteBloc = BlocProvider.of<DeletePostBloc>(context);
+    refreshPage();
     _pageController = PageController();
     super.initState();
   }

@@ -1,5 +1,5 @@
-import 'package:CatViP/bloc/search/searchuser_event.dart';
-import 'package:CatViP/bloc/search/searchuser_state.dart';
+import 'package:CatViP/bloc/search/user/searchuser_event.dart';
+import 'package:CatViP/bloc/search/user/searchuser_state.dart';
 import 'package:CatViP/model/user/user_model.dart';
 import 'package:CatViP/repository/user_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

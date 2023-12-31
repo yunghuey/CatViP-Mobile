@@ -1,14 +1,17 @@
 import 'dart:convert';
-import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
-import 'package:CatViP/bloc/cat/catprofile_event.dart';
-import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/bloc/post/DeletePost/deletePost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
-import 'package:CatViP/bloc/search/searchuser_bloc.dart';
-import 'package:CatViP/bloc/search/searchuser_event.dart';
-import 'package:CatViP/bloc/search/searchuser_state.dart';
+import 'package:CatViP/bloc/search/cat/searchcat_bloc.dart';
+import 'package:CatViP/bloc/search/cat/searchcat_event.dart';
+import 'package:CatViP/bloc/search/cat/searchcat_state.dart';
+import 'package:CatViP/bloc/search/post/searchpost_bloc.dart';
+import 'package:CatViP/bloc/search/post/searchpost_event.dart';
+import 'package:CatViP/bloc/search/post/searchpost_state.dart';
+import 'package:CatViP/bloc/search/user/searchuser_bloc.dart';
+import 'package:CatViP/bloc/search/user/searchuser_event.dart';
+import 'package:CatViP/bloc/search/user/searchuser_state.dart';
 import 'package:CatViP/bloc/user/relation_bloc.dart';
 import 'package:CatViP/bloc/user/relation_event.dart';
 import 'package:CatViP/bloc/user/relation_state.dart';
@@ -39,8 +42,8 @@ class _SearchViewState extends State<SearchView> {
   late List<Post> listPost;
   late UserModel user;
   late SearchUserBloc searchBloc;
-  late GetPostBloc postBloc;
-  late CatProfileBloc catBloc;
+  late SearchPostBloc postBloc;
+  late SearchCatBloc catBloc;
   late RelationBloc relBloc;
   late DeletePostBloc deleteBloc;
   final Widgets func = Widgets();
@@ -55,8 +58,8 @@ class _SearchViewState extends State<SearchView> {
     userid = widget.userid;
     print("inside search user ${userid}");
     searchBloc = BlocProvider.of<SearchUserBloc>(context);
-    catBloc = BlocProvider.of<CatProfileBloc>(context);
-    postBloc = BlocProvider.of<GetPostBloc>(context);
+    catBloc = BlocProvider.of<SearchCatBloc>(context);
+    postBloc = BlocProvider.of<SearchPostBloc>(context);
     relBloc = BlocProvider.of<RelationBloc>(context);
     deleteBloc = BlocProvider.of<DeletePostBloc>(context);
     refreshPage();
@@ -66,7 +69,7 @@ class _SearchViewState extends State<SearchView> {
   Future<void> refreshPage() async {
     searchBloc.add(SearchUserProfileEvent(userid: userid));
     catBloc.add(SearchReloadAllCatEvent(userID: userid));
-    postBloc.add(LoadSearchAllPost(userid: userid));
+    postBloc.add(LoadSearchAllPostEvent(userid: userid));
   }
 
   @override
@@ -138,15 +141,15 @@ class _SearchViewState extends State<SearchView> {
                     child: Column(
                       children: [
                         _userDetails(),
-                        BlocBuilder<CatProfileBloc, CatProfileState>(
+                        BlocBuilder<SearchCatBloc, SearchCatProfileState>(
                           builder: (context, state) {
-                            if (state is CatProfileLoadingState) {
+                            if (state is SearchCatLoadingState) {
                               return Center(
                                 child: CircularProgressIndicator(
                                   color: HexColor("#3c1e08"),
                                 ),
                               );
-                            } else if (state is CatProfileLoadedState) {
+                            } else if (state is SearchCatProfileLoadedState) {
                               cats = state.cats;
                               return _getAllCats();
                             } else {
@@ -159,16 +162,16 @@ class _SearchViewState extends State<SearchView> {
                             }
                           },
                         ),
-                        BlocBuilder<GetPostBloc, GetPostState>(
+                        BlocBuilder<SearchPostBloc,SearchGetPostState >(
                           builder: (context, state) {
-                            if (state is GetPostLoading) {
+                            if (state is SearchPostLoadingState) {
                               return Center(
                                 child: CircularProgressIndicator(
                                   color: HexColor("#3c1e08"),
                                 ),
                               );
-                            } else if (state is GetPostLoaded) {
-                              listPost = state.postList.reversed.toList();
+                            } else if (state is SearchGetPostSuccessState) {
+                              listPost = state.posts.reversed.toList();
                               return _getAllPosts();
                             } else {
                               return Center(
@@ -460,11 +463,7 @@ class _SearchViewState extends State<SearchView> {
                                     builder: (context) => CatProfileView(
                                       currentcat: cats[index],
                                       fromOwner: false,
-                                    ))).then((value) {
-                              catBloc
-                                  .add(SearchReloadAllCatEvent(userID: userid));
-                              postBloc.add(LoadSearchAllPost(userid: userid));
-                            });
+                                    ))).then((value) { refreshPage(); });
                           },
                           child: CircleAvatar(
                             backgroundColor: HexColor("#3c1e08"),

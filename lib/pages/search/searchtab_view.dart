@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:CatViP/bloc/search/searchuser_bloc.dart';
-import 'package:CatViP/bloc/search/searchuser_event.dart';
-import 'package:CatViP/bloc/search/searchuser_state.dart';
+import 'package:CatViP/bloc/search/user/searchuser_bloc.dart';
+import 'package:CatViP/bloc/search/user/searchuser_event.dart';
+import 'package:CatViP/bloc/search/user/searchuser_state.dart';
 import 'package:CatViP/model/user/user_model.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';

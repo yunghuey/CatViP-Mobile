@@ -18,8 +18,12 @@ import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_bloc.dart';
 import 'package:CatViP/bloc/report%20case/ReportCaseCount/CaseReportCountBloc.dart';
 import 'package:CatViP/bloc/report%20case/ReportCaseCount/CaseReportCountState.dart';
-import 'package:CatViP/bloc/search/searchuser_bloc.dart';
-import 'package:CatViP/bloc/search/searchuser_state.dart';
+import 'package:CatViP/bloc/search/cat/searchcat_bloc.dart';
+import 'package:CatViP/bloc/search/cat/searchcat_state.dart';
+import 'package:CatViP/bloc/search/post/searchpost_bloc.dart';
+import 'package:CatViP/bloc/search/post/searchpost_state.dart';
+import 'package:CatViP/bloc/search/user/searchuser_bloc.dart';
+import 'package:CatViP/bloc/search/user/searchuser_state.dart';
 import 'package:CatViP/bloc/user/relation_bloc.dart';
 import 'package:CatViP/bloc/user/relation_state.dart';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
@@ -60,7 +64,6 @@ void main() {
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
   OneSignal.Debug.setAlertLevel(OSLogLevel.none);
   OneSignal.initialize("2c9ce8b1-a075-4864-83a3-009c8497310e");
-  //OneSignal.login("stephen");
   OneSignal.Notifications.requestPermission(true);
   OneSignal.Notifications.addPermissionObserver((state) {
     print("Has permission " + state.toString());
@@ -145,6 +148,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<CaseReportCountBloc>(
           create: (context) => CaseReportCountBloc(CaseReportInitState(), ReportCaseRepository()),
+        ),
+        BlocProvider<SearchCatBloc>(
+          create: (context) => SearchCatBloc(SearchCatInitState(), CatRepository()),
+        ),
+        BlocProvider<SearchPostBloc>(
+          create: (context) => SearchPostBloc(SearchPostInitState(), PostRepository()),
         ),
       ],
       child: MaterialApp(

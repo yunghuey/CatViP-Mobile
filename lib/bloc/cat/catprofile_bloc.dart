@@ -51,17 +51,6 @@ class CatProfileBloc extends Bloc<CatProfileEvent, CatProfileState>{
       }
     });
 
-    on<SearchReloadAllCatEvent>((event, emit) async {
-      emit(CatProfileLoadingState());
-      List<CatModel>? isFound = await repo.getAllCatsByUserId(event.userID);
-      if (isFound.length > 0){
-        print("get cat by userid success");
-        emit(CatProfileLoadedState(cats: isFound));
-      } else {
-        emit(CatProfileEmptyState());
-      }
-    });
-
     on<EditCatProfileEvent>((event, emit) async {
       emit(CatProfileLoadingState());
       CatModel? cat = await repo.getCat(event.catid);

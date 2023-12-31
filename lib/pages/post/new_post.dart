@@ -195,11 +195,6 @@ class _NewPostState extends State<NewPost> {
                     context,
                     MaterialPageRoute(builder: (context) => RoutePage()),
                   );
-                } else if (state is NewPostFailState) {
-                  getMessage().then((message) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text(message)));
-                  });
                 }
               },
             ),

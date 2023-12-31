@@ -76,31 +76,22 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
     on<PostCommentPressed>((event, emit) async {
       emit(NewCommentLoadingState());
       try {
-        // Attempt to post a new comment
         bool isCreated = await postRepository.newComment(
             event.description, event.postId);
-
         if (isCreated) {
-          // If the comment is successfully created, fetch the updated comments
           final List<PostComment> updatedCommentList = await postRepository
               .fetchPostComments(event.postId);
-          print(event.postId);
-          // Update the state with the new list of comments
           emit(NewCommentSuccessState());
           emit(GetPostCommentLoaded(postComments: updatedCommentList));
         } else if (event.description == "") {
           final List<PostComment> updatedCommentList = await postRepository
               .fetchPostComments(event.postId);
-          print(event.postId);
-          print("test ${event.description}");
-          // Update the state with the new list of comments
           emit(NewCommentSuccessState());
           emit(GetPostCommentLoaded(postComments: updatedCommentList));
         } else {
           emit(NewCommentFailState(message: "Failed to create comment"));
         }
       } catch (e) {
-        // Handle any potential errors during the process
         emit(NewCommentFailState(message: "Failed to create comment"));
       }
     });
@@ -115,48 +106,23 @@ class GetPostBloc extends Bloc<GetPostEvent, GetPostState> {
         // Attempt to post a new comment
         bool isUpdated = await postRepository.actionPost(
             event.postId, event.actionTypeId);
-
-        print(event.postId);
-        print(event.actionTypeId);
-        print(isUpdated);
         if (isUpdated) {
-          // Update the state with the new list of comments
           emit(ActionPostSuccessState());
         }
       } catch (e) {
-        // Handle any potential errors during the process
         emit(ActionPostFailState(message: "Failed to update action"));
       }
-
      });
-
-    // update action post
     on<StartDeleteActionPost>((event, emit) {
       emit(DeleteActionPostInitState());
     });
 
     on<DeleteActionPost>((event, emit) async {
-
       try {
-
         bool isUpdated = await postRepository.deleteActPost(event.postId);
-
       } catch (e) {
-        // Handle any potential errors during the process
         emit(ActionPostFailState(message: "Failed to update action"));
       }
     });
-
-    on<LoadSearchAllPost>((event, emit) async {
-      emit(GetPostLoading());
-      print("loadsearchallpost ${event.userid}");
-      final List<Post> postList = await postRepository.getAllPostsByUserId(event.userid);
-      if (postList.length > 0) {
-        emit(GetPostLoaded(postList: postList));
-      } else {
-        emit(GetPostEmpty());
-      }
-    });
   }
-
 }
