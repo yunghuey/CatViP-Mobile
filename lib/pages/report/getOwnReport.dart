@@ -14,7 +14,6 @@ import '../../widgets/widgets.dart';
 import 'UpdateCasesReport.dart';
 
 
-
 class OwnReport extends StatefulWidget {
   const OwnReport({super.key});
 
@@ -39,26 +38,25 @@ class _OwnReportState extends State<OwnReport> {
 
 
   void _editReport(CaseReport caseReport) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
+    Navigator.push(context,MaterialPageRoute(
         builder: (context) => UpdateCasesReport(
           caseReport: caseReport
         ),
       ),
-    );
+    ).then((result) {
+      refreshPage();
+    });
   }
-
 
   @override
   void initState() {
-    // TODO: implement initState
-    //caseBloc = BlocProvider.of<GetCaseBloc>(context);
-    caseBloc.add(StartLoadOwnCase());
+    refreshPage();
     print("hello");
     super.initState();
   }
-
+  Future<void> refreshPage() async {
+    caseBloc.add(StartLoadOwnCase());
+  }
   @override
   Widget build(BuildContext context) {
     retrieveSharedPreference();
@@ -77,7 +75,9 @@ class _OwnReportState extends State<OwnReport> {
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) => ChatListView(),
-                ),);
+                ),).then((result){
+                  refreshPage();
+                });
               },
               icon: MessengerIcon(),
               color: Colors.white,
@@ -108,32 +108,39 @@ class _OwnReportState extends State<OwnReport> {
               return Center(
                 child: Text(state.error!),
               );
-            } else if (state is GetCaseInitial || state is GetCaseLoading) {
+            }
+            else if (state is GetCaseInitial || state is GetCaseLoading) {
               return Center(
                 child: CircularProgressIndicator(color: HexColor("#3c1e08")),
               );
-            } else if (state is GetCaseLoaded) {
+            }
+            else if (state is GetCaseLoaded) {
               List<CaseReport> caseList = state.caseList;
-              return Stack(
-                children: [
-                  listCase(caseList),
-                  Positioned(
-                    bottom: 16.0,
-                    right: 16.0,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.brown,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => NewReport()),
-                        ).then((result) {
-                          caseBloc.add(StartLoadOwnCase());
-                        });
-                      },
-                      child: Icon(Icons.add),
+              return RefreshIndicator(
+                onRefresh: refreshPage,
+                color: HexColor("#3c1e08"),
+                child: Stack(
+                  children: <Widget>[
+                    ListView(),
+                    listCase(caseList),
+                    Positioned(
+                      bottom: 16.0,
+                      right: 16.0,
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.brown,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NewReport()),
+                          ).then((result) {
+                            caseBloc.add(StartLoadOwnCase());
+                          });
+                        },
+                        child: Icon(Icons.add),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             } else {
               // Handle other states if needed

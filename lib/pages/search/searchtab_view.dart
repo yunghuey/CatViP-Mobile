@@ -47,6 +47,7 @@ class _SearchUserViewState extends State<SearchUserView> {
                 nameField(),
                 IconButton(onPressed: (){
                   if (nameController.text.length > 0){
+                    searchBloc.add(SearchUserPressed(name: nameController.text.trim()));
                   }
                 }, icon: Icon(Icons.search)),
               ],

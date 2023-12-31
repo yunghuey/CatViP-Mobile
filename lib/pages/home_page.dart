@@ -50,11 +50,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
-    chatBloc.add(UnreadInitEvent());
     reportBloc = BlocProvider.of<ReportPostBloc>(context);
-    _postBloc.add(GetPostList());
     caseCountBloc = BlocProvider.of<CaseReportCountBloc>(context);
-    caseCountBloc.add(CaseCountInitEvent());
+    refreshPosts();
     super.initState();
   }
 
@@ -155,81 +153,72 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     if (post.postImages != null &&
                                         post.postImages!.isNotEmpty)
-                                      Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 16,
-                                            backgroundColor: Colors.transparent,
-                                            backgroundImage: post
-                                                        .profileImage !=
-                                                    ""
-                                                ? Image.memory(base64Decode(
-                                                        post.profileImage!))
-                                                    .image
-                                                : AssetImage(
-                                                    'assets/profileimage.png'),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      // if (post.username == )
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    SearchView(
-                                                                      userid: post
-                                                                          .userId!,
-                                                                    )),
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      post.username!,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                        GestureDetector(
+                                          onTap: (){
+                                            if (post.isCurrentUserPost == false) {
+                                              Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SearchView(
+                                                          userid: post.userId!,)
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: Row(
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 16,
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: post.profileImage != ""
+                                                  ? Image.memory(base64Decode(post.profileImage!)).image
+                                                  : AssetImage('assets/profileimage.png'),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                      Text(post.username!,
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          post.postTypeId == 1
-                                              ? Container(
-                                                  color: Colors.brown,
-                                                  padding: EdgeInsets.all(
-                                                      4.0), // Adjust the padding as needed
-                                                  child: Text(
-                                                    "Daily Sharing",
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                            post.postTypeId == 1
+                                                ? Container(
+                                                    color: Colors.brown,
+                                                    padding: EdgeInsets.all(
+                                                        4.0), // Adjust the padding as needed
+                                                    child: Text(
+                                                      "Daily Sharing",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    color: Colors.brown,
+                                                    padding: EdgeInsets.all(
+                                                        4.0), // Adjust the padding as needed
+                                                    child: Text(
+                                                      "Expert Tips",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
                                                   ),
-                                                )
-                                              : Container(
-                                                  color: Colors.brown,
-                                                  padding: EdgeInsets.all(
-                                                      4.0), // Adjust the padding as needed
-                                                  child: Text(
-                                                    "Expert Tips",
-                                                    style: TextStyle(
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                          post.isCurrentUserPost == false
-                                              ? report(post)
-                                              : Container(),
-                                        ],
+                                            post.isCurrentUserPost == false
+                                                ? report(post)
+                                                : Container(),
+                                          ],
                                       ),
+                                        ),
                                     SizedBox(height: 4.0),
                                     Container(
                                       width: double.infinity,
@@ -454,7 +443,7 @@ class _HomePageState extends State<HomePage> {
                           await Future.delayed(Duration(milliseconds: 100));
                           Navigator.of(context).pop();
                         },
-                        child: Text("Report"),
+                        child: Text("Report", style: TextStyle(color: HexColor("#3c1e08"))),
                       ),
                     ],
                   ),
@@ -537,8 +526,7 @@ class _HomePageState extends State<HomePage> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: _currentPage == index
-                                        ? HexColor(
-                                            "#3c1e08") // Highlight the current page indicator
+                                        ? HexColor("#3c1e08") // Highlight the current page indicator
                                         : Colors.grey,
                                   ),
                                 ),

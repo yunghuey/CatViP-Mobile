@@ -45,6 +45,9 @@ class _SearchViewState extends State<SearchView> {
   late DeletePostBloc deleteBloc;
   final Widgets func = Widgets();
   bool isSet = false;
+  PageController _pageController = PageController();
+  int _currentPage = 0;
+  bool hasBeenLiked = false;
 
   @override
   void initState() {
@@ -52,13 +55,11 @@ class _SearchViewState extends State<SearchView> {
     userid = widget.userid;
     print("inside search user ${userid}");
     searchBloc = BlocProvider.of<SearchUserBloc>(context);
-    searchBloc.add(SearchUserProfileEvent(userid: userid));
     catBloc = BlocProvider.of<CatProfileBloc>(context);
-    catBloc.add(SearchReloadAllCatEvent(userID: userid));
     postBloc = BlocProvider.of<GetPostBloc>(context);
-    postBloc.add(LoadSearchAllPost(userid: userid));
     relBloc = BlocProvider.of<RelationBloc>(context);
     deleteBloc = BlocProvider.of<DeletePostBloc>(context);
+    refreshPage();
     super.initState();
   }
 
@@ -119,7 +120,7 @@ class _SearchViewState extends State<SearchView> {
                   padding: const EdgeInsets.all(5.0),
                   child: Text(
                     state.message,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                   ),
                 );
               }
@@ -131,6 +132,7 @@ class _SearchViewState extends State<SearchView> {
                   isSet = true;
                 }
                 return RefreshIndicator(
+                  color: HexColor("#3c1e08"),
                   onRefresh: refreshPage,
                   child: SingleChildScrollView(
                     child: Column(
@@ -171,7 +173,7 @@ class _SearchViewState extends State<SearchView> {
                             } else {
                               return Center(
                                 child: Container(
-                                  child: Text(
+                                  child: const Text(
                                     "No post is created yet",
                                     style: TextStyle(fontSize: 17),
                                   ),
@@ -193,7 +195,7 @@ class _SearchViewState extends State<SearchView> {
                         CircularProgressIndicator(
                           color: HexColor("#3c1e08"),
                         ),
-                        Text("Searching....."),
+                        const Text("Searching....."),
                       ],
                     ),
                   ),
@@ -215,7 +217,7 @@ class _SearchViewState extends State<SearchView> {
             image: user.profileImage != ""
                 ? MemoryImage(base64Decode(user.profileImage!))
             as ImageProvider<Object>
-                : AssetImage('assets/profileimage.png'),
+                : const AssetImage('assets/profileimage.png'),
             fit: BoxFit.cover,
           ),
         ));
@@ -226,9 +228,9 @@ class _SearchViewState extends State<SearchView> {
       children: [
         Text(
           user.follower.toString(),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
         ),
-        Text("Followers"),
+        const Text("Followers"),
       ],
     );
   }
@@ -238,9 +240,9 @@ class _SearchViewState extends State<SearchView> {
       children: [
         Text(
           user.following.toString(),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
         ),
-        Text("Following"),
+        const Text("Following"),
       ],
     );
   }
@@ -251,13 +253,13 @@ class _SearchViewState extends State<SearchView> {
         children: [
           Text(
             user.expertTips.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
-          Text("Tips"),
+          const Text("Tips"),
         ],
       );
     } else {
-      return Column();
+      return const Column();
     }
   }
 
@@ -303,7 +305,7 @@ class _SearchViewState extends State<SearchView> {
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     child: ElevatedButton(
                       onPressed: () {
                         if (btntext == "Follow") {
@@ -338,7 +340,7 @@ class _SearchViewState extends State<SearchView> {
                                         }),
                                     padding:
                                     MaterialStateProperty.all<EdgeInsets>(
-                                        EdgeInsets.all(10.0)),
+                                        const EdgeInsets.all(10.0)),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
@@ -358,7 +360,7 @@ class _SearchViewState extends State<SearchView> {
                                           : "Follow";
                                     })
                                   },
-                                  child: Text('Yes',
+                                  child: const Text('Yes',
                                       style: TextStyle(color: Colors.white)),
                                   style: ButtonStyle(
                                     backgroundColor:
@@ -366,7 +368,7 @@ class _SearchViewState extends State<SearchView> {
                                         HexColor("#3c1e08")),
                                     padding:
                                     MaterialStateProperty.all<EdgeInsets>(
-                                        EdgeInsets.all(10.0)),
+                                        const EdgeInsets.all(10.0)),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
@@ -394,7 +396,7 @@ class _SearchViewState extends State<SearchView> {
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     child: ElevatedButton(
                       onPressed: () {
                         ChatListModel chatlist = ChatListModel(
@@ -405,7 +407,6 @@ class _SearchViewState extends State<SearchView> {
                           latestMsg: "",
                           unreadMessage: 0
                         );
-                        print("search user id = ${widget.userid}");
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -414,7 +415,7 @@ class _SearchViewState extends State<SearchView> {
                                   existChat: false,
                                 )));
                       },
-                      child: Text("Message"),
+                      child: const Text("Message"),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<HexColor>(
                             HexColor("#F2EFEA")),
@@ -470,11 +471,11 @@ class _SearchViewState extends State<SearchView> {
                             radius: 40,
                             child: CircleAvatar(
                               radius: 38,
-                              backgroundImage: cats[index].profileImage != ""
+                              backgroundImage: cat.profileImage != ""
                                   ? MemoryImage(base64Decode(
-                                  cats[index].profileImage))
+                                  cat.profileImage))
                               as ImageProvider<Object>
-                                  : AssetImage('assets/profileimage.png'),
+                                  : const AssetImage('assets/profileimage.png'),
                             ),
                           ),
                         ),
@@ -492,204 +493,260 @@ class _SearchViewState extends State<SearchView> {
   }
 
   Widget _getAllPosts() {
-    return Card(
+    return Container(
       color: HexColor("#ecd9c9"),
-      child: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: ListView.builder(
-          shrinkWrap: true, // Added shrinkWrap
-          physics:
-          NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
-          itemCount: listPost.length,
-          itemBuilder: (context, index) {
-            final Post post = listPost[index];
-            print("Post: ${post.toJson()}");
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (post.postImages != null && post.postImages!.isNotEmpty)
+      child: ListView.builder(
+        shrinkWrap: true, // Added shrinkWrap
+        physics:
+        const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+        itemCount: listPost.length,
+        itemBuilder: (context, index) {
+          final Post post = listPost[index];
+          return Card(
+            color: HexColor("#ecd9c9"),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (post.postImages != null &&
+                      post.postImages!.isNotEmpty)
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: user.profileImage != ""
+                              ? Image.memory(base64Decode(user.profileImage!)).image
+                              : const AssetImage('assets/profileimage.png'),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(user.fullname,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        post.postTypeId == 1
+                            ? Container(
+                          color: Colors.brown,
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust the padding as needed
+                          child: const Text(
+                            "Daily Sharing",
+                            style: TextStyle(
+                                color: Colors.white),
+                          ),
+                        )
+                            : Container(
+                          color: Colors.brown,
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust the padding as needed
+                          child: const Text(
+                            "Expert Tips",
+                            style: TextStyle(
+                                color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 4.0),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.only(
+                      top: 6,
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(text: ' ',),
+                          TextSpan(
+                            text: post.description.toString(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4.0),
+                  displayImage(post),
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: post.profileImage != ""
-                            ? Image.memory(base64Decode(post.profileImage!))
-                            .image
-                            : AssetImage('assets/profileimage.png'),
+                      _FavoriteButton(
+                        postId: post.id!,
+                        actionTypeId: post.currentUserAction!,
+                        onFavoriteChanged:
+                            (bool isThumbsUpSelected) {
+                          if (post.likeCount != 0 ||
+                              isThumbsUpSelected) {
+                            setState(() {
+                              post.likeCount =
+                                  post.likeCount! +
+                                      (isThumbsUpSelected
+                                          ? 1
+                                          : -1);
+                              hasBeenLiked = true;
+                            });
+                          } else {
+                            print(
+                                'Is Thumbs Up Selected: $isThumbsUpSelected');
+                          }
+                        },
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.fullname,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                      const SizedBox(width: 4.0),
+                      IconButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Comments(postId: post.id!),
                           ),
+                        ),
+                        icon: const Icon(
+                          Icons.comment_bank_outlined,
+                          color: Colors.black,
+                          size: 24.0,
                         ),
                       ),
                     ],
                   ),
-                SizedBox(height: 4.0),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.only(
-                    top: 6,
-                  ),
-                  child: RichText(
-                    text: TextSpan(
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
                       children: [
-                        TextSpan(
-                          text: ' ',
-                        ),
-                        TextSpan(
-                          text: post.description.toString(),
-                          style: TextStyle(
-                            color: Colors.black,
+                        Text(
+                          "${post.likeCount.toString()} likes",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
                             fontSize: 16.0,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Comments(
+                                        postId: post.id!),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding:
+                            const EdgeInsets.symmetric(
+                                vertical: 4),
+                            child: post.commentCount! > 0
+                                ? Text(
+                              'View all ${post.commentCount} comments',
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black),
+                            )
+                                : const SizedBox.shrink(),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4),
+                          child: Text(
+                            func.getFormattedDate(
+                                post.dateTime!),
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                displayImage(post),
-                Row(
-                  children: [
-                    _FavoriteButton(
-                      postId: post.id!,
-                      actionTypeId: post.currentUserAction!,
-                      onFavoriteChanged: (bool isThumbsUpSelected) {
-                        setState(() {
-                          post.likeCount =
-                              post.likeCount! + (isThumbsUpSelected ? 1 : -1);
-                        });
-                        print('Is Thumbs Up Selected: $isThumbsUpSelected');
-                      },
-                    ),
-                    SizedBox(width: 4.0),
-                    IconButton(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Comments(postId: post.id!),
-                        ),
-                      ),
-                      icon: Icon(
-                        Icons.comment_bank_outlined,
-                        color: Colors.black,
-                        size: 24.0,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${post.likeCount.toString()} likes",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Comments(postId: post.id!),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: post.commentCount! > 0
-                              ? Text(
-                            'View all ${post.commentCount} comments',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black),
-                          )
-                              : SizedBox.shrink(),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          func.getFormattedDate(post.dateTime!),
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.black),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget displayImage(Post post) {
-    return post.postImages![0].image! != ""
-        ? AspectRatio(
-      aspectRatio: 1.0,
-      child: Image.memory(
-        base64Decode(post.postImages![0].image!),
-        fit: BoxFit.cover,
-      ),
-    )
-        : Container();
+    return Stack(
+      children: [
+        Container(
+          height: post.postImages != null && post.postImages!.isNotEmpty
+              ? MediaQuery.of(context).size.width
+              : 0,
+          child: post.postImages != null && post.postImages!.isNotEmpty
+              ? Column(
+                children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: post.postImages!.length,
+                  itemBuilder: (context, index) {
+                    return AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Image.memory(
+                        base64Decode(post.postImages![index].image!),
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                ),
+              ),
+              post.postImages!.length > 1
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  post.postImages!.length,
+                      (index) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentPage == index
+                            ? HexColor(
+                            "#3c1e08") // Highlight the current page indicator
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+                  : Container(),
+            ],
+          )
+              : Container(), // Show an empty container if postImages is null or empty
+        ),
+      ],
+    );
   }
-
-  void refreshPosts() {
-    postBloc.add(StartLoadOwnPost());
-  }
-
-/*
-// Widget _getAllPosts(){
-  //   return GridView.builder(
-  //     shrinkWrap: true,
-  //     physics: const NeverScrollableScrollPhysics(),
-  //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //       crossAxisCount: 3,
-  //       childAspectRatio: 1/1,
-  //       crossAxisSpacing: 2,
-  //       mainAxisSpacing: 2,
-  //     ),
-  //     itemBuilder: (context, index){
-  //       final post = listPost[index];
-  //
-  //       return GestureDetector(
-  //         onTap: (){
-  //           //   handle one image
-  //           //   new page
-  //           //   wait for wafir's code
-  //           // Navigator.push(context, MaterialPageRoute(builder: (context) => EditPost(currentPost: post)));
-  //         },
-  //         child: Container(
-  //           color: Colors.grey,
-  //           child: post.postImages != null && post.postImages!.isNotEmpty ?
-  //           Image(image: MemoryImage(base64Decode(post.postImages![0].image!)),fit: BoxFit.cover,) : Container(),
-  //         ),
-  //       );
-  //     },
-  //     itemCount: listPost.length,
-  //     reverse: true,
-  //   );
-  // } */
 }
 
 class _FavoriteButton extends StatefulWidget {
@@ -729,8 +786,6 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
   @override
   void initState() {
     super.initState();
-
-    // Initialize the state based on the provided actionTypeId
     if (actionTypeId == 1) {
       thumbsUpSelected = true;
     } else if (actionTypeId == 2) {

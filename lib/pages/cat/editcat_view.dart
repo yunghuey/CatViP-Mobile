@@ -87,10 +87,9 @@ class _EditCatViewState extends State<EditCatView> {
             );
           }
           else if (state is CatDeleteSuccessState){
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => ProfileView(),),(route) => false,
-            );
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message),)
             );

@@ -56,6 +56,7 @@ class _ProfileViewState extends State<ProfileView> {
   String expertMsg = "Apply as Expert";
   PageController _pageController = PageController();
   int _currentPage = 0;
+  bool hasBeenLiked = false;
 
   @override
   void initState() {
@@ -468,76 +469,102 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _getAllPosts(){
-    return Card(
+  Widget _getAllPosts() {
+    return Container(
       color: HexColor("#ecd9c9"),
-      child: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: ListView.builder(
-          shrinkWrap: true, // Added shrinkWrap
-          physics: NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
-          itemCount: listPost.length,
-          itemBuilder: (context, index) {
-            final Post post = listPost[index];
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (post.postImages != null && post.postImages!.isNotEmpty)
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: post.profileImage != ""
-                            ? Image.memory(base64Decode(post.profileImage!)).image
-                            : AssetImage('assets/profileimage.png'),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                post.username!,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+      child: ListView.builder(
+        shrinkWrap: true, // Added shrinkWrap
+        physics:
+        const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+        itemCount: listPost.length,
+        itemBuilder: (context, index) {
+          final Post post = listPost[index];
+          return Card(
+            color: HexColor("#ecd9c9"),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (post.postImages != null &&
+                      post.postImages!.isNotEmpty)
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: user.profileImage != ""
+                              ? Image.memory(base64Decode(user.profileImage!)).image
+                              : const AssetImage('assets/profileimage.png'),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(user.fullname,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => Dialog(
-                              child: ListView(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                                shrinkWrap: true,
-                                children: [
-                                  'Edit',
-                                  'Delete'
-                                ]
-                                    .map(
-                                      (e) => InkWell(
-                                    onTap: () async {
-                                      if (e == 'Edit') {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => EditPost(currentPost: post))
-                                        ).then((result) {
-                                          if (result == true){
-                                            postBloc.add(StartLoadOwnPost());
-                                          }
-                                          Navigator.pop(context, true);
-                                        });
-                                      } else if (e == 'Delete') {
-                                        showDialog<String>(
+                        post.postTypeId == 1
+                            ? Container(
+                          color: Colors.brown,
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust the padding as needed
+                          child: const Text(
+                            "Daily Sharing",
+                            style: TextStyle(
+                                color: Colors.white),
+                          ),
+                        )
+                            : Container(
+                          color: Colors.brown,
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust the padding as needed
+                          child: const Text(
+                            "Expert Tips",
+                            style: TextStyle(
+                                color: Colors.white),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => Dialog(
+                                child: ListView(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shrinkWrap: true,
+                                  children: [
+                                    'Edit',
+                                    'Delete'
+                                  ]
+                                      .map(
+                                        (e) => InkWell(
+                                      onTap: () async {
+                                        if (e == 'Edit') {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => EditPost(currentPost: post))
+                                          ).then((result) {
+                                            if (result == true){
+                                              postBloc.add(StartLoadOwnPost());
+                                            }
+                                            Navigator.pop(context, true);
+                                          });
+                                        } else if (e == 'Delete') {
+                                          showDialog<String>(
                                             context: context,
                                             builder: (BuildContext context) => AlertDialog(
                                               title: const Text('Delete Post'),
@@ -582,124 +609,149 @@ class _ProfileViewState extends State<ProfileView> {
                                                 ),
                                               ],
                                             ),
-                                        );
-                                      }
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12, horizontal: 16),
-                                      child: Text(e),
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 16),
+                                        child: Text(e),
+                                      ),
                                     ),
-                                  ),
-                                )
-                                    .toList(),
+                                  )
+                                      .toList(),
+                                ),
                               ),
+                            );
+                          },
+                          icon: const Icon(Icons.more_vert),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 4.0),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.only(
+                      top: 6,
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(
+                            text: ' ',
+                          ),
+                          TextSpan(
+                            text: post.description.toString(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
                             ),
-                          );
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4.0),
+                  displayImage(post),
+                  Row(
+                    children: [
+                      _FavoriteButton(
+                        postId: post.id!,
+                        actionTypeId: post.currentUserAction!,
+                        onFavoriteChanged:
+                            (bool isThumbsUpSelected) {
+                          if (post.likeCount != 0 ||
+                              isThumbsUpSelected) {
+                            setState(() {
+                              post.likeCount =
+                                  post.likeCount! +
+                                      (isThumbsUpSelected
+                                          ? 1
+                                          : -1);
+                              hasBeenLiked = true;
+                            });
+                          } else {
+                            print('Is Thumbs Up Selected: $isThumbsUpSelected');
+                          }
                         },
-                        icon: const Icon(Icons.more_vert),
+                      ),
+                      const SizedBox(width: 4.0),
+                      IconButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Comments(postId: post.id!),
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.comment_bank_outlined,
+                          color: Colors.black,
+                          size: 24.0,
+                        ),
                       ),
                     ],
                   ),
-                SizedBox(height: 4.0),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.only(
-                    top: 6,
-                  ),
-                  child: RichText(
-                    text: TextSpan(
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
                       children: [
-                        TextSpan(
-                          text: ' ',
-                        ),
-                        TextSpan(
-                          text: post.description.toString(),
-                          style: TextStyle(
-                            color: Colors.black,
+                        Text(
+                          "${post.likeCount.toString()} likes",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
                             fontSize: 16.0,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Comments(
+                                        postId: post.id!),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding:
+                            const EdgeInsets.symmetric(
+                                vertical: 4),
+                            child: post.commentCount! > 0
+                                ? Text(
+                              'View all ${post.commentCount} comments',
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black),
+                            )
+                                : const SizedBox.shrink(),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4),
+                          child: Text(
+                            func.getFormattedDate(
+                                post.dateTime!),
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                displayImage(post),
-
-                Row(
-                  children: [
-                    _FavoriteButton(
-                      postId: post.id!,
-                      actionTypeId: post.currentUserAction!,
-                      onFavoriteChanged: (bool isThumbsUpSelected) {
-                        setState(() {
-                          post.likeCount = post.likeCount! + (isThumbsUpSelected ? 1 : -1);
-                        });
-                      },
-                    ),
-                    SizedBox(width: 4.0),
-                    IconButton(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Comments(postId: post.id!),
-                        ),
-                      ),
-                      icon: Icon(
-                        Icons.comment_bank_outlined,
-                        color: Colors.black,
-                        size: 24.0,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${post.likeCount.toString()} likes",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16.0,
-                        ),
-                      ),
-
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Comments(postId: post.id!),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: post.commentCount! > 0
-                              ? Text(
-                            'View all ${post.commentCount} comments',
-                            style: const TextStyle(fontSize: 14, color: Colors.black),
-                          )
-                              : SizedBox.shrink(),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          func.getFormattedDate(post.dateTime!),
-                          style: const TextStyle(fontSize: 12, color: Colors.black),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

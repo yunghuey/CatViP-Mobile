@@ -35,7 +35,9 @@ class _CatProfileViewState extends State<CatProfileView> {
   final Widgets func = Widgets();
   late DeletePostBloc deleteBloc;
   late CatModel cat;
-
+  PageController _pageController = PageController();
+  int _currentPage = 0;
+  bool hasBeenLiked = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -58,13 +60,13 @@ class _CatProfileViewState extends State<CatProfileView> {
         title: BlocBuilder<CatProfileBloc, CatProfileState>(
           builder: (context, state){
             if (state is LoadedOneCatState) {
-              final username = state.cat.name ?? "My Cat";
+              final username = state.cat.name;
               return Text(
                 username,
                 style: Theme.of(context).textTheme.bodyLarge,
               );
             } else {
-              return Text( "Welcome", style: Theme.of(context).textTheme.bodyLarge,);
+              return Text( widget.currentcat.name, style: Theme.of(context).textTheme.bodyLarge,);
             }
           },
         ),
@@ -202,228 +204,260 @@ class _CatProfileViewState extends State<CatProfileView> {
   }
 
   Widget _getAllPosts() {
-    return Card(
+    return Container(
       color: HexColor("#ecd9c9"),
-      child: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: ListView.builder(
-          shrinkWrap: true,
-          // Added shrinkWrap
-          physics: NeverScrollableScrollPhysics(),
-          // Disable scrolling for the ListView
-          itemCount: catPostList.length,
-          itemBuilder: (context, index) {
-            final Post post = catPostList[index];
-            print("Post: ${post.toJson()}");
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (post.postImages != null && post.postImages!.isNotEmpty)
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: Image.memory(base64Decode(cat.profileImage)).image,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                (post.mentionedCats != null && post.mentionedCats!.isNotEmpty && post.mentionedCats![0].catName != null) ? post.mentionedCats![0].catName! : "no name",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics:
+        const NeverScrollableScrollPhysics(),
+        itemCount: catPostList.length,
+        itemBuilder: (context, index) {
+          final Post post = catPostList[index];
+          return Card(
+            color: HexColor("#ecd9c9"),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (post.postImages != null &&
+                      post.postImages!.isNotEmpty)
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: cat.profileImage != ""
+                              ? Image.memory(base64Decode(cat.profileImage!)).image
+                              : const AssetImage('assets/profileimage.png'),
                         ),
-                      ),
-                      if (widget.fromOwner == true) IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) =>
-                                Dialog(
-                                  child: ListView(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 16,
-                                    ),
-                                    shrinkWrap: true,
-                                    children: [
-                                      'Edit',
-                                      'Delete'
-                                    ]
-                                        .map(
-                                          (e) =>
-                                          InkWell(
-                                            onTap: () async {
-                                              if (e == 'Edit') {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            EditPost(
-                                                                currentPost: post))
-                                                ).then((result) {
-                                                  if (result == true){
-                                                    Navigator.pop(context);
-                                                    postBloc.add(StartLoadSingleCatPost(catid: cat.id));
-
-                                                  }
-                                                });
-                                              } else if (e == 'Delete') {
-                                                deleteBloc.add(
-                                                    DeleteButtonPressed(
-                                                        postId: post.id!));
-                                                await Future.delayed(Duration(
-                                                    milliseconds: 100));
-                                                Navigator.pop(context);
-                                                postBloc.add(
-                                                    StartLoadOwnPost());
-                                                //Navigator.push(context, MaterialPageRoute(builder: (context) => OwnPosts()));
-
-                                              }
-                                            },
-                                            child: Container(
-                                              padding: const EdgeInsets
-                                                  .symmetric(
-                                                  vertical: 12, horizontal: 16),
-                                              child: Text(e),
-                                            ),
-                                          ),
-                                    )
-                                        .toList(),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(cat.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                          );
+                              ],
+                            ),
+                          ),
+                        ),
+                        post.postTypeId == 1
+                            ? Container(
+                          color: Colors.brown,
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust the padding as needed
+                          child: const Text(
+                            "Daily Sharing",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                            : Container(
+                          color: Colors.brown,
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust the padding as needed
+                          child: const Text(
+                            "Expert Tips",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 4.0),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.only(
+                      top: 6,
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(
+                            text: ' ',
+                          ),
+                          TextSpan(
+                            text: post.description.toString(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4.0),
+                  displayImage(post),
+                  Row(
+                    children: [
+                      _FavoriteButton(
+                        postId: post.id!,
+                        actionTypeId: post.currentUserAction!,
+                        onFavoriteChanged:
+                            (bool isThumbsUpSelected) {
+                          if (post.likeCount != 0 ||
+                              isThumbsUpSelected) {
+                            setState(() {
+                              post.likeCount =
+                                  post.likeCount! +
+                                      (isThumbsUpSelected
+                                          ? 1
+                                          : -1);
+                              hasBeenLiked = true;
+                            });
+                          } else {
+                            print(
+                                'Is Thumbs Up Selected: $isThumbsUpSelected');
+                          }
                         },
-                        icon: const Icon(Icons.more_vert),
-                      ) else Container(),
+                      ),
+                      const SizedBox(width: 4.0),
+                      IconButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Comments(postId: post.id!),
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.comment_bank_outlined,
+                          color: Colors.black,
+                          size: 24.0,
+                        ),
+                      ),
                     ],
                   ),
-                SizedBox(height: 4.0),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.only(
-                    top: 6,
-                  ),
-                  child: RichText(
-                    text: TextSpan(
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
                       children: [
-                        TextSpan(
-                          text: ' ',
-                        ),
-                        TextSpan(
-                          text: post.description.toString(),
-                          style: TextStyle(
-                            color: Colors.black,
+                        Text(
+                          "${post.likeCount.toString()} likes",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
                             fontSize: 16.0,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Comments(
+                                        postId: post.id!),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding:
+                            const EdgeInsets.symmetric(
+                                vertical: 4),
+                            child: post.commentCount! > 0
+                                ? Text(
+                              'View all ${post.commentCount} comments',
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black),
+                            )
+                                : const SizedBox.shrink(),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4),
+                          child: Text(
+                            func.getFormattedDate(
+                                post.dateTime!),
+                            style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                displayImage(post),
-
-                Row(
-                  children: [
-                    _FavoriteButton(
-                      postId: post.id!,
-                      actionTypeId: post.currentUserAction!,
-                      onFavoriteChanged: (bool isThumbsUpSelected) {
-                        setState(() {
-                          post.likeCount =
-                              post.likeCount! + (isThumbsUpSelected ? 1 : -1);
-                        });
-                        print('Is Thumbs Up Selected: $isThumbsUpSelected');
-                      },
-                    ),
-                    SizedBox(width: 4.0),
-                    IconButton(
-                      onPressed: () =>
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Comments(postId: post.id!),
-                            ),
-                          ),
-                      icon: Icon(
-                        Icons.comment_bank_outlined,
-                        color: Colors.black,
-                        size: 24.0,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${post.likeCount.toString()} likes",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16.0,
-                        ),
-                      ),
-
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Comments(postId: post.id!),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: post.commentCount! > 0
-                              ? Text(
-                            'View all ${post.commentCount} comments',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black),
-                          )
-                              : SizedBox.shrink(),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          func.getFormattedDate(post.dateTime!),
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.black),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget displayImage(Post post){
-    return post.postImages![0].image! != ""
-        ? AspectRatio(
-      aspectRatio: 1.0,
-      child: Image.memory(
-        base64Decode(post.postImages![0].image!),
-        fit: BoxFit.cover,
-      ),
-    )
-        : Container();
+  Widget displayImage(Post post) {
+    return Stack(
+      children: [
+        Container(
+          height: post.postImages != null && post.postImages!.isNotEmpty
+              ? MediaQuery.of(context)
+              .size
+              .width
+              : 0,
+          child: post.postImages != null && post.postImages!.isNotEmpty
+              ? Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: post.postImages!.length,
+                  itemBuilder: (context, index) {
+                    return AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Image.memory(
+                        base64Decode(post.postImages![index].image!),
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                ),
+              ),
+              post.postImages!.length > 1
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  post.postImages!.length,
+                      (index) => Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentPage == index
+                            ? HexColor("#3c1e08")
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+                  : Container(),
+            ],
+          )
+              : Container(),
+        ),
+      ],
+    );
   }
 }
 

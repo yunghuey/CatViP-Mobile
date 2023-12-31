@@ -66,12 +66,7 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
     return BlocListener<EditPostBloc, EditPostState>(
       listener: (context, state) {
         if (state is EditPostSuccessState) {
-          print('Post edited successfully');
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => OwnPosts()),
-          );
-          // Navigator.pop(context, true);
+          Navigator.pop(context);
         } else if (state is EditPostFailState) {
           print('Failed to save post');
         }
@@ -91,10 +86,10 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
               child: Column(
                 children: [
                   caseReportImage(),
-                  SizedBox(height: 4.0),
+                  const SizedBox(height: 4.0),
                   descriptionText(),
-                  SizedBox(height: 16.0),
-                  Buttons()
+                  const SizedBox(height: 16.0),
+                  Buttons(),
                 ],
               ),
             ),
@@ -142,7 +137,7 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
                       CaseReportCommentView(caseReportId: id!),
                 ),
               ),
-              icon: Icon(
+              icon: const Icon(
                 Icons.comment_bank_outlined,
                 color: Colors.black,
                 size: 24.0,
@@ -153,20 +148,20 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Description:',
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 4.0,
             ),
             Expanded(
               child: Text(
                 description,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.bold,
                 ),
@@ -185,24 +180,22 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
           child: TextButton(
             onPressed: () async {
               completeCaseBloc.add(CompleteButtonPressed(postId: id));
-              await Future.delayed(Duration(milliseconds: 500));
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => OwnReport()));
+              await Future.delayed(const Duration(milliseconds: 500));
+              Navigator.pop(context);
               ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text('Report completed')));
+                  .showSnackBar(const SnackBar(content: Text('Report completed')));
             },
             style: TextButton.styleFrom(
               backgroundColor: HexColor("#3c1e08"),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
             ),
-            child: Text(
+            child: const Text(
               'Complete',
               style: TextStyle(color: Colors.white),
             ),
           ),
         ),
-        SizedBox(
-            width: 4.0), // This will create a small space between the buttons
+        const SizedBox(width: 4.0), // This will create a small space between the buttons
         Expanded(
           child: TextButton(
             onPressed: () {
@@ -225,7 +218,7 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
                           return HexColor("#F2EFEA");
                         }),
                         padding: MaterialStateProperty.all<EdgeInsets>(
-                            EdgeInsets.all(10.0)),
+                            const EdgeInsets.all(10.0)),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -233,12 +226,12 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
                       ),
                     ),
                     TextButton(
-                      child: Text('Yes', style: TextStyle(color: Colors.white)),
+                      child: const Text('Yes', style: TextStyle(color: Colors.white)),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<HexColor>(
                             HexColor("#3c1e08")),
                         padding: MaterialStateProperty.all<EdgeInsets>(
-                            EdgeInsets.all(10.0)),
+                            const EdgeInsets.all(10.0)),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -246,13 +239,11 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
                       ),
                       onPressed: () async {
                         revokeCaseBloc.add(RevokeCaseButtonPressed(postId: id));
-                        await Future.delayed(Duration(milliseconds: 500));
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OwnReport()));
+                        await Future.delayed(const Duration(milliseconds: 500));
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Report revoked')));
+                            const SnackBar(content: Text('Report revoked')));
                       },
                     ),
                   ],
@@ -261,7 +252,7 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(HexColor("#ecd9c9")),
-              padding: MaterialStateProperty.all(EdgeInsets.all(16)),
+              padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
               side: MaterialStateProperty.all(
                   BorderSide(color: HexColor("#3c1e08"))), // Add border color
             ),
