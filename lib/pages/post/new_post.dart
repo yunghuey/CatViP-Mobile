@@ -181,14 +181,6 @@ class _NewPostState extends State<NewPost> {
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
-          // automaticallyImplyLeading: false,
-          // leading: IconButton(
-          //   icon: Icon(Icons.arrow_back),
-          //   color: HexColor("#3c1e08"),
-          //   onPressed: () {
-          //     Navigator.push(context, MaterialPageRoute(builder: (context) => RoutePage()));
-          //   },
-          // ),
         ),
         body: MultiBlocListener(
           listeners: [
@@ -199,8 +191,7 @@ class _NewPostState extends State<NewPost> {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
                           'Successfully Post'))); //   navigate to View All Cat
-
-                  Navigator.push(
+                  Navigator.pop(
                     context,
                     MaterialPageRoute(builder: (context) => RoutePage()),
                   );

@@ -87,8 +87,6 @@ class _ProfileViewState extends State<ProfileView> {
       }
   );
 
-  //  need to get all cat of this user and all post by this user
-  // when tap on cat, should be able to get the index
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -763,37 +761,6 @@ class _ProfileViewState extends State<ProfileView> {
           : Container(), // Show an empty container if postImages is null or empty
     );
   }
-  /*
-  * return GridView.builder(
-  shrinkWrap: true,
-  physics: const NeverScrollableScrollPhysics(),
-  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  crossAxisCount: 3,
-  childAspectRatio: 1/1,
-  crossAxisSpacing: 2,
-  mainAxisSpacing: 2,
-  ),
-  itemBuilder: (context, index){
-  final post = listPost[index];
-
-  return GestureDetector(
-  onTap: (){
-  //   handle one image
-  //   new page
-  //   wait for wafir's code
-
-  Navigator.push(context, MaterialPageRoute(builder: (context) => OwnPosts()));
-
-  },
-  child: Container(
-  color: Colors.grey,
-  child: post.postImages != null && post.postImages!.isNotEmpty ?
-  Image(image: MemoryImage(base64Decode(post.postImages![0].image!)),fit: BoxFit.cover,) : Container(),
-  ),
-  );
-  },
-  itemCount: listPost.length,
-  );*/
 
   @override
   void dispose() {
@@ -802,7 +769,6 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
 }
-
 
 class _FavoriteButton extends StatefulWidget {
   final int postId;

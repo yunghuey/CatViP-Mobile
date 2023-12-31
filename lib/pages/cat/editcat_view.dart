@@ -48,16 +48,8 @@ class _EditCatViewState extends State<EditCatView> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    cat = widget.currentCat;
-    nameController.text = cat.name;
-    descController.text = cat.desc;
-    dateController.text = DateFormat("yyyy-MM-dd").format(DateTime.parse(cat.dob));
-    _gender = cat.gender == true ? 1 : 0;
-    base64image = cat.profileImage;
-    currentDate = DateTime.parse(dateController.text);
     catBloc = BlocProvider.of<CatProfileBloc>(context);
-    catBloc.add(ReloadOneCatEvent(catid: widget.currentCat.id));
+    catBloc.add(EditCatProfileEvent(catid: widget.currentCat.id));
     super.initState();
   }
 
@@ -69,7 +61,7 @@ class _EditCatViewState extends State<EditCatView> {
             return Container();
           }
       },
-      );
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,39 +89,64 @@ class _EditCatViewState extends State<EditCatView> {
           else if (state is CatDeleteSuccessState){
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(
-                builder: (context) => ProfileView(),
-              ),
-                  (route) => false, // Pop until there are no more routes
+              MaterialPageRoute(builder: (context) => ProfileView(),),(route) => false,
             );
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message),)
             );
           }
         },
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Column(
-                children: [
-                  _profileImage(),
-                  _nameField(),
-                  _descField(),
-                  _dobField(),
-                  _genderField(),
-                  msg,
-                  _buttonGroup(),
-                ],
-              ),
-            ),
-          ),
+        child:
+        BlocBuilder<CatProfileBloc,CatProfileState>(
+          builder: (context, state){
+            if (state is CatProfileEmptyState){
+              return Center(child: Text("Error in getting cat details. Please refresh"));
+            }
+            else if (state is CatProfileLoadingState){
+              return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+            }
+            else if (state is GetCatProfileEditState){
+              if (profileEdited == 0){
+                cat = state.cat;
+                nameController.text = cat.name;
+                descController.text = cat.desc;
+                dateController.text = DateFormat("yyyy-MM-dd").format(DateTime.parse(cat.dob));
+                _gender = cat.gender == true ? 1 : 0;
+                base64image = cat.profileImage;
+                currentDate = DateTime.parse(dateController.text);
+                profileEdited = 1;
+              }
+              return _editCatForm();
+            }
+            return Container();
+          }
         ),
+
       )
     );
   }
 
+  Widget _editCatForm(){
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            children: [
+              _profileImage(),
+              _nameField(),
+              _descField(),
+              _dobField(),
+              _genderField(),
+              msg,
+              _buttonGroup(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   Widget _profileImage(){
     return GestureDetector(
       onTap: (){
@@ -158,7 +175,7 @@ class _EditCatViewState extends State<EditCatView> {
                   snapshot.data!,
                   width: 250,
                   height: 250,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 );
               }
               else {
@@ -167,6 +184,7 @@ class _EditCatViewState extends State<EditCatView> {
                       image: base64image != ""
                           ? MemoryImage(base64Decode(base64image)) as ImageProvider<Object>
                           : AssetImage('assets/catprofileimg.png'),
+                      fit: BoxFit.contain,
                     )
                 );
               }
@@ -432,42 +450,45 @@ class _EditCatViewState extends State<EditCatView> {
             child: TextButton(
               child: Text("Update", style: TextStyle(fontSize: 15, color: Colors.white),),
               style: ButtonStyle(
-                padding: MaterialStateProperty.all(EdgeInsets.all(16)),
+                padding: MaterialStateProperty.all(EdgeInsets.all(13)),
                 backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
               ),
               onPressed: (){
-                int id = widget.currentCat.id;
-                String name = nameController.text.trim();
-                String desc = descController.text.trim();
-                String date = dateController.text.trim();
-                bool gender = _gender.toString() == 1 ? true : false;
-                if (base64image.isNotEmpty){
-                  CatModel newCat = CatModel(
-                    id: id,
-                    name: name,
-                    desc: desc,
-                    dob: date,
-                    profileImage: base64image,
-                    gender: gender,
-                  );
+                if (_formKey.currentState!.validate()){
+                  int id = widget.currentCat.id;
+                  String name = nameController.text.trim();
+                  String desc = descController.text.trim();
+                  String date = dateController.text.trim();
+                  bool gender = _gender.toString() == 1 ? true : false;
+                  if (base64image.isNotEmpty){
+                    CatModel newCat = CatModel(
+                      id: id,
+                      name: name,
+                      desc: desc,
+                      dob: date,
+                      profileImage: base64image,
+                      gender: gender,
+                    );
 
-                  print(newCat.toString());
-                  catBloc.add(UpdateCatPressed(cat: newCat));
-                }
-                else {
-                  showDialog<String>(
+                    print(newCat.toString());
+                    catBloc.add(UpdateCatPressed(cat: newCat));
+                  }
+                  else {
+                    showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                         title: const Text('Missing image'),
-                         content: const Text('Please upload your cat\'s profile picture'),
+                        content: const Text('Please upload your cat\'s profile picture'),
                         actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, 'OK'),
-                          child: const Text('OK'),
-                        ),
-                    ],
-                  ),
-                  );
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'OK'),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
                 }
 
               },
@@ -524,7 +545,7 @@ class _EditCatViewState extends State<EditCatView> {
               child: Text("Delete",style: TextStyle(fontSize: 15, color: HexColor("#3c1e08"))),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
-                padding: MaterialStateProperty.all(EdgeInsets.all(16)),
+                padding: MaterialStateProperty.all(EdgeInsets.all(13)),
                 side: MaterialStateProperty.all(
                   BorderSide(color: HexColor("#3c1e08"))),
               ),

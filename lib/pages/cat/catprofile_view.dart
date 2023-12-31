@@ -41,17 +41,33 @@ class _CatProfileViewState extends State<CatProfileView> {
     // TODO: implement initState
     cat = widget.currentcat;
     catBloc = BlocProvider.of<CatProfileBloc>(context);
-    catBloc.add(ReloadOneCatEvent(catid: cat.id));
     postBloc = BlocProvider.of<GetPostBloc>(context);
-    postBloc.add(StartLoadSingleCatPost(catid: cat.id));
     deleteBloc = BlocProvider.of<DeletePostBloc>(context);
+    refreshPage();
     super.initState();
+  }
+
+  Future<void> refreshPage() async {
+    catBloc.add(ReloadOneCatEvent(catid: cat.id));
+    postBloc.add(StartLoadSingleCatPost(catid: cat.id));
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(cat.name, style: Theme.of(context).textTheme.bodyLarge),
+        title: BlocBuilder<CatProfileBloc, CatProfileState>(
+          builder: (context, state){
+            if (state is LoadedOneCatState) {
+              final username = state.cat.name ?? "My Cat";
+              return Text(
+                username,
+                style: Theme.of(context).textTheme.bodyLarge,
+              );
+            } else {
+              return Text( "Welcome", style: Theme.of(context).textTheme.bodyLarge,);
+            }
+          },
+        ),
         backgroundColor: HexColor("#ecd9c9"),
         bottomOpacity: 0.0,
         elevation: 0.0,
@@ -75,23 +91,32 @@ class _CatProfileViewState extends State<CatProfileView> {
         builder: (context, state){
           if (state is LoadedOneCatState){
             cat = state.cat;
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  _catDetails(),
-                  SizedBox(height: 10),
-                  _catDesc(),
-                  BlocBuilder<GetPostBloc, GetPostState>(
-                      builder: (context, state){
-                        if (state is GetPostLoading){
-                          return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-                        }
-                        else if (state is GetPostSingleCatLoaded){
-                          catPostList = state.postList;
-                          return _getAllPosts();
-                        }
-                        return Container(child: Text("Create a post now!", style: TextStyle(fontSize: 16)));
-                      }),
+            return RefreshIndicator(
+              onRefresh: refreshPage,
+              color: HexColor("#3c1e08"),
+              child: Stack(
+                children: <Widget>[
+                  ListView(),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _catDetails(),
+                        SizedBox(height: 10),
+                        _catDesc(),
+                        BlocBuilder<GetPostBloc, GetPostState>(
+                            builder: (context, state){
+                              if (state is GetPostLoading){
+                                return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+                              }
+                              else if (state is GetPostSingleCatLoaded){
+                                catPostList = state.postList.reversed.toList();
+                                return _getAllPosts();
+                              }
+                              return Container(child: Text("Create a post now!", style: TextStyle(fontSize: 16)));
+                            }),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
@@ -108,29 +133,6 @@ class _CatProfileViewState extends State<CatProfileView> {
           }
         }
       ),
-    );
-  }
-
-  Widget _menu(){
-    return Container(
-    color: HexColor("#ecd9c9"),
-    padding: EdgeInsets.only(bottom: 20),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          leading: Icon(Icons.edit),
-          title: Text("Edit Cat"),
-          onTap: (){
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context)=>EditCatView(currentCat: widget.currentcat))
-            ).then((value) {
-              catBloc.add(ReloadOneCatEvent(catid: value));
-            });
-          },
-        ),
-      ],
-    )
     );
   }
 
@@ -219,15 +221,11 @@ class _CatProfileViewState extends State<CatProfileView> {
                 if (post.postImages != null && post.postImages!.isNotEmpty)
                   Row(
                     children: [
-                      // CircleAvatar(
-                      //   radius: 16,
-                      //   backgroundColor: Colors.transparent,
-                      //   backgroundImage: post.profileImage != ""
-                      //       ? Image
-                      //       .memory(base64Decode(post.profileImage!))
-                      //       .image
-                      //       : AssetImage('assets/profileimage.png'),
-                      // ),
+                      CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: Image.memory(base64Decode(cat.profileImage)).image,
+                      ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8),

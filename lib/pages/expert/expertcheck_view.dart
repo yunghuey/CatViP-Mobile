@@ -31,12 +31,16 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
   void initState() {
     // TODO: implement initState
     expBloc = BlocProvider.of<ExpertBloc>(context);
+    refreshPage();
+    super.initState();
+  }
+
+  Future<void> refreshPage() async {
     expBloc.add(LoadExpertApplicationEvent());
     formstatus = widget.formstatus;
     if (formstatus == 2) {
       btnText = "Reapply";
     }
-    super.initState();
   }
 
   @override
@@ -59,34 +63,39 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Revoke failed. Please try again later")));
             } else if (state is RevokeSuccessState) {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => ProfileView()));
+              Navigator.pop(context);
+              Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("Application has been removed")));
             }
           },
           child:
-              BlocBuilder<ExpertBloc, ExpertState>(builder: (context, state) {
-            if (state is ExpertLoadingState) {
-              return Center(
-                  child: CircularProgressIndicator(
-                color: HexColor("#3c1e08"),
-              ));
-            } else if (state is LoadedFormState) {
-              formList = state.form;
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _applicationList(),
-                  ],
-                ),
-              );
-            }
-            return Container(
-              child: Text("No application retrieved"),
-            );
-          }),
-        ));
+              BlocBuilder<ExpertBloc, ExpertState>(
+                  builder: (context, state) {
+                    if (state is ExpertLoadingState) {
+                      return Center(
+                          child: CircularProgressIndicator(
+                        color: HexColor("#3c1e08"),
+                      ));
+                    } else if (state is LoadedFormState) {
+                      formList = state.form;
+                      return RefreshIndicator(
+                        onRefresh: refreshPage,
+                        color: HexColor("#3c1e08"),
+                        child: Stack(
+                          children: <Widget>[
+                            ListView(),
+                            _applicationList(),
+                          ],
+                        ),
+                      );
+                    }
+                    return Container(
+                      child: Center(child: Text("No application retrieved")),
+                    );
+              }),
+        )
+    );
   }
 
   Widget _applicationList() {
@@ -183,7 +192,11 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
           TextButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ExpertFormView()));
+                  MaterialPageRoute(builder: (context) => ExpertFormView())
+              ).then((result){
+                expBloc.add(LoadExpertApplicationEvent());
+
+              });
             },
             child: const Text('Yes'),
           ),
@@ -201,13 +214,35 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, 'Cancel'),
-            child: const Text('Cancel'),
+            child: Text('Cancel',style: TextStyle(color: HexColor('#3c1e08'))),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<HexColor>(
+                      (Set<MaterialState> states){
+                    if(states.contains(MaterialState.pressed))
+                      return HexColor("#ecd9c9");
+                    return HexColor("#F2EFEA");
+                  }
+              ),
+              padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)
+                  )
+              ),
+            ),
           ),
           TextButton(
-            onPressed: () {
-              expBloc.add(RevokeButtonPressed(formid: formId));
-            },
-            child: const Text('Yes'),
+            onPressed: () => expBloc.add(RevokeButtonPressed(formid: formId)),
+            child:  Text('Yes',style: TextStyle(color: Colors.white)),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+              padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)
+                  )
+              ),
+            ),
           ),
         ],
       ),

@@ -41,3 +41,8 @@ class LoadedOneCatState extends CatProfileState{
   CatModel cat;
   LoadedOneCatState({required this.cat});
 }
+
+class GetCatProfileEditState extends CatProfileState{
+  CatModel cat;
+  GetCatProfileEditState({required this.cat});
+}

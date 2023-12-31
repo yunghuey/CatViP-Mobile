@@ -30,7 +30,6 @@ class CatProfileBloc extends Bloc<CatProfileEvent, CatProfileState>{
 
     on<ReloadOneCatEvent>((event, emit) async {
       emit(CatProfileLoadingState());
-      print("reloaded one cat event: ${event.catid}");
       CatModel? cat = await repo.getCat(event.catid);
       if (cat != null){
         print("bloc receive cat");
@@ -58,6 +57,16 @@ class CatProfileBloc extends Bloc<CatProfileEvent, CatProfileState>{
       if (isFound.length > 0){
         print("get cat by userid success");
         emit(CatProfileLoadedState(cats: isFound));
+      } else {
+        emit(CatProfileEmptyState());
+      }
+    });
+
+    on<EditCatProfileEvent>((event, emit) async {
+      emit(CatProfileLoadingState());
+      CatModel? cat = await repo.getCat(event.catid);
+      if (cat != null){
+        emit(GetCatProfileEditState(cat: cat));
       } else {
         emit(CatProfileEmptyState());
       }
