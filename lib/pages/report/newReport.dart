@@ -45,8 +45,18 @@ class _NewReportState extends State<NewReport> {
   double latitude = 0.0;
   List<XFile> selectedImages = [];
   List<String> base64Images = [];
+  bool canAddImage = true;
 
   Future<void> pickImages(ImageSource source, {int maxImages = 5}) async {
+    Navigator.pop(context);
+    if (selectedImages.length >= maxImages) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Maximum $maxImages images allowed.'),
+        ),
+      );
+      return;
+    }
     try {
       List<XFile>? images;
 
@@ -64,21 +74,9 @@ class _NewReportState extends State<NewReport> {
           if (base64String != null) {
             base64Images.add(base64String);
           }
-
-          setState(() {
-            if (selectedImages.length < maxImages) {
-              selectedImages = List.from(selectedImages)..addAll([image]);
-            } else {
-              // Display a snackbar or alert message when the limit is exceeded
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Maximum $maxImages images allowed.'),
-                ),
-              );
-            }
-          });
         }
-      } else {
+      }
+      else {
         // If the source is not the camera, use pickMultiImage
         images = await ImagePicker().pickMultiImage(
           imageQuality: 70,
@@ -113,6 +111,9 @@ class _NewReportState extends State<NewReport> {
         }
       }
 
+      if (selectedImages.length >= maxImages){
+        canAddImage = false;
+      }
       // Now base64Images list contains all base64-encoded strings of the selected images
     } catch (e) {
       print("Error picking images: $e");
@@ -160,6 +161,14 @@ class _NewReportState extends State<NewReport> {
     catBloc = BlocProvider.of<OwnCatsBloc>(context);
   }
 
+  late final formstatus = BlocBuilder<NewCaseBloc, NewCaseState>(
+      builder: (context, state){
+        if (state is NewCaseLoadingState){
+          return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+        }
+        return Container();
+      },
+  );
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -191,13 +200,6 @@ class _NewReportState extends State<NewReport> {
             bottomOpacity: 0.0,
             elevation: 0.0,
             automaticallyImplyLeading: true,
-            // leading: IconButton(
-            //   icon: Icon(Icons.arrow_back),
-            //   color: HexColor("#3c1e08"),
-            //   onPressed: () {
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) => OwnReport()));
-            //   },
-            // ),
           ),
           body: SingleChildScrollView(
             child: Center(
@@ -209,21 +211,14 @@ class _NewReportState extends State<NewReport> {
                     child: Column(
                       children: <Widget>[
                         insertImage(context),
-                        SizedBox(
-                          height: 8.0,
-                        ),
+                        SizedBox(height: 8.0,),
                         caption(),
-                        SizedBox(
-                          height: 8.0,
-                        ),
+                        SizedBox(height: 8.0,),
                         OwnCats(),
-                        SizedBox(
-                          height: 8.0,
-                        ),
+                        SizedBox(height: 8.0,),
                         getLocationTextField(),
-                        SizedBox(
-                          height: 8.0,
-                        ),
+                        SizedBox(height: 8.0,),
+                        formstatus,
                         reportButton(),
                       ],
                     ),
@@ -253,9 +248,7 @@ class _NewReportState extends State<NewReport> {
               fontSize: 20.0,
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -323,11 +316,9 @@ class _NewReportState extends State<NewReport> {
                   builder: ((builder) => bottomSheet(context)),
                 );
               },
-              child: Icon(
-                Icons.add,
-                color: Colors.brown,
-                size: 28.0,
-              ),
+              child: canAddImage == true
+                  ? const Icon(Icons.add,color: Colors.brown, size: 28.0,)
+                  : Container(),
             ),
           ),
         ],
@@ -377,21 +368,20 @@ class _NewReportState extends State<NewReport> {
                 right: 8.0,
                 child: GestureDetector(
                   onTap: () {
-                    // Remove the image at the given index
                     setState(() {
                       selectedImages.removeAt(index);
+                      if (selectedImages.length < 5){
+                        canAddImage = true;
+                      }
                     });
                   },
                   child: Container(
-                    padding: EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(4.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.red,
                     ),
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
+                    child: const Icon(Icons.delete,color: Colors.white,),
                   ),
                 ),
               ),
@@ -439,8 +429,6 @@ class _NewReportState extends State<NewReport> {
                   image: base64Images,
                   catId: selectedCatId ?? 0));
             }
-
-            //}
           },
           style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -549,7 +537,7 @@ class _NewReportState extends State<NewReport> {
               children: [
                 Row(
                   children: [
-                    Text(
+                    const Text(
                       'My cat:',
                       style: TextStyle(
                         fontSize: 16,

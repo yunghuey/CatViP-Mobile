@@ -31,26 +31,5 @@ class NewPostBloc extends Bloc<NewPostEvents, NewPostState>{
         emit(NewPostFailState(message: "Fail to create post"));
       }
     });
-
-    // // Get Post Types
-    // on<GetPostTypes>((event, emit) async {
-    //   try {
-    //     emit(GetPostTypeLoading());
-    //     final List<PostType> postTypes = await postTypeRepo.fetchPostTypes();
-    //     emit(GetPostTypeLoaded(postTypes: postTypes));
-    //
-    //     if (postTypes[0].error != null) {
-    //       emit(GetPostTypeError(
-    //           error: postTypes[0].error));
-    //     }
-    //   }catch (e){
-    //     emit(GetPostTypeError(
-    //         error: "Failed to fetch data in your device online"));
-    //   }
-    // });
-
-
-
-
   }
 }
