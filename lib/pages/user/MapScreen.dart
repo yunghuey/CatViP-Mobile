@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
@@ -42,12 +44,12 @@ class _MapScreenState extends State<MapScreen> {
                       SnackBar(
                           content: Text("Please pick a location",
                             style: TextStyle(
-                              color: HexColor("#FF6464"),
+                              // color: HexColor("#FF6464"),
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          backgroundColor: HexColor("#FFE382"),
+                          // backgroundColor: HexColor("#FFE382"),
                       )
                     );
                 return;
@@ -63,26 +65,129 @@ class _MapScreenState extends State<MapScreen> {
           GoogleMap(
             initialCameraPosition: initialCameraPosition,
             markers: markerList,
+            zoomControlsEnabled: false,
             mapType: MapType.normal,
             onMapCreated: (GoogleMapController controller){
               googleMapController = controller;
             },
+            onTap: (LatLng latLng) {
+              _updateMarkerPosition(latLng);
+            },
           ),
           Container(
-            margin: const EdgeInsets.only(left: 5),
-            child: ElevatedButton(
-              onPressed: _handlePressedButton,
-              child: Icon(Icons.search),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
-                padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10)), // Adjust the size of the button
+            margin: const EdgeInsets.all(13.0),
+            child: TextFormField(
+              readOnly: true,
+              onTap: _handlePressedButton,
+              decoration: InputDecoration(
+                suffixIcon: Icon(Icons.search),
+                suffixIconColor: HexColor("#3c1e08"),
+                fillColor: Colors.white,
+                hintText: "Type address here...",
+                filled: true,
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color:  HexColor("#3c1e08")),
+                )
               ),
-            ),
-          )
+            )
+
+          ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          Position position = await determinePosition();
+          googleMapController.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(position.latitude, position.longitude),
+                zoom: 14,
+              ),
+            ),
+          );
+          _updateMarkerPosition(LatLng(position.latitude, position.longitude));
+          setState(() {});
+        },
+        tooltip: "Current Location",
+        child: Icon(Icons.location_history,color: HexColor("#3c1e08")),
+        backgroundColor: HexColor("#ecd9c9"),
+      ),
+
     );
+  }
+
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
+  }
+
+  void _updateMarkerPosition(LatLng latLng) {
+    markerList.clear();
+    markerList.add(
+      Marker(
+        markerId: const MarkerId('currentLocation'),
+        position: latLng,
+      ),
+    );
+    _getAddressFromLatLng(latLng);
+    setState(() {});
+  }
+
+  Future<void> _getAddressFromLatLng(LatLng latLng) async {
+    List<Placemark> placeMark = await placemarkFromCoordinates(
+      latLng.latitude,
+      latLng.longitude,
+    );
+    Placemark place = placeMark.isNotEmpty ? placeMark.first : Placemark();
+
+    List<String> addressParts = [];
+    if (place.street != null && place.street!.isNotEmpty) {
+      addressParts.add(place.street!);
+    }
+    if (place.subLocality != null && place.subLocality!.isNotEmpty) {
+      addressParts.add(place.subLocality!);
+    }
+    if (place.locality != null && place.locality!.isNotEmpty) {
+      addressParts.add(place.locality!);
+    }
+    if (place.postalCode != null && place.postalCode!.isNotEmpty) {
+      addressParts.add(place.postalCode!);
+    }
+    if (place.administrativeArea != null && place.administrativeArea!.isNotEmpty) {
+      addressParts.add(place.administrativeArea!);
+    }
+    if (place.country != null && place.country!.isNotEmpty) {
+      addressParts.add(place.country!);
+    }
+
+    userAddress = addressParts.join(', ');
+    userLat = latLng.latitude;
+    userLng = latLng.longitude;
   }
 
   Future<void> _handlePressedButton() async {

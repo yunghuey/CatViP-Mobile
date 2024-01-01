@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:CatViP/pages/report/newReport.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +36,7 @@ class _MapCaseReportsState extends State<MapCaseReports> {
   double latitude = 0;
   double longitude = 0;
   late List<CaseReport> nearbyReports;
-
+  late Set<Circle> circle = {};
 
   @override
   void initState() {
@@ -53,6 +55,15 @@ class _MapCaseReportsState extends State<MapCaseReports> {
         zoom: 14,
       );
 
+      circle = Set.from([Circle(
+        circleId: CircleId("current_position"),
+        center: LatLng(position.latitude, position.longitude),
+        radius: 80,
+        fillColor: HexColor("#f6ba00").withOpacity(0.6),
+        strokeColor:HexColor("#3c1e08"),
+        strokeWidth: 3,
+      )]);
+
       googleMapController.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
@@ -63,7 +74,6 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       );
 
       _updateMarkerPosition(LatLng(position.latitude, position.longitude));
-
       setState(() {});
     } catch (e) {
       print('Error setting initial location: $e');
@@ -104,7 +114,6 @@ class _MapCaseReportsState extends State<MapCaseReports> {
                 return Marker(
                   markerId: MarkerId(report.id.toString()),
                   position: LatLng(report.latitude!, report.longitude!),
-                  // ... (Other marker properties)
                 );
               }).toSet();
 
@@ -127,6 +136,7 @@ class _MapCaseReportsState extends State<MapCaseReports> {
             onMapCreated: (GoogleMapController controller) {
               googleMapController = controller;
             },
+            circles: circle,
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -179,30 +189,24 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
   }
 
   void _updateMarkerPosition(LatLng latLng) {
     markers.clear();
-
-    // Add the current location marker with a blue icon
-    markers.add(
-      Marker(
-        markerId: const MarkerId('currentLocation'),
-        position: latLng,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-      ),
-    );
+    // markers.add(
+    //   Marker(
+    //     markerId: const MarkerId('currentLocation'),
+    //     position: latLng,
+    //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    //   ),
+    // );
 
     // Add other markers (nearbyReports markers)
     markers.addAll(nearbyReports.map((report) {
       return Marker(
         markerId: MarkerId(report.id.toString()),
         position: LatLng(report.latitude!, report.longitude!),
-        // ... (Other marker properties)
         onTap: () {
           _onMarkerTapped(report);
         }
@@ -211,8 +215,6 @@ class _MapCaseReportsState extends State<MapCaseReports> {
 
     setState(() {});
   }
-
-
 
   void _onMarkerTapped(CaseReport tappedReport) {
     Navigator.push(

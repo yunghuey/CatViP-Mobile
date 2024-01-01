@@ -124,41 +124,43 @@ class _ReportDetailState extends State<ReportDetail> {
   Widget descriptionText(){
     return Column(
       children: [
-        Row(
-          children: [
-            IconButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CaseReportCommentView(caseReportId: id!),
+        Container(
+          padding: EdgeInsets.only(right: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Description',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              icon: Icon(
-                Icons.comment_bank_outlined,
-                color: Colors.black,
-                size: 24.0,
+              IconButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CaseReportCommentView(caseReportId: id!),
+                  ),
+                ),
+                icon: Icon(
+                  Icons.comment_bank_outlined,
+                  color: Colors.black,
+                  size: 24.0,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        Row(
-          children: [
-            Text(
-              'Description:',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            description,
+            style: TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.bold,
             ),
-            SizedBox(width: 4.0,),
-            Text(
-              description,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );

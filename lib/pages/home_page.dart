@@ -187,7 +187,8 @@ class _HomePageState extends State<HomePage> {
               return Center(
                 child: CircularProgressIndicator(color: HexColor("#3c1e08")),
               );
-            } else if (state is GetPostLoaded) {
+            }
+            else if (state is GetPostLoaded) {
               postList = state.postList;
               return Theme(
                 data: Theme.of(context).copyWith(
