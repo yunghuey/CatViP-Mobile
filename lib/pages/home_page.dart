@@ -12,6 +12,7 @@ import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/pages/report/CaseIcon.dart';
 import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,12 +48,18 @@ class _HomePageState extends State<HomePage> {
   int _currentPage = 0;
   late List<Post> postList;
 
+  final ScrollController _scrollController =
+      ScrollController(initialScrollOffset: 0);
+  bool _isVisible = false;
+  double startOffset = 0;
+
   @override
   void initState() {
     chatBloc = BlocProvider.of<ChatBloc>(context);
     reportBloc = BlocProvider.of<ReportPostBloc>(context);
     caseCountBloc = BlocProvider.of<CaseReportCountBloc>(context);
     refreshPosts();
+    showToTopButton();
     super.initState();
   }
 
@@ -95,6 +102,36 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _floatingButton() {
+    if (_isVisible) {
+      return AnimatedBuilder(
+        animation: _scrollController,
+        builder: (context, child) {
+          return Visibility(
+            visible: _isVisible,
+            child: FloatingActionButton(
+              onPressed: () {
+                _scrollController.animateTo(
+                  0.0,
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                );
+
+                setState(() {
+                  _isVisible = false;
+                });
+              },
+              child: Icon(Icons.arrow_upward),
+              backgroundColor: Colors.brown,
+            ),
+          );
+        },
+      );
+    }
+
+    return MissingCaseIcon();
+  }
+
   Future<void> refreshPosts() async {
     chatBloc.add(UnreadInitEvent());
     caseCountBloc.add(CaseCountInitEvent());
@@ -106,8 +143,32 @@ class _HomePageState extends State<HomePage> {
     if (updatedState is GetPostLoaded) {
       setState(() {
         postList = updatedState.postList;
+        _isVisible = false;
       });
     }
+  }
+
+  void showToTopButton() {
+    _scrollController.addListener(() {
+      if (_scrollController.offset == _scrollController.initialScrollOffset &&
+          _isVisible) {
+        setState(() {
+          _isVisible = false;
+        });
+      } else if (_scrollController.position.userScrollDirection ==
+              ScrollDirection.reverse &&
+          _isVisible) {
+        setState(() {
+          _isVisible = false;
+        });
+      } else if (_scrollController.position.userScrollDirection ==
+              ScrollDirection.forward &&
+          !_isVisible) {
+        setState(() {
+          _isVisible = true;
+        });
+      }
+    });
   }
 
   Widget _buildListUser() {
@@ -138,6 +199,7 @@ class _HomePageState extends State<HomePage> {
                   child: Stack(
                     children: [
                       ListView.builder(
+                        controller: _scrollController,
                         itemCount: postList.length,
                         itemBuilder: (context, index) {
                           final Post post = postList[index];
@@ -153,41 +215,51 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     if (post.postImages != null &&
                                         post.postImages!.isNotEmpty)
-                                        GestureDetector(
-                                          onTap: (){
-                                            if (post.isCurrentUserPost == false) {
-                                              Navigator.push(context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SearchView(
-                                                          userid: post.userId!,)
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          child: Row(
+                                      GestureDetector(
+                                        onTap: () {
+                                          if (post.isCurrentUserPost == false) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SearchView(
+                                                        userid: post.userId!,
+                                                      )),
+                                            );
+                                          }
+                                        },
+                                        child: Row(
                                           children: [
                                             CircleAvatar(
                                               radius: 16,
-                                              backgroundColor: Colors.transparent,
-                                              backgroundImage: post.profileImage != ""
-                                                  ? Image.memory(base64Decode(post.profileImage!)).image
-                                                  : AssetImage('assets/profileimage.png'),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              backgroundImage: post
+                                                          .profileImage !=
+                                                      ""
+                                                  ? Image.memory(base64Decode(
+                                                          post.profileImage!))
+                                                      .image
+                                                  : AssetImage(
+                                                      'assets/profileimage.png'),
                                             ),
                                             Expanded(
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 8),
                                                 child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                      Text(post.username!,
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
+                                                    Text(
+                                                      post.username!,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -217,8 +289,8 @@ class _HomePageState extends State<HomePage> {
                                                 ? report(post)
                                                 : Container(),
                                           ],
-                                      ),
                                         ),
+                                      ),
                                     SizedBox(height: 4.0),
                                     Container(
                                       width: double.infinity,
@@ -350,7 +422,7 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.bottomRight,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: MissingCaseIcon(),
+                          child: _floatingButton(),
                         ),
                       ),
                     ],
@@ -392,7 +464,6 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 Navigator.of(context).pop();
               });
-
             }
           } else if (state is ReportPostFailState) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -443,7 +514,8 @@ class _HomePageState extends State<HomePage> {
                           await Future.delayed(Duration(milliseconds: 100));
                           Navigator.of(context).pop();
                         },
-                        child: Text("Report", style: TextStyle(color: HexColor("#3c1e08"))),
+                        child: Text("Report",
+                            style: TextStyle(color: HexColor("#3c1e08"))),
                       ),
                     ],
                   ),
@@ -526,7 +598,8 @@ class _HomePageState extends State<HomePage> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: _currentPage == index
-                                        ? HexColor("#3c1e08") // Highlight the current page indicator
+                                        ? HexColor(
+                                            "#3c1e08") // Highlight the current page indicator
                                         : Colors.grey,
                                   ),
                                 ),
