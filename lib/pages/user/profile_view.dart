@@ -108,17 +108,26 @@ class _ProfileViewState extends State<ProfileView> {
         elevation: 0.0,
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: Icon(Icons.menu, color: HexColor("#3c1e08"),),
-            onPressed: (){
-              showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context){
-                  return _menu();
-                },
-              ); // showModalbottomsheet
+          BlocBuilder<UserProfileBloc, UserProfileState>(
+            builder: (context, state){
+              if (state is UserProfileLoadedState) {
+                return IconButton(
+                  icon: Icon(Icons.menu, color: HexColor("#3c1e08"),),
+                  onPressed: (){
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context){
+                        return _menu();
+                      },
+                    ); // showModalbottomsheet
+                  },
+                );
+              } else {
+                return Container();
+              }
             },
-          )
+          ),
+
         ],
       ),
       body: MultiBlocListener(
@@ -588,12 +597,13 @@ class _ProfileViewState extends State<ProfileView> {
                                                   ),
                                                 ),
                                                 TextButton(
-                                                  onPressed: () async => {
-                                                    deleteBloc.add(DeleteButtonPressed(postId: post.id!)),
-                                                    await Future.delayed(Duration(milliseconds: 100)),
-                                                    Navigator.pop(context),
-                                                    postBloc.add(StartLoadOwnPost()),
-                                                  },
+                                                  onPressed: () async {
+                                                    deleteBloc.add(DeleteButtonPressed(postId: post.id!));
+                                                    await Future.delayed(Duration(milliseconds: 100));
+                                                    Navigator.pop(context);
+                                                    Navigator.pop(context);
+                                                    refreshPage();
+                                                    },
                                                   child:  Text('Yes',style: TextStyle(color: Colors.white)),
                                                   style: ButtonStyle(
                                                     backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),

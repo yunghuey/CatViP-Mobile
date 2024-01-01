@@ -31,6 +31,8 @@ class _EditPostState extends State<EditPost> {
   final _picker = ImagePicker();
   TextEditingController descController = TextEditingController();
   late EditPostBloc editPostBloc;
+  PageController _pageController = PageController();
+  int _currentPage = 0;
 
   Future<Uint8List?> _getImageBytes(File imageFile) async {
     try {
@@ -40,6 +42,11 @@ class _EditPostState extends State<EditPost> {
       print("Error reading image as bytes: $e");
       return null;
     }
+  }
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -109,7 +116,7 @@ class _EditPostState extends State<EditPost> {
               padding: const EdgeInsets.all(18.0),
               child: Column(
                 children: [
-                  postImage(),
+                  displayImage(widget.currentPost),
                   SizedBox(height: 4.0),
                   description(),
                 ],
@@ -121,44 +128,60 @@ class _EditPostState extends State<EditPost> {
     );
   }
 
-  Widget postImage() {
-    return Center(
-      child: Container(
-        width: 350, // Set your desired width for the square box
-        height: 350, // Set your desired height for the square box
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: HexColor("#3c1e08"),
-            width: 2.0,
-          ),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: FutureBuilder<Uint8List?>(
-            future: image != null ? _getImageBytes(image!) : null,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData) {
-                return Image.memory(
-                  snapshot.data!,
-                  width: 250,
-                  height: 250,
-                  fit: BoxFit.cover,
+  Widget displayImage(Post post) {
+
+    return Container(
+      height: post.postImages != null && post.postImages!.isNotEmpty
+          ? MediaQuery.of(context).size.width
+          : 0,
+      child: post.postImages != null && post.postImages!.isNotEmpty
+          ? Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: post.postImages!.length,
+              itemBuilder: (context, index) {
+                return AspectRatio(
+                  aspectRatio: 1.0,
+                  child: Image.memory(
+                    base64Decode(post.postImages![index].image!),
+                    fit: BoxFit.cover,
+                  ),
                 );
-              }
-              else {
-                return Center(
-                    child: Image(
-                      image: base64image != ""
-                          ? MemoryImage(base64Decode(base64image)) as ImageProvider<Object>
-                          : AssetImage('assets/catprofileimg.png'),
-                    )
-                );
-              }
-            },
+              },
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPage = page;
+                });
+              },
+            ),
           ),
-        ),
-      ),
+          post.postImages!.length > 1
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              post.postImages!.length,
+                  (index) => Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentPage == index
+                        ? HexColor(
+                        "#3c1e08") // Highlight the current page indicator
+                        : Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+          )
+              : Container(),
+        ],
+      )
+          : Container(), // Show an empty container if postImages is null or empty
     );
   }
 
