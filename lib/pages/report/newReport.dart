@@ -73,6 +73,9 @@ class _NewReportState extends State<NewReport> {
 
           if (base64String != null) {
             base64Images.add(base64String);
+            setState(() {
+              selectedImages.add(image);
+            });
           }
         }
       }
@@ -110,7 +113,6 @@ class _NewReportState extends State<NewReport> {
           });
         }
       }
-
       if (selectedImages.length >= maxImages){
         canAddImage = false;
       }
@@ -288,7 +290,6 @@ class _NewReportState extends State<NewReport> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              //pickImages(ImageSource.gallery);
               showModalBottomSheet(
                 context: context,
                 builder: ((builder) => bottomSheet(context)),
