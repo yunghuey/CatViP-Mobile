@@ -74,9 +74,21 @@ class _NewReportState extends State<NewReport> {
           if (base64String != null) {
             base64Images.add(base64String);
           }
+
+          setState(() {
+            if (selectedImages.length < maxImages) {
+              selectedImages = List.from(selectedImages)..addAll([image]);
+            } else {
+              // Display a snackbar or alert message when the limit is exceeded
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Maximum $maxImages images allowed.'),
+                ),
+              );
+            }
+          });
         }
-      }
-      else {
+      } else {
         // If the source is not the camera, use pickMultiImage
         images = await ImagePicker().pickMultiImage(
           imageQuality: 70,
@@ -111,9 +123,6 @@ class _NewReportState extends State<NewReport> {
         }
       }
 
-      if (selectedImages.length >= maxImages){
-        canAddImage = false;
-      }
       // Now base64Images list contains all base64-encoded strings of the selected images
     } catch (e) {
       print("Error picking images: $e");
@@ -288,7 +297,6 @@ class _NewReportState extends State<NewReport> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              //pickImages(ImageSource.gallery);
               showModalBottomSheet(
                 context: context,
                 builder: ((builder) => bottomSheet(context)),

@@ -50,15 +50,6 @@ class _NewPostState extends State<NewPost> {
   bool canAddImage = true;
 
   Future<void> pickImages(ImageSource source, {int maxImages = 5}) async {
-    Navigator.pop(context);
-    if (selectedImages.length >= maxImages) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Maximum $maxImages images allowed.'),
-        ),
-      );
-      return;
-    }
     try {
       List<XFile>? images;
 
@@ -76,9 +67,21 @@ class _NewPostState extends State<NewPost> {
           if (base64String != null) {
             base64Images.add(base64String);
           }
+
+          setState(() {
+            if (selectedImages.length < maxImages) {
+              selectedImages = List.from(selectedImages)..addAll([image]);
+            } else {
+              // Display a snackbar or alert message when the limit is exceeded
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Maximum $maxImages images allowed.'),
+                ),
+              );
+            }
+          });
         }
-      }
-      else {
+      } else {
         // If the source is not the camera, use pickMultiImage
         images = await ImagePicker().pickMultiImage(
           imageQuality: 70,
@@ -102,7 +105,6 @@ class _NewPostState extends State<NewPost> {
             if (selectedImages.length + newImages.length <= maxImages) {
               selectedImages = List.from(selectedImages)..addAll(newImages);
             } else {
-              // Display a snackbar or alert message when the limit is exceeded
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Maximum $maxImages images allowed.'),
@@ -113,9 +115,6 @@ class _NewPostState extends State<NewPost> {
         }
       }
 
-      if (selectedImages.length >= maxImages){
-        canAddImage = false;
-      }
       // Now base64Images list contains all base64-encoded strings of the selected images
     } catch (e) {
       print("Error picking images: $e");
@@ -227,7 +226,6 @@ class _NewPostState extends State<NewPost> {
                         SizedBox(
                           height: 8.0,
                         ),
-                        formstatus,
                         postButton(),
                       ],
                     ),
@@ -257,9 +255,7 @@ class _NewPostState extends State<NewPost> {
               fontSize: 20.0,
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -273,9 +269,7 @@ class _NewPostState extends State<NewPost> {
                   style: TextStyle(color: HexColor("#3c1e08")),
                 ),
               ),
-              SizedBox(
-                width: 20.0,
-              ),
+              SizedBox(width: 20.0,),
               TextButton.icon(
                 icon: Icon(Icons.image, color: HexColor("#3c1e08")),
                 onPressed: () {
@@ -413,7 +407,6 @@ class _NewPostState extends State<NewPost> {
         height: 55.0,
         child: ElevatedButton(
           onPressed: () async {
-            //if(_formKey.currentState!.validate()){
             if (base64Images != null) {
               if (captionController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -435,8 +428,6 @@ class _NewPostState extends State<NewPost> {
                 catIds: selectedCats,
               ));
             }
-
-            //}
           },
           style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(

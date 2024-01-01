@@ -522,7 +522,6 @@ class _EditCatViewState extends State<EditCatView> {
                               )
                           ),
                         ),
-
                       ),
                       TextButton(
                         onPressed: () => catBloc.add(DeleteCatPressed(catid: cat.id)),

@@ -179,8 +179,9 @@ class _HomePageState extends State<HomePage> {
         child: BlocBuilder<GetPostBloc, GetPostState>(
           builder: (context, state) {
             if (state is GetPostError) {
-              return Center(
-                child: Text(state.error!),
+              refreshPosts();
+              return const Center(
+                child: Text("Loading..."),
               );
             } else if (state is GetPostInitial || state is GetPostLoading) {
               return Center(
@@ -494,6 +495,9 @@ class _HomePageState extends State<HomePage> {
                         controller: reportController,
                         decoration: InputDecoration(
                           hintText: "Enter your report...",
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color:  HexColor("#3c1e08")),
+                          ),
                         ),
                       ),
                       SizedBox(height: 16),
@@ -514,8 +518,7 @@ class _HomePageState extends State<HomePage> {
                           await Future.delayed(Duration(milliseconds: 100));
                           Navigator.of(context).pop();
                         },
-                        child: Text("Report",
-                            style: TextStyle(color: HexColor("#3c1e08"))),
+                        child: Text("Report", style: TextStyle(color: HexColor("#3c1e08"))),
                       ),
                     ],
                   ),
