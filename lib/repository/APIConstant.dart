@@ -1,6 +1,6 @@
 class APIConstant {
   // yunghuey
-  static const String ipaddress = "http://10.131.78.121:7015/";
+  static const String ipaddress = "http://10.131.77.249:7015/";
   // wafir
   // static const String ipaddress = "http://10.131.151.180:45455/";
   static const String URL = "${ipaddress}api/";
