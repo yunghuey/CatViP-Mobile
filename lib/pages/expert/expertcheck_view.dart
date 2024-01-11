@@ -32,15 +32,16 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
     // TODO: implement initState
     expBloc = BlocProvider.of<ExpertBloc>(context);
     refreshPage();
+    // formstatus = widget.formstatus;
+    // if (formstatus == 2) {
+    //   btnText = "Reapply";
+    // }
     super.initState();
   }
 
   Future<void> refreshPage() async {
     expBloc.add(LoadExpertApplicationEvent());
-    formstatus = widget.formstatus;
-    if (formstatus == 2) {
-      btnText = "Reapply";
-    }
+
   }
 
   @override
@@ -79,6 +80,13 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
                       ));
                     } else if (state is LoadedFormState) {
                       formList = state.form;
+                      if (formList.status == "Rejected") {
+                        btnText = "Reapply";
+                      } else if (formList.status == "Pending"){
+                        btnText = "Revoke Application";
+                      } else if (formList.status == "Success"){
+                        btnText = "Your are an expert!";
+                      }
                       return RefreshIndicator(
                         onRefresh: refreshPage,
                         color: HexColor("#3c1e08"),
@@ -105,7 +113,6 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
           itemCount: 1,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            final form = formList;
             return Container(
               margin: const EdgeInsets.all(15),
               padding: const EdgeInsets.only(bottom: 10.0),
@@ -113,11 +120,11 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Status : ${form.status}",
+                    Text("Status : ${formList.status}",
                         style: TextStyle(fontSize: 16)),
                     SizedBox(height: 16,),
                     Text(
-                      "Application Date: ${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(form.applyDateTime))}",
+                      "Application Date: ${DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(formList.applyDateTime))}",
                       style: TextStyle(fontSize: 16),
                     ),
                     Row(
@@ -125,7 +132,7 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
                         Text("Document: ", style: TextStyle(fontSize: 16)),
                         TextButton(
                             onPressed: () {
-                              createPdf(form.document);
+                              createPdf(formList.document);
                             },
                             child: Text("View document",
                                 style: TextStyle(
@@ -135,31 +142,32 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
                                     fontSize: 16)))
                       ],
                     ),
-                    Text("Description: ${form.description}", style: TextStyle(fontSize: 16)),
-                    if (form.status == "Rejected") ... [
+                    Text("Description: ${formList.description}", style: TextStyle(fontSize: 16)),
+                    if (formList.status == "Rejected") ... [
                       SizedBox(height: 16,),
-                      Text("Rejected reason: ${form.rejectedReason}", style: TextStyle(fontSize: 16))
+                      Text("Rejected reason: ${formList.rejectedReason}", style: TextStyle(fontSize: 16))
                     ],
                     SizedBox(height: 16,),
                     Row(
                       children: [
                         Expanded(
                             child: TextButton(
-                          onPressed: () {
-                            int formId = form.id;
+                            onPressed: () {
+                            int formId = formList.id;
                             if (btnText == "Reapply") {
                               reapplyApplication();
-                            } else {
+                            } else if (btnText == "Revoke Application"){
                               removeApplication(formId);
                             }
                           },
-                          child: Text(btnText,
-                              style: TextStyle(color: HexColor("#3c1e08"))),
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<HexColor>(
-                              HexColor("#ecd9c9"),
+                            child: Text(btnText,
+                                style: TextStyle(color: HexColor("#3c1e08"))
                             ),
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all<HexColor>(
+                                HexColor("#ecd9c9"),
+                              ),
                             side: MaterialStateProperty.all(
                               BorderSide(
                                 width: 2.0,
@@ -179,29 +187,53 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
   }
 
   void reapplyApplication() {
+
     showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
         title: const Text('Reapply application'),
         content: const Text('Are you sure to reapply?'),
         actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'Cancel'),
-            child: const Text('Cancel'),
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: Text('Cancel',style: TextStyle(color: HexColor('#3c1e08'))),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith<HexColor>(
+                    (Set<MaterialState> states){
+                  if(states.contains(MaterialState.pressed))
+                    return HexColor("#ecd9c9");
+                  return HexColor("#F2EFEA");
+                }
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                )
+            ),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ExpertFormView())
-              ).then((result){
-                expBloc.add(LoadExpertApplicationEvent());
-
-              });
-            },
-            child: const Text('Yes'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ExpertFormView())
+            ).then((result){
+              expBloc.add(LoadExpertApplicationEvent());
+            });
+          },
+          child:  Text('Yes',style: TextStyle(color: Colors.white)),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+            padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                )
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
+    ),
     );
   }
 

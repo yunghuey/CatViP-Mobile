@@ -61,7 +61,6 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     logoutbloc = BlocProvider.of<LogoutBloc>(context);
-    logoutbloc.add(LogoutResetEvent());
     userBloc = BlocProvider.of<UserProfileBloc>(context);
     catBloc = BlocProvider.of<CatProfileBloc>(context);
     postBloc = BlocProvider.of<GetPostBloc>(context);
@@ -72,6 +71,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Future<void> refreshPage() async {
+    logoutbloc.add(LogoutResetEvent());
     userBloc.add(StartLoadProfile());
     catBloc.add(StartLoadCat());
     postBloc.add(StartLoadOwnPost());

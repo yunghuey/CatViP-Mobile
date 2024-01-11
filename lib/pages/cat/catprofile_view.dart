@@ -74,18 +74,28 @@ class _CatProfileViewState extends State<CatProfileView> {
         bottomOpacity: 0.0,
         elevation: 0.0,
         actions: widget.fromOwner == true ? [
-          IconButton(
-            icon: Icon(Icons.edit, color: HexColor("#3c1e08"),),
-            onPressed: (){
-              Navigator.push(
-                context, MaterialPageRoute(builder: (context)=>EditCatView(currentCat: widget.currentcat))
-              ).then((value) {
-                if (value != null) {
-                  catBloc.add(ReloadOneCatEvent(catid: value));
+          BlocBuilder<CatProfileBloc, CatProfileState>(
+              builder: (context, state) {
+                if (state is LoadedOneCatState) {
+                  return IconButton(
+                    icon: Icon(Icons.edit, color: HexColor("#3c1e08"),),
+                    onPressed: () {
+                      Navigator.push(
+                          context, MaterialPageRoute(builder: (context) =>
+                          EditCatView(currentCat: widget.currentcat))
+                      ).then((value) {
+                        if (value != null) {
+                          catBloc.add(ReloadOneCatEvent(catid: value));
+                        }
+                      });
+                    },
+                  );
                 }
-              });
-            },
-          )
+                else {
+                  return Container();
+                }
+              }
+          ),
         ] : [],
       ),
       body:
