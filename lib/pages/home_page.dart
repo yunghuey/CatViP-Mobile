@@ -215,8 +215,8 @@ class _HomePageState extends State<HomePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (post.postImages != null &&
-                                        post.postImages!.isNotEmpty)
+                                    // if (post.postImages != null &&
+                                    //     post.postImages!.isNotEmpty)
                                       GestureDetector(
                                         onTap: () {
                                           if (post.isCurrentUserPost == false) {
