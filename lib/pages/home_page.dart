@@ -215,53 +215,53 @@ class _HomePageState extends State<HomePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (post.postImages != null &&
-                                        post.postImages!.isNotEmpty)
-                                      GestureDetector(
-                                        onTap: () {
-                                          if (post.isCurrentUserPost == false) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SearchView(
-                                                        userid: post.userId!,
-                                                      )),
-                                            );
-                                          }
-                                        },
-                                        child: Row(
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 16,
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              backgroundImage: post
-                                                          .profileImage !=
-                                                      ""
-                                                  ? Image.memory(base64Decode(
-                                                          post.profileImage!))
-                                                      .image
-                                                  : AssetImage(
-                                                      'assets/profileimage.png'),
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8),
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
+                                    // if (post.postImages != null &&
+                                    //     post.postImages!.isNotEmpty)
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 16,
+                                            backgroundColor: Colors.transparent,
+                                            backgroundImage: post
+                                                        .profileImage !=
+                                                    ""
+                                                ? Image.memory(base64Decode(
+                                                        post.profileImage!))
+                                                    .image
+                                                : AssetImage(
+                                                    'assets/profileimage.png'),
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      // if (post.username == )
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    SearchView(
+                                                                      userid: post
+                                                                          .userId!,
+                                                                    )),
+                                                      );
+                                                    },
+                                                    child: Text(
                                                       post.username!,
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
                                                     ),
+                                                  ),
                                                   ],
                                                 ),
                                               ),
@@ -292,7 +292,6 @@ class _HomePageState extends State<HomePage> {
                                                 : Container(),
                                           ],
                                         ),
-                                      ),
                                     SizedBox(height: 4.0),
                                     Container(
                                       width: double.infinity,
