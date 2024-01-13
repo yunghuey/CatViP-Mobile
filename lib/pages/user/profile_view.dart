@@ -136,10 +136,6 @@ class _ProfileViewState extends State<ProfileView> {
           BlocListener<LogoutBloc, LogoutState>(
             listener: (context, state){
               if (state is LogoutSuccessState){
-                Navigator.pushAndRemoveUntil(
-                    context, MaterialPageRoute(
-                    builder: (context) => LoginView()), (Route<dynamic> route) => false
-                );
                 logoutbloc.add(LogoutResetEvent());
               }
             },
@@ -319,6 +315,10 @@ class _ProfileViewState extends State<ProfileView> {
             title: Text("Logout"),
             onTap: (){
               logoutbloc.add(LogoutButtonPressed());
+              Navigator.pushAndRemoveUntil(
+                  context, MaterialPageRoute(
+                  builder: (context) => LoginView()), (Route<dynamic> route) => false
+              );
             },
           )
         ],

@@ -39,7 +39,7 @@ class _SearchViewState extends State<SearchView> {
   String btntext = "Follow";
   late int userid;
   late List<CatModel> cats;
-  late List<Post> listPost;
+  late List<Post> postList;
   late UserModel user;
   late SearchUserBloc searchBloc;
   late SearchPostBloc postBloc;
@@ -170,7 +170,7 @@ class _SearchViewState extends State<SearchView> {
                                 ),
                               );
                             } else if (state is SearchGetPostSuccessState) {
-                              listPost = state.posts.reversed.toList();
+                              postList = state.posts.reversed.toList();
                               return _getAllPosts();
                             } else {
                               return Center(
@@ -497,9 +497,9 @@ class _SearchViewState extends State<SearchView> {
         shrinkWrap: true, // Added shrinkWrap
         physics:
         const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
-        itemCount: listPost.length,
+        itemCount: postList.length,
         itemBuilder: (context, index) {
-          final Post post = listPost[index];
+          final Post post = postList[index];
           return Card(
             color: HexColor("#ecd9c9"),
             child: Padding(
@@ -507,8 +507,6 @@ class _SearchViewState extends State<SearchView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (post.postImages != null &&
-                      post.postImages!.isNotEmpty)
                     Row(
                       children: [
                         CircleAvatar(
