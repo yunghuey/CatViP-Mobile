@@ -5,6 +5,7 @@ import 'package:CatViP/bloc/cat/new_cat/createcat_bloc.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_event.dart';
 import 'package:CatViP/bloc/cat/new_cat/createcat_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -79,16 +80,13 @@ class _CreateCatViewState extends State<CreateCatView> {
         // ignore: curly_braces_in_flow_control_structures
         listener: (context, state) {
           if (state is CreateCatSuccessState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Cat is created successfully'))
-            ); //   navigate to View All Cat
+            final snackBar = SnackBarDesign.customSnackBar('Cat is created successfully');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
             Navigator.pop(context, true);
-            //   set texteditingcontroller to empty
           }
           else if (state is CreateCatFailState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message))
-            );
+            final snackBar = SnackBarDesign.customSnackBar(state.message);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         } ,
         child: Padding(

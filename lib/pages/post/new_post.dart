@@ -6,6 +6,7 @@ import 'package:CatViP/bloc/post/OwnCats/ownCats_event.dart';
 import 'package:CatViP/bloc/post/OwnCats/ownCats_state.dart';
 import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
 import 'package:CatViP/pages/RoutePage.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -73,11 +74,8 @@ class _NewPostState extends State<NewPost> {
               selectedImages = List.from(selectedImages)..addAll([image]);
             } else {
               // Display a snackbar or alert message when the limit is exceeded
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Maximum $maxImages images allowed.'),
-                ),
-              );
+              final snackBar = SnackBarDesign.customSnackBar('Maximum $maxImages images allowed.');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           });
         }
@@ -105,11 +103,8 @@ class _NewPostState extends State<NewPost> {
             if (selectedImages.length + newImages.length <= maxImages) {
               selectedImages = List.from(selectedImages)..addAll(newImages);
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Maximum $maxImages images allowed.'),
-                ),
-              );
+              final snackBar = SnackBarDesign.customSnackBar('Maximum $maxImages images allowed.');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           });
         }
@@ -198,9 +193,8 @@ class _NewPostState extends State<NewPost> {
               listener: (context, state) {
                 if (state is NewPostSuccessState) {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RoutePage()));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Successfully Post'))
-                  );
+                  final snackBar = SnackBarDesign.customSnackBar('Successfully Post');
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
             ),
@@ -409,8 +403,8 @@ class _NewPostState extends State<NewPost> {
           onPressed: () async {
             if (base64Images != null) {
               if (captionController.text.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Caption must be filled up')));
+                final snackBar = SnackBarDesign.customSnackBar('Caption must be filled up');
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
 
               createBloc.add(PostButtonPressed(
@@ -563,11 +557,8 @@ class _NewPostState extends State<NewPost> {
                             .add(value!); // Add the selected cat to the list
                       } else {
                         // Display an error message or take appropriate action
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Cat is already selected.'),
-                          ),
-                        );
+                        final snackBar = SnackBarDesign.customSnackBar('Cat is already selected.');
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
                     });
                   },

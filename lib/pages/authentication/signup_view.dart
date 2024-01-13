@@ -1,6 +1,5 @@
 import 'package:CatViP/pages/RoutePage.dart';
-import 'package:CatViP/pages/authentication/login_view.dart';
-import 'package:CatViP/pages/home_page.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/user/MapScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:CatViP/bloc/authentication/register/register_event.dart';
 import 'package:CatViP/bloc/authentication/register/register_state.dart';
 import 'package:CatViP/bloc/authentication/register/register_bloc.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 
 
@@ -83,20 +81,17 @@ class _SignUpViewState extends State<SignUpView> {
           if (state is RegisterSuccessState) {
             Navigator.pushAndRemoveUntil(
               context, MaterialPageRoute(
-              builder: (context) => RoutePage()), (Route<dynamic> route) => false
+              builder: (context) => const RoutePage()), (Route<dynamic> route) => false
             );
           } else if (state is UsernameFailState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Username has been taken'))
-            );
+            final snackBar = SnackBarDesign.customSnackBar('Username has been taken');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else if (state is EmailFailState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Email has been taken'))
-            );
+            final snackBar = SnackBarDesign.customSnackBar('Email has been taken');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else if (state is RegisterFailState){
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Network error. Please try again'))
-            );
+            final snackBar = SnackBarDesign.customSnackBar('Network error. Please try again');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
         child: Padding(
@@ -108,18 +103,18 @@ class _SignUpViewState extends State<SignUpView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _signUpText(),
-                  SizedBox(height: 12.0,),
+                  const SizedBox(height: 12.0,),
                   _usernameField(),
                   _emailField(),
                   _fullnameField(),
                   _dobField(),
-                  SizedBox(height: 10.0,),
+                  const SizedBox(height: 10.0,),
                   _genderField(),
                   _addressField(),
                   _passwordField(),
                   _confirmpasswordField(),
                   _matchPassword(),
-                  SizedBox(height: 10.0,),
+                  const SizedBox(height: 10.0,),
                   msg,
                   _signupButton(),
                 ],
@@ -132,7 +127,7 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Widget _signUpText(){
-    return Text("Create your account", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),);
+    return const Text("Create your account", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),);
   }
 
   Widget _usernameField(){
@@ -365,12 +360,12 @@ class _SignUpViewState extends State<SignUpView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Gender", style: TextStyle(fontSize: 16,),),
+            const Text("Gender", style: TextStyle(fontSize: 16,),),
             Row(
               children: [
                 Expanded(
                   child: RadioListTile(
-                    title: Text('Male', style: TextStyle(fontSize: 14),),
+                    title: const Text('Male', style: TextStyle(fontSize: 14),),
                     value: 0,
                     activeColor: HexColor('#3c1e08'),
                     groupValue: _gender,
@@ -383,7 +378,7 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
                 Expanded(
                   child: RadioListTile(
-                    title: Text('Female', style: TextStyle(fontSize: 14),),
+                    title: const Text('Female', style: TextStyle(fontSize: 14),),
                     value: 1,
                     activeColor: HexColor('#3c1e08'),
                     groupValue: _gender,
@@ -419,16 +414,16 @@ class _SignUpViewState extends State<SignUpView> {
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color:  HexColor("#3c1e08")),
           ),
+          suffixIconColor: HexColor("#3c1e08"),
           suffixIcon: IconButton(
-            icon: Icon(Icons.add_location),
+            icon: const Icon(Icons.add_location),
             onPressed: (){
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MapScreen())
+                  context, MaterialPageRoute(builder: (context) => const MapScreen())
               ).then((value) => {
                 lat = value['lat'],
                 long = value['lng'],
                 addressController.text = value['address']
-
               });
             },
           ),

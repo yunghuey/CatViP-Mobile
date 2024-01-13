@@ -1,3 +1,4 @@
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/report/newReport.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -82,16 +83,8 @@ class _CurrentLocationState extends State<CurrentLocation> {
           IconButton(
             onPressed: (){
               if (address!.isEmpty == true){
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Please pick a location",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    )
-                );
+                final snackBar = SnackBarDesign.customSnackBar('Please pick a location');
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 return;
               }
               Navigator.pop(
@@ -211,7 +204,8 @@ class _CurrentLocationState extends State<CurrentLocation> {
   }
 
   void onError(webplace.PlacesAutocompleteResponse response){
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.errorMessage!)));
+    final snackBar = SnackBarDesign.customSnackBar(response.errorMessage!);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<Position> determinePosition() async {

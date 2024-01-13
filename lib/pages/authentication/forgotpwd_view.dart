@@ -1,6 +1,7 @@
 import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_bloc.dart';
 import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_event.dart';
 import 'package:CatViP/bloc/authentication/forgot_password/forgotpwd_state.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,12 +50,8 @@ class _ForgotPwdState extends State<ForgotPwd> {
       BlocListener<ForgotPwdBloc, ForgotPwdState>(
         listener: (content, state){
            if (state is SentEmailFail){
-          // show snackbar
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Email is invalid. Please try again'),
-              ),
-            );
+             final snackBar = SnackBarDesign.customSnackBar('Email is invalid. Please try again');
+             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
         child:  Padding(

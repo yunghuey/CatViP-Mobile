@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:CatViP/bloc/post/DeletePost/deletePost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_bloc.dart';
 import 'package:CatViP/bloc/post/GetPost/getPost_event.dart';
-import 'package:CatViP/bloc/post/GetPost/getPost_state.dart';
 import 'package:CatViP/bloc/search/cat/searchcat_bloc.dart';
 import 'package:CatViP/bloc/search/cat/searchcat_event.dart';
 import 'package:CatViP/bloc/search/cat/searchcat_state.dart';
@@ -19,6 +18,7 @@ import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/model/chat/ChatListModel.dart';
 import 'package:CatViP/model/post/post.dart';
 import 'package:CatViP/model/user/user_model.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/chat/singlechat_view.dart';
 import 'package:CatViP/pages/post/comment.dart';
@@ -103,9 +103,8 @@ class _SearchViewState extends State<SearchView> {
             } else if (state is UpdateUnfollowingState) {
               user.isFollowed = false;
             } else if (state is RelationFailState) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              final snackBar = SnackBarDesign.customSnackBar(state.message);
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
           child: BlocBuilder<SearchUserBloc, SearchUserState>(

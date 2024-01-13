@@ -43,7 +43,7 @@ class _OwnReportState extends State<OwnReport> {
           caseReport: caseReport
         ),
       ),
-    ).then((result) {
+    ).then((value) {
       refreshPage();
     });
   }

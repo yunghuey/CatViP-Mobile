@@ -1,7 +1,6 @@
 import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_event.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
-import 'package:CatViP/model/expert/expert_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';

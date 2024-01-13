@@ -3,6 +3,7 @@ import 'package:CatViP/bloc/chat/chat_bloc.dart';
 import 'package:CatViP/bloc/chat/chat_event.dart';
 import 'package:CatViP/bloc/report%20case/ReportCaseCount/CaseReportCountEvent.dart';
 import 'package:CatViP/bloc/report%20case/ReportCaseCount/CaseReportCountBloc.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/chat/chatlist_view.dart';
 import 'package:CatViP/pages/chat/messenger_icon.dart';
 import 'package:CatViP/pages/post/comment.dart';
@@ -453,12 +454,8 @@ class _HomePageState extends State<HomePage> {
       child: BlocListener<ReportPostBloc, ReportPostState>(
         listener: (context, state) async {
           if (state is ReportPostSuccessState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Report submitted successfully!"),
-                duration: Duration(seconds: 2),
-              ),
-            );
+            final snackBar = SnackBarDesign.customSnackBar('Report submitted successfully!');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
             // Schedule the pop operation in the next frame
             await Future.delayed(Duration.zero);
             // Check if the context is still valid before popping
@@ -468,12 +465,8 @@ class _HomePageState extends State<HomePage> {
               });
             }
           } else if (state is ReportPostFailState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                duration: Duration(seconds: 2),
-              ),
-            );
+            final snackBar = SnackBarDesign.customSnackBar(state.message);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
             // Schedule the pop operation in the next frame
             await Future.delayed(Duration.zero);
             // Check if the context is still valid before popping

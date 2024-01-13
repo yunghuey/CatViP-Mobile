@@ -7,6 +7,7 @@ import 'package:CatViP/bloc/post/OwnCats/ownCats_state.dart';
 import 'package:CatViP/bloc/post/new_post/new_post_bloc.dart';
 import 'package:CatViP/bloc/report%20case/new%20report%20case/newCase_bloc.dart';
 import 'package:CatViP/bloc/report%20case/new%20report%20case/newCase_event.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/report/current_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,11 +51,8 @@ class _NewReportState extends State<NewReport> {
   Future<void> pickImages(ImageSource source, {int maxImages = 5}) async {
     Navigator.pop(context);
     if (selectedImages.length >= maxImages) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Maximum $maxImages images allowed.'),
-        ),
-      );
+      final snackBar = SnackBarDesign.customSnackBar('Maximum $maxImages images allowed.');
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
     try {
@@ -80,11 +78,8 @@ class _NewReportState extends State<NewReport> {
               selectedImages = List.from(selectedImages)..addAll([image]);
             } else {
               // Display a snackbar or alert message when the limit is exceeded
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Maximum $maxImages images allowed.'),
-                ),
-              );
+              final snackBar = SnackBarDesign.customSnackBar('Maximum $maxImages images allowed.');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           });
         }
@@ -113,11 +108,8 @@ class _NewReportState extends State<NewReport> {
               selectedImages = List.from(selectedImages)..addAll(newImages);
             } else {
               // Display a snackbar or alert message when the limit is exceeded
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Maximum $maxImages images allowed.'),
-                ),
-              );
+              final snackBar = SnackBarDesign.customSnackBar('Maximum $maxImages images allowed.');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           });
         }
@@ -185,15 +177,13 @@ class _NewReportState extends State<NewReport> {
         BlocListener<NewCaseBloc, NewCaseState>(
           listener: (context, state) {
             if (state is NewCaseSuccessState) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Successfully Report')),
-              );
+              final snackBar = SnackBarDesign.customSnackBar('Successfully Report');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
               Navigator.pop(context, true);
             } else if (state is NewCaseFailState) {
               getMessage().then((message) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(message)),
-                );
+                final snackBar = SnackBarDesign.customSnackBar(message);
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               });
             }
           },
@@ -413,11 +403,8 @@ class _NewReportState extends State<NewReport> {
             if (base64Images != null) {
               if (captionController.text.isEmpty ||
                   addressController.text.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Description and address must be filled up'),
-                  ),
-                );
+                final snackBar = SnackBarDesign.customSnackBar('Description and address must be filled up');
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 return;
               }
               caseBloc.add(CaseReportButtonPressed(
@@ -531,11 +518,8 @@ class _NewReportState extends State<NewReport> {
             // You can perform side-effects here if needed
           } else if (state is GetOwnCatsError) {
             // You can perform side-effects here if needed
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Error: ${state.error}'),
-              ),
-            );
+            final snackBar = SnackBarDesign.customSnackBar('Error: ${state.error}');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else if (state is GetOwnCatsLoaded) {
             // Use the fetched data to populate the drop-down menu
             cats = state.cats;
@@ -565,11 +549,8 @@ class _NewReportState extends State<NewReport> {
 
                           if (selectedCatId == null) {
                             Future.delayed(Duration.zero, () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('No cats available'),
-                                ),
-                              );
+                              final snackBar = SnackBarDesign.customSnackBar('No cats available');
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             });
                           }
                         });

@@ -17,6 +17,7 @@ import 'package:CatViP/bloc/user/userprofile_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
 import 'package:CatViP/model/post/post.dart';
 import 'package:CatViP/model/user/user_model.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/authentication/login_view.dart';
 import 'package:CatViP/pages/cat/catprofile_view.dart';
 import 'package:CatViP/pages/cat/createcat_view.dart';
@@ -146,9 +147,8 @@ class _ProfileViewState extends State<ProfileView> {
           BlocListener<UserProfileBloc, UserProfileState>(
               listener: (context, state){
                 if (state is UserProfileErrorState){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.message))
-                  );
+                  final snackBar = SnackBarDesign.customSnackBar(state.message);
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               }
           )

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:CatViP/bloc/report%20case/EditCaseReport/editCaseReport_bloc.dart';
 import 'package:CatViP/model/caseReport/caseReport.dart';
 import 'package:CatViP/model/caseReport/caseReportImages.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/report/CaseReportComment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -182,8 +183,8 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
               completeCaseBloc.add(CompleteButtonPressed(postId: id));
               await Future.delayed(const Duration(milliseconds: 500));
               Navigator.pop(context);
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Report completed')));
+              final snackBar = SnackBarDesign.customSnackBar('Report completed');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             },
             style: TextButton.styleFrom(
               backgroundColor: HexColor("#3c1e08"),
@@ -242,8 +243,8 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
                         await Future.delayed(const Duration(milliseconds: 500));
                         Navigator.pop(context);
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Report revoked')));
+                        final snackBar = SnackBarDesign.customSnackBar('Report revoked');
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       },
                     ),
                   ],

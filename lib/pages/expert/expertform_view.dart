@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_event.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/user/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,27 +70,24 @@ class _ExpertFormViewState extends State<ExpertFormView> {
       BlocListener<ExpertBloc,ExpertState>(
         listener: (context, state){
           if (state is AppliedSuccessState){
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content:
-              Text("Your application has been submitted."
-                  " It needs a two working days to process."))
-            );
+            final snackBar = SnackBarDesign.customSnackBar('Your application has been submitted.'
+            ' It needs a two working days to process.');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
             Navigator.pop(context); // Pop back the first time
             Navigator.pop(context);
           } else if (state is AppliedFailState){
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message))
-            );
+            final snackBar = SnackBarDesign.customSnackBar(state.message);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
         child: Container(
-          margin: EdgeInsets.all(10.0),
+          margin: const EdgeInsets.all(10.0),
           padding: const EdgeInsets.all(5.0),
           child: Form(
               child: Column(
                 children: [
                   _descTextField(),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _docField(),
                   msg,
                   loading,
@@ -134,7 +132,7 @@ class _ExpertFormViewState extends State<ExpertFormView> {
   Widget _docField() {
     return Column(
       children: [
-        Text("Upload your relevant document. Format must be in pdf"),
+        const Text("Upload your relevant document. Format must be in pdf"),
         TextButton(
           child: Text("Choose file", style: TextStyle(color: HexColor("#3c1e08"), decoration: TextDecoration.underline),),
           onPressed: () {
@@ -162,12 +160,12 @@ class _ExpertFormViewState extends State<ExpertFormView> {
                 expBloc.add(ApplyButtonPressed(desc: descController.text, document: _pdfContent));
               } else {
                 setState(() {
-                  msg = Container(child: Text("Please upload your document", style: TextStyle(color: Colors.red),));
+                  msg = Container(child: const Text("Please upload your document", style: TextStyle(color: Colors.red),));
                 });
               }
             } else{
               setState(() {
-                msg = Container(child: Text("Fill up your description", style: TextStyle(color: Colors.red),));
+                msg = Container(child: const Text("Fill up your description", style: TextStyle(color: Colors.red),));
               });
             }
           },

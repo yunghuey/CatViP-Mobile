@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:CatViP/bloc/expert/expert_bloc.dart';
 import 'package:CatViP/bloc/expert/expert_event.dart';
 import 'package:CatViP/bloc/expert/expert_state.dart';
 import 'package:CatViP/model/expert/expert_model.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/expert/expertform_view.dart';
 import 'package:CatViP/pages/user/profile_view.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +61,13 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
             if (state is RevokeFailState) {
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => ProfileView()));
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text("Revoke failed. Please try again later")));
+              final snackBar = SnackBarDesign.customSnackBar('Revoke failed. Please try again later');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             } else if (state is RevokeSuccessState) {
               Navigator.pop(context);
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Application has been removed")));
+              final snackBar = SnackBarDesign.customSnackBar('Application has been removed');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
           child:
@@ -291,9 +291,9 @@ class _ExpertCheckViewState extends State<ExpertCheckView> {
       debugPrint("${output.path}/expert.pdf");
       await OpenFilex.open("${output.path}/expert.pdf");
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "Your file is corrupted and unable to read. Please revoke the application and apply again.")));
+      final snackBar = SnackBarDesign.customSnackBar('Your file is corrupted '
+          'and unable to read. Please revoke the application and apply again.');
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 }

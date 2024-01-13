@@ -5,7 +5,7 @@ import 'package:CatViP/bloc/cat/catprofile_bloc.dart';
 import 'package:CatViP/bloc/cat/catprofile_event.dart';
 import 'package:CatViP/bloc/cat/catprofile_state.dart';
 import 'package:CatViP/model/cat/cat_model.dart';
-import 'package:CatViP/pages/user/profile_view.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -77,22 +77,19 @@ class _EditCatViewState extends State<EditCatView> {
           if (state is CatUpdateSuccessState){
             print(Navigator.of(context).toString());
             Navigator.pop(context, cat.id);
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Cat profile has been updated'))
-            );
+            final snackBar = SnackBarDesign.customSnackBar('Cat profile has been updated');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
           else if (state is CatUpdateErrorState){
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message),)
-            );
+            final snackBar = SnackBarDesign.customSnackBar(state.message);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
           else if (state is CatDeleteSuccessState){
             Navigator.pop(context);
             Navigator.pop(context);
             Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message),)
-            );
+            final snackBar = SnackBarDesign.customSnackBar(state.message);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
         child:

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:CatViP/bloc/user/userprofile_bloc.dart';
 import 'package:CatViP/model/user/user_model.dart';
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/user/MapScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -79,9 +80,8 @@ class EditProfileViewState extends State<EditProfileView> {
         listener: (context, state){
           if (state is UserProfileUpdated){
             Navigator.pop(context, true);
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('User profile has been updated'))
-            );
+            final snackBar = SnackBarDesign.customSnackBar('User profile has been updated');
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
         child:BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -394,9 +394,8 @@ class EditProfileViewState extends State<EditProfileView> {
               userBloc.add(UpdateButtonPressed(user: userupdate));
             }
             else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Having problem in updating user'))
-              );
+              final snackBar = SnackBarDesign.customSnackBar('Having problem in updating user');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
 
           },

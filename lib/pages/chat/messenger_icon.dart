@@ -1,5 +1,4 @@
 import 'package:CatViP/bloc/chat/chat_bloc.dart';
-import 'package:CatViP/bloc/chat/chat_event.dart';
 import 'package:CatViP/bloc/chat/chat_state.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as Badge;

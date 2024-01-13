@@ -1,3 +1,4 @@
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geocoding/geocoding.dart';
@@ -80,22 +81,12 @@ class _MapScreenState extends State<MapScreen> {
            IconButton(
                onPressed: (){
                   if (userAddress!.isEmpty == true){
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text("Please pick a location",
-                            style: TextStyle(
-                              // color: HexColor("#FF6464"),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          // backgroundColor: HexColor("#FFE382"),
-                      )
-                    );
-                return;
-              }
-              Navigator.pop(context, { 'lat': userLat, 'lng': userLng, 'address': userAddress });
-           },
+                    final snackBar = SnackBarDesign.customSnackBar('Please pick a location');
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    return;
+                  }
+                Navigator.pop(context, { 'lat': userLat, 'lng': userLng, 'address': userAddress });
+              },
                icon: Icon(Icons.done_rounded),
            )
          ],
@@ -255,7 +246,8 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void onError(PlacesAutocompleteResponse response){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.errorMessage!)));
+    final snackBar = SnackBarDesign.customSnackBar(response.errorMessage!);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<void> displayPrediction(Prediction p, ScaffoldState? currentState) async {

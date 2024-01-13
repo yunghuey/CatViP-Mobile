@@ -1,9 +1,7 @@
-import 'dart:ffi';
-
+import 'package:CatViP/pages/SnackBarDesign.dart';
 import 'package:CatViP/pages/report/newReport.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -77,8 +75,8 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       print('Error setting initial location: $e');
       if (e == "Location services are disabled."){
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("You must allow location access to view missing case report")));
+        final snackBar = SnackBarDesign.customSnackBar('You must allow location access to view missing case report');
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
   }
