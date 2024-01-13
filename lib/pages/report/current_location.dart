@@ -18,8 +18,8 @@ class CurrentLocation extends StatefulWidget {
 
 class _CurrentLocationState extends State<CurrentLocation> {
   late GoogleMapController googleMapController;
-  static const CameraPosition initialCameraPosition =
-  CameraPosition(target: LatLng(2.3282854, 102.2929662), zoom: 14);
+  static CameraPosition initialCameraPosition =
+  CameraPosition(target: LatLng(0.0, 0.0), zoom: 14);
 
   Set<Marker> markers = {};
   late NewReport report;
@@ -28,6 +28,46 @@ class _CurrentLocationState extends State<CurrentLocation> {
   double longitude = 0;
   final String gApiKey = "AIzaSyCB7cpPFXRdOFprDVVtsOts8SM5zHRaulQ";
   final homeScaffoldKey = GlobalKey<ScaffoldState>();
+  late Set<Circle> circle = {};
+
+  @override
+  void initState() {
+    _setInitialLocation();
+    super.initState();
+  }
+
+  Future<void> _setInitialLocation() async {
+    try {
+      Position position = await determinePosition();
+      initialCameraPosition = CameraPosition(
+        target: LatLng(position.latitude, position.longitude),
+        zoom: 14,
+      );
+
+      circle = {Circle(
+        circleId: CircleId("current_position"),
+        center: LatLng(position.latitude, position.longitude),
+        radius: 80,
+        fillColor: HexColor("#f6ba00").withOpacity(0.6),
+        strokeColor:HexColor("#3c1e08"),
+        strokeWidth: 3,
+      )};
+
+      googleMapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(position.latitude, position.longitude),
+            zoom: 14,
+          ),
+        ),
+      );
+
+      setState(() {});
+    } catch (e) {
+      print('Error setting initial location: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

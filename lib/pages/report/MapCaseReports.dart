@@ -24,8 +24,6 @@ class MapCaseReports extends StatefulWidget {
 
 class _MapCaseReportsState extends State<MapCaseReports> {
   late GoogleMapController googleMapController;
-  // static const CameraPosition initialCameraPosition =
-  // CameraPosition(target: LatLng(2.3282854, 102.2929662), zoom: 14);
   static CameraPosition initialCameraPosition =
   CameraPosition(target: LatLng(0.0, 0.0), zoom: 14);
   final GetCaseBloc caseBloc = GetCaseBloc();
@@ -55,14 +53,14 @@ class _MapCaseReportsState extends State<MapCaseReports> {
         zoom: 14,
       );
 
-      circle = Set.from([Circle(
+      circle = {Circle(
         circleId: CircleId("current_position"),
         center: LatLng(position.latitude, position.longitude),
         radius: 80,
         fillColor: HexColor("#f6ba00").withOpacity(0.6),
         strokeColor:HexColor("#3c1e08"),
         strokeWidth: 3,
-      )]);
+      )};
 
       googleMapController.animateCamera(
         CameraUpdate.newCameraPosition(
@@ -77,6 +75,11 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       setState(() {});
     } catch (e) {
       print('Error setting initial location: $e');
+      if (e == "Location services are disabled."){
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("You must allow location access to view missing case report")));
+      }
     }
   }
 
