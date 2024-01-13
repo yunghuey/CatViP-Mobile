@@ -493,8 +493,6 @@ class _ProfileViewState extends State<ProfileView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (post.postImages != null &&
-                      post.postImages!.isNotEmpty)
                     Row(
                       children: [
                         CircleAvatar(
