@@ -156,8 +156,8 @@ class _NewReportState extends State<NewReport> {
       if (state is NewPostLoadingState) {
         return Center(
             child: CircularProgressIndicator(
-          color: HexColor("#3c1e08"),
-        ));
+              color: HexColor("#3c1e08"),
+            ));
       }
       return Container();
     },
@@ -171,12 +171,12 @@ class _NewReportState extends State<NewReport> {
   }
 
   late final formstatus = BlocBuilder<NewCaseBloc, NewCaseState>(
-      builder: (context, state){
-        if (state is NewCaseLoadingState){
-          return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-        }
-        return Container();
-      },
+    builder: (context, state){
+      if (state is NewCaseLoadingState){
+        return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
+      }
+      return Container();
+    },
   );
   @override
   Widget build(BuildContext context) {
@@ -441,10 +441,10 @@ class _NewReportState extends State<NewReport> {
           style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24.0),
-            )),
+                  borderRadius: BorderRadius.circular(24.0),
+                )),
             backgroundColor:
-                MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+            MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
           ),
           child: const Padding(
             padding: EdgeInsets.all(12.0),
@@ -489,12 +489,12 @@ class _NewReportState extends State<NewReport> {
           icon: Icon(Icons.location_on), // You can change the icon as needed
           onPressed: () {
             Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CurrentLocation()))
+                MaterialPageRoute(builder: (context) => CurrentLocation()))
                 .then((value) => {
-                      latitude = value['latitude'],
-                      longitude = value['longitude'],
-                      addressController.text = value['address'],
-                    });
+              latitude = value['latitude'],
+              longitude = value['longitude'],
+              addressController.text = value['address'],
+            });
             print('Location icon pressed');
           },
         ),
