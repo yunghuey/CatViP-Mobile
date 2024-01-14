@@ -331,7 +331,7 @@ class _NewPostState extends State<NewPost> {
     if (selectedImages.length == 0) {
       return Center(
         child: Text(
-          'Pick Image',
+          'Pick an Image',
         ));
     } else {
       return PageView.builder(
@@ -372,6 +372,8 @@ class _NewPostState extends State<NewPost> {
                   onTap: () {
                     setState(() {
                       selectedImages.removeAt(index);
+                      base64Images.removeAt(index);
+
                       if (selectedImages.length < 5){
                         canAddImage = true;
                       }
@@ -405,7 +407,7 @@ class _NewPostState extends State<NewPost> {
         height: 55.0,
         child: ElevatedButton(
           onPressed: () async {
-            if (base64Images != null) {
+            if (base64Images.isNotEmpty) {
               if (captionController.text.isEmpty) {
                 final snackBar = SnackBarDesign.customSnackBar('Caption must be filled up.');
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);

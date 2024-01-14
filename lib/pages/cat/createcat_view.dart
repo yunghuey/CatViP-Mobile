@@ -380,7 +380,7 @@ class _CreateCatViewState extends State<CreateCatView> {
                       );
                     } else {
                       return Center(
-                        child: Text('Pick Image'),
+                        child: Text('Pick an Image'),
                       );
                     }
                   },

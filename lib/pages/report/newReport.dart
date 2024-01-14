@@ -327,7 +327,7 @@ class _NewReportState extends State<NewReport> {
   Widget ImageView() {
     if (selectedImages.isEmpty) {
       return Center(
-        child: Text("Pick Image"),
+        child: Text("Pick an Image"),
       );
     } else {
       return PageView.builder(
@@ -368,6 +368,8 @@ class _NewReportState extends State<NewReport> {
                   onTap: () {
                     setState(() {
                       selectedImages.removeAt(index);
+                      base64Images.removeAt(index);
+
                       if (selectedImages.length < 5){
                         canAddImage = true;
                       }
@@ -400,7 +402,7 @@ class _NewReportState extends State<NewReport> {
           onPressed: () async {
             print(captionController.text);
             //if(_formKey.currentState!.validate()){
-            if (base64Images != null) {
+            if (base64Images.isNotEmpty) {
               if (captionController.text.isEmpty ||
                   addressController.text.isEmpty) {
                 final snackBar = SnackBarDesign.customSnackBar('Description and address must be filled up');
