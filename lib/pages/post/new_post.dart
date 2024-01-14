@@ -196,6 +196,10 @@ class _NewPostState extends State<NewPost> {
                   final snackBar = SnackBarDesign.customSnackBar('Successfully Post');
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
+                else if (state is NewPostFailState) {
+                  final snackBar = SnackBarDesign.customSnackBar(state.message);
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
               },
             ),
           ],
@@ -403,8 +407,15 @@ class _NewPostState extends State<NewPost> {
           onPressed: () async {
             if (base64Images != null) {
               if (captionController.text.isEmpty) {
-                final snackBar = SnackBarDesign.customSnackBar('Caption must be filled up');
+                final snackBar = SnackBarDesign.customSnackBar('Caption must be filled up.');
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                return;
+              }
+
+              if (selectedPostType?.id == 0) {
+                final snackBar = SnackBarDesign.customSnackBar('Post type is not selected.');
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                return;
               }
 
               createBloc.add(PostButtonPressed(
