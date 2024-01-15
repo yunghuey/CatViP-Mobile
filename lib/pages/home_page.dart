@@ -46,8 +46,10 @@ class _HomePageState extends State<HomePage> {
   TextEditingController reportController = TextEditingController();
   Set<int> reportedPostIds = {};
   PageController _pageController = PageController();
-  int _currentPage = 0;
+  late List<int> _currentPage = [];
   late List<Post> postList;
+
+  bool firstLoaded = true; 
 
   final ScrollController _scrollController =
       ScrollController(initialScrollOffset: 0);
@@ -141,10 +143,17 @@ class _HomePageState extends State<HomePage> {
 
     // Retrieve the updated post list
     final updatedState = _postBloc.state;
-    if (updatedState is GetPostLoaded) {
+    if (updatedState is GetPostLoaded && firstLoaded) {
       setState(() {
         postList = updatedState.postList;
+        _currentPage = List<int>.filled(postList.length, 0);
         _isVisible = false;
+      });
+    }
+    else if(!firstLoaded)
+    {
+      setState(() {
+        _currentPage = List<int>.filled(postList.length, 0);
       });
     }
   }
@@ -190,7 +199,14 @@ class _HomePageState extends State<HomePage> {
               );
             }
             else if (state is GetPostLoaded) {
-              postList = state.postList;
+
+              if (firstLoaded)
+              {
+                postList = state.postList;
+                _currentPage = List<int>.filled(postList.length, 0);
+                firstLoaded = false;
+              }
+
               return Theme(
                 data: Theme.of(context).copyWith(
                   colorScheme: Theme.of(context)
@@ -207,7 +223,7 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (context, index) {
                           final Post post = postList[index];
                           if (post.isAds == true) {
-                            return displayAds(post);
+                            return displayAds(post, index);
                           } else {
                             return Card(
                               color: HexColor("#ecd9c9"),
@@ -318,7 +334,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     SizedBox(height: 4.0),
-                                    displayImage(post),
+                                    displayImage(post, index),
                                     Row(
                                       children: [
                                         _FavoriteButton(
@@ -526,7 +542,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget displayAds(Post post) {
+  Widget displayAds(Post post, int i) {
     return Card(
       color: HexColor("#ecd9c9"),
       child: Padding(
@@ -534,7 +550,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            displayImage(post),
+            displayImage(post, i),
             Container(
                 child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -550,7 +566,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget displayImage(Post post) {
+  Widget displayImage(Post post, int i) {
     return Stack(
       children: [
         Container(
@@ -577,7 +593,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         onPageChanged: (int page) {
                           setState(() {
-                            _currentPage = page;
+                            _currentPage[i]= page;
                           });
                         },
                       ),
@@ -594,7 +610,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 8,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _currentPage == index
+                                    color: _currentPage[i] == index
                                         ? HexColor(
                                             "#3c1e08") // Highlight the current page indicator
                                         : Colors.grey,

@@ -38,6 +38,7 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
   final _picker = ImagePicker();
   late CompleteCaseBloc completeCaseBloc;
   late RevokeCaseBloc revokeCaseBloc;
+  int _currentPage = 0;
 
   //
   // Future<Uint8List?> _getImageBytes(File imageFile) async {
@@ -102,27 +103,63 @@ class _UpdateCasesReportState extends State<UpdateCasesReport> {
 
   Widget caseReportImage() {
     return Container(
-      height: images != null && images.isNotEmpty
-          ? MediaQuery.of(context)
-              .size
-              .width // Set height to screen width if there are images
-          : 0, // Set height to 0 if postImages is null or empty
-      child: caseReport.caseReportImages != null &&
-              caseReport.caseReportImages!.isNotEmpty
-          ? PageView.builder(
-              itemCount: caseReport.caseReportImages!.length,
-              itemBuilder: (context, index) {
-                return AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Image.memory(
-                    base64Decode(caseReport.caseReportImages![index].images!),
-                    fit: BoxFit.cover,
+        // Set height to 0 if postImages is null or empty
+        child: Column(
+      children: [
+        Container(
+          height: images.isNotEmpty
+              ? MediaQuery.of(context)
+                  .size
+                  .width // Set height to screen width if there are images
+              : 0,
+          child: caseReport.caseReportImages != null &&
+                  caseReport.caseReportImages!.isNotEmpty
+              ? PageView.builder(
+                  itemCount: caseReport.caseReportImages!.length,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    return AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Image.memory(
+                        base64Decode(
+                            caseReport.caseReportImages![index].images!),
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                )
+              : Container(),
+        ),
+        caseReport.caseReportImages!.length > 1
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  caseReport.caseReportImages!.length,
+                  (index) => Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentPage == index
+                            ? HexColor(
+                                "#3c1e08") // Highlight the current page indicator
+                            : Colors.grey,
+                      ),
+                    ),
                   ),
-                );
-              },
-            )
-          : Container(), // Show an empty container if postImages is null or empty
-    );
+                ),
+              )
+            : Container(),
+      ],
+    )
+        // Show an empty container if postImages is null or empty
+        );
   }
 
   Widget descriptionText() {

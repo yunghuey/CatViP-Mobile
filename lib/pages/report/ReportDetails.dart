@@ -18,7 +18,6 @@ import '../post/own_post.dart';
 import 'getOwnReport.dart';
 
 class ReportDetail extends StatefulWidget {
-
   final CaseReport caseReport;
   const ReportDetail({super.key, required this.caseReport});
 
@@ -27,7 +26,6 @@ class ReportDetail extends StatefulWidget {
 }
 
 class _ReportDetailState extends State<ReportDetail> {
-
   late final CaseReport caseReport;
   File? image;
   List<String> base64image = [];
@@ -39,11 +37,10 @@ class _ReportDetailState extends State<ReportDetail> {
   final _picker = ImagePicker();
   late CompleteCaseBloc completeCaseBloc;
   late RevokeCaseBloc revokeCaseBloc;
-
+  int _currentPage = 0;
 
   @override
   void initState() {
-
     caseReport = widget.caseReport;
     images = caseReport.caseReportImages!;
     id = caseReport.id!;
@@ -52,7 +49,6 @@ class _ReportDetailState extends State<ReportDetail> {
     revokeCaseBloc = BlocProvider.of<RevokeCaseBloc>(context);
 
     super.initState();
-
   }
 
   @override
@@ -71,57 +67,97 @@ class _ReportDetailState extends State<ReportDetail> {
           print('Failed to save post');
         }
       },
-      child:*/ Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Case Report Detail",
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          backgroundColor: HexColor("#ecd9c9"),
+      child:*/
+        Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Case Report Detail",
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
-        body: SingleChildScrollView(
-          child: Form(
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Column(
-                children: [
-                  caseReportImage(),
-                  SizedBox(height: 4.0),
-                  descriptionText(),
-                  SizedBox(height: 16.0),
-                  //Buttons()
-                ],
-              ),
+        backgroundColor: HexColor("#ecd9c9"),
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              children: [
+                caseReportImage(),
+                SizedBox(height: 4.0),
+                descriptionText(),
+                SizedBox(height: 16.0),
+                //Buttons()
+              ],
             ),
           ),
         ),
-      );
+      ),
+    );
     //);
   }
 
   Widget caseReportImage() {
     return Container(
-      height: images != null && images.isNotEmpty
-          ? MediaQuery.of(context).size.width // Set height to screen width if there are images
-          : 0, // Set height to 0 if postImages is null or empty
-      child: caseReport.caseReportImages != null && caseReport.caseReportImages!.isNotEmpty
-          ? PageView.builder(
-        itemCount: caseReport.caseReportImages!.length,
-        itemBuilder: (context, index) {
-          return AspectRatio(
-            aspectRatio: 1.0,
-            child: Image.memory(
-              base64Decode(caseReport.caseReportImages![index].images!),
-              fit: BoxFit.cover,
-            ),
-          );
-        },
-      )
-          : Container(), // Show an empty container if postImages is null or empty
-    );
+        // Set height to 0 if postImages is null or empty
+        child: Column(
+      children: [
+        Container(
+          height: images.isNotEmpty
+              ? MediaQuery.of(context)
+                  .size
+                  .width // Set height to screen width if there are images
+              : 0,
+          child: caseReport.caseReportImages != null &&
+                  caseReport.caseReportImages!.isNotEmpty
+              ? PageView.builder(
+                  itemCount: caseReport.caseReportImages!.length,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    return AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Image.memory(
+                        base64Decode(
+                            caseReport.caseReportImages![index].images!),
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                )
+              : Container(),
+        ),
+        caseReport.caseReportImages!.length > 1
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  caseReport.caseReportImages!.length,
+                  (index) => Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentPage == index
+                            ? HexColor(
+                                "#3c1e08") // Highlight the current page indicator
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : Container(),
+      ],
+    )
+        // Show an empty container if postImages is null or empty
+        );
   }
 
-  Widget descriptionText(){
+  Widget descriptionText() {
     return Column(
       children: [
         Container(
@@ -140,7 +176,8 @@ class _ReportDetailState extends State<ReportDetail> {
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CaseReportCommentView(caseReportId: id!),
+                    builder: (context) =>
+                        CaseReportCommentView(caseReportId: id!),
                   ),
                 ),
                 icon: Icon(
@@ -257,7 +294,4 @@ class _ReportDetailState extends State<ReportDetail> {
   //     ],
   //   );
   // }
-
-
 }
-

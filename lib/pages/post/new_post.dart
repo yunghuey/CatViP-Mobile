@@ -407,19 +407,20 @@ class _NewPostState extends State<NewPost> {
         height: 55.0,
         child: ElevatedButton(
           onPressed: () async {
+
+            if (captionController.text.isEmpty) {
+              final snackBar = SnackBarDesign.customSnackBar('Caption must be filled up.');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              return;
+            }
+
+            if (selectedPostType?.id == 0) {
+              final snackBar = SnackBarDesign.customSnackBar('Post type is not selected.');
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              return;
+            }
+
             if (base64Images.isNotEmpty) {
-              if (captionController.text.isEmpty) {
-                final snackBar = SnackBarDesign.customSnackBar('Caption must be filled up.');
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                return;
-              }
-
-              if (selectedPostType?.id == 0) {
-                final snackBar = SnackBarDesign.customSnackBar('Post type is not selected.');
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                return;
-              }
-
               createBloc.add(PostButtonPressed(
                 description: captionController.text.trim(),
                 postTypeId: selectedPostType?.id ?? 0,
