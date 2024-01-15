@@ -80,21 +80,23 @@ class _ProfileViewState extends State<ProfileView> {
     _isFirstLoaded = true;
   }
 
-  late final msg = BlocBuilder<UserProfileBloc, UserProfileState>(
-      builder: (context, state){
-        if (state is UserProfileLoadingState){
-          return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-        }
-        return Container();
-      }
-  );
+  late final msg =
+      BlocBuilder<UserProfileBloc, UserProfileState>(builder: (context, state) {
+    if (state is UserProfileLoadingState) {
+      return Center(
+          child: CircularProgressIndicator(
+        color: HexColor("#3c1e08"),
+      ));
+    }
+    return Container();
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: BlocBuilder<UserProfileBloc, UserProfileState>(
-          builder: (context, state){
+          builder: (context, state) {
             if (state is UserProfileLoadedState) {
               final username = state.user?.fullname ?? "Welcome";
               return Text(
@@ -102,7 +104,10 @@ class _ProfileViewState extends State<ProfileView> {
                 style: Theme.of(context).textTheme.bodyLarge,
               );
             } else {
-              return Text( "Welcome", style: Theme.of(context).textTheme.bodyLarge,);
+              return Text(
+                "Welcome",
+                style: Theme.of(context).textTheme.bodyLarge,
+              );
             }
           },
         ),
@@ -112,14 +117,17 @@ class _ProfileViewState extends State<ProfileView> {
         automaticallyImplyLeading: false,
         actions: [
           BlocBuilder<UserProfileBloc, UserProfileState>(
-            builder: (context, state){
+            builder: (context, state) {
               if (state is UserProfileLoadedState) {
                 return IconButton(
-                  icon: Icon(Icons.menu, color: HexColor("#3c1e08"),),
-                  onPressed: (){
+                  icon: Icon(
+                    Icons.menu,
+                    color: HexColor("#3c1e08"),
+                  ),
+                  onPressed: () {
                     showModalBottomSheet(
                       context: context,
-                      builder: (BuildContext context){
+                      builder: (BuildContext context) {
                         return _menu();
                       },
                     ); // showModalbottomsheet
@@ -130,35 +138,39 @@ class _ProfileViewState extends State<ProfileView> {
               }
             },
           ),
-
         ],
       ),
       body: MultiBlocListener(
         listeners: [
           BlocListener<LogoutBloc, LogoutState>(
-            listener: (context, state){
-              if (state is LogoutSuccessState){
+            listener: (context, state) {
+              if (state is LogoutSuccessState) {
                 logoutbloc.add(LogoutResetEvent());
               }
             },
           ),
           BlocListener<UserProfileBloc, UserProfileState>(
-              listener: (context, state){
-                if (state is UserProfileErrorState){
-                  final snackBar = SnackBarDesign.customSnackBar(state.message);
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                }
-              }
-          )
+              listener: (context, state) {
+            if (state is UserProfileErrorState) {
+              final snackBar = SnackBarDesign.customSnackBar(state.message);
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          })
         ],
         child: BlocBuilder<UserProfileBloc, UserProfileState>(
           builder: (context, state) {
             if (state is UserProfileLoadingState) {
-              return Center(child: CircularProgressIndicator(color:  HexColor("#3c1e08"),));
-            }
-            else if (state is UserProfileLoadedState) {
+              return Center(
+                  child: CircularProgressIndicator(
+                color: HexColor("#3c1e08"),
+              ));
+            } else if (state is UserProfileLoadedState) {
               user = state.user;
-              expertMsg = user.validToApply! == 1 ? viewExpert : user.validToApply! == 0 ? applyExpert : checkExpert;
+              expertMsg = user.validToApply! == 1
+                  ? viewExpert
+                  : user.validToApply! == 0
+                      ? applyExpert
+                      : checkExpert;
               message = user.username ?? "Welcome";
               return RefreshIndicator(
                 onRefresh: refreshPage,
@@ -171,27 +183,31 @@ class _ProfileViewState extends State<ProfileView> {
                       BlocBuilder<CatProfileBloc, CatProfileState>(
                         builder: (context, state) {
                           if (state is CatProfileLoadingState) {
-                            return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
-                          }
-                          else if (state is CatProfileLoadedState) {
+                            return Center(
+                                child: CircularProgressIndicator(
+                                    color: HexColor("#3c1e08")));
+                          } else if (state is CatProfileLoadedState) {
                             cats = state.cats;
                             return _getAllCats();
-                          }
-                          else {
-                            return Container(child: const Text("Add your own cat now!", style: TextStyle(fontSize: 16))); // Handle other cases
+                          } else {
+                            return Container(
+                                child: const Text("Add your own cat now!",
+                                    style: TextStyle(
+                                        fontSize: 16))); // Handle other cases
                           }
                         },
                       ),
                       BlocBuilder<GetPostBloc, GetPostState>(
                         builder: (context, state) {
                           if (state is GetPostLoading) {
-                            return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
+                            return Center(
+                                child: CircularProgressIndicator(
+                                    color: HexColor("#3c1e08")));
                           } else if (state is GetPostLoaded) {
-                            
-                            if(_isFirstLoaded)
-                            {
+                            if (_isFirstLoaded) {
                               listPost = state.postList.reversed.toList();
-                              _currentPage = List<int>.filled(listPost.length, 0);
+                              _currentPage =
+                                  List<int>.filled(listPost.length, 0);
                               _isFirstLoaded = false;
                             }
 
@@ -199,10 +215,10 @@ class _ProfileViewState extends State<ProfileView> {
                           } else {
                             return Center(
                                 child: Container(
-                                  margin: const EdgeInsets.only(top: 10),
-                                  child: Text("Create your first post today!",style: TextStyle(fontSize: 16)),
-                                )
-                            ); // Handle other cases
+                              margin: const EdgeInsets.only(top: 10),
+                              child: Text("Create your first post today!",
+                                  style: TextStyle(fontSize: 16)),
+                            )); // Handle other cases
                           }
                         },
                       ),
@@ -210,8 +226,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ),
                 ),
               );
-            }
-            else {
+            } else {
               return RefreshIndicator(
                 onRefresh: refreshPage,
                 color: HexColor("#3c1e08"),
@@ -229,135 +244,151 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _profileImage(){
-      return Container(
+  Widget _profileImage() {
+    return Container(
         height: 90,
         width: 90,
         decoration: BoxDecoration(
           color: Colors.white,
-          shape:BoxShape.circle,
+          shape: BoxShape.circle,
           image: DecorationImage(
-          image: user.profileImage != ""
-                ? MemoryImage(base64Decode(user!.profileImage!)) as ImageProvider<Object>
+            image: user.profileImage != ""
+                ? MemoryImage(base64Decode(user!.profileImage!))
+                    as ImageProvider<Object>
                 : AssetImage('assets/profileimage.png'),
-          fit: BoxFit.cover,
+            fit: BoxFit.cover,
           ),
-        )
-      );
+        ));
   }
 
-  Widget _menu(){
+  Widget _menu() {
     return Container(
-      color: HexColor("#ecd9c9"),
-      padding: EdgeInsets.only(bottom: 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("Edit profile"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => EditProfileView()),
-              ).then((result) {
-                if (result == true) {
-                  Navigator.pop(context);
-                  userBloc.add(StartLoadProfile());
-                  catBloc.add(StartLoadCat());
-                  postBloc.add(StartLoadOwnPost());
-                  refreshPage();
-                } else{
-                  Navigator.pop(context);
-                }
-              });
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.add),
-            title: Text("Register cat"),
-            onTap: (){
-              Navigator.push(
-                  context,MaterialPageRoute(builder: (context) => CreateCatView(),)
-              ).then((result) {
-                if (result == true){
-                  Navigator.pop(context);
-                  catBloc.add(StartLoadCat());
-                } else{
-                  Navigator.pop(context);
-                }
-              });
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.grade_rounded),
-            title: Text(expertMsg),
-            onTap: (){
-              // not an expert and nvr apply before
-                if (!user.isExpert! && user.validToApply! == 0){
+        color: HexColor("#ecd9c9"),
+        padding: EdgeInsets.only(bottom: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.edit),
+              title: Text("Edit profile"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditProfileView()),
+                ).then((result) {
+                  if (result == true) {
+                    Navigator.pop(context);
+                    userBloc.add(StartLoadProfile());
+                    catBloc.add(StartLoadCat());
+                    postBloc.add(StartLoadOwnPost());
+                    refreshPage();
+                  } else {
+                    Navigator.pop(context);
+                  }
+                });
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.add),
+              title: Text("Register cat"),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateCatView(),
+                    )).then((result) {
+                  if (result == true) {
+                    Navigator.pop(context);
+                    catBloc.add(StartLoadCat());
+                  } else {
+                    Navigator.pop(context);
+                  }
+                });
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.grade_rounded),
+              title: Text(expertMsg),
+              onTap: () {
+                // not an expert and nvr apply before
+                if (!user.isExpert! && user.validToApply! == 0) {
                   // go to introduction page and then apply page
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ExpertIntro())
-                  ).then((result) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ExpertIntro())).then((result) {
                     Navigator.pop(context);
                     userBloc.add(StartLoadProfile());
                   });
-                //   not expert and not valid to apply -- got pending
-                }
-                else if (user.isExpert!){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ExpertProfileView())
-                  ).then((result) {
+                  //   not expert and not valid to apply -- got pending
+                } else if (user.isExpert!) {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ExpertProfileView()))
+                      .then((result) {
+                    Navigator.pop(context);
+                    userBloc.add(StartLoadProfile());
+                  });
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ExpertCheckView(
+                              formstatus: user.validToApply!))).then((result) {
                     Navigator.pop(context);
                     userBloc.add(StartLoadProfile());
                   });
                 }
-                else {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ExpertCheckView(formstatus: user.validToApply!))
-                  ).then((result) {
-                    Navigator.pop(context);
-                    userBloc.add(StartLoadProfile());
-                  });
-                }
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text("Logout"),
-            onTap: (){
-              logoutbloc.add(LogoutButtonPressed());
-              Navigator.pushAndRemoveUntil(
-                  context, MaterialPageRoute(
-                  builder: (context) => LoginView()), (Route<dynamic> route) => false
-              );
-            },
-          )
-        ],
-      )
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text("Logout"),
+              onTap: () {
+                logoutbloc.add(LogoutButtonPressed());
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginView()),
+                    (Route<dynamic> route) => false);
+              },
+            )
+          ],
+        ));
+  }
+
+  Widget _followers() {
+    return Column(
+      children: [
+        Text(
+          user.follower.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        Text("Followers"),
+      ],
     );
   }
 
-  Widget _followers(){
-      return Column(
-        children: [
-          Text(user.follower.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
-          Text("Followers"),
-        ],
-      );
-  }
-
-  Widget _following(){
+  Widget _following() {
     return Column(
       children: [
-        Text(user.following.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+        Text(
+          user.following.toString(),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
         Text("Following"),
       ],
     );
   }
 
-  Widget _tipsPost(){
-    if (user.isExpert == true){
+  Widget _tipsPost() {
+    if (user.isExpert == true) {
       return Column(
         children: [
-          Text(user.expertTips.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+          Text(
+            user.expertTips.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
           Text("Tips"),
         ],
       );
@@ -366,7 +397,7 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
-  Widget _userDetails(){
+  Widget _userDetails() {
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, top: 10.0),
       child: Row(
@@ -388,7 +419,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _buttons(){
+  Widget _buttons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Row(
@@ -399,13 +430,16 @@ class _ProfileViewState extends State<ProfileView> {
               child: Container(
                 padding: EdgeInsets.all(5),
                 child: ElevatedButton(
-                    onPressed: (){},
-                    child: Text("Follow"),
-                    style: ButtonStyle(
-                      side: MaterialStateProperty.all(BorderSide(color: HexColor("#3c1e08"), width: 1)),
-                      backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
-                      foregroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                    ),
+                  onPressed: () {},
+                  child: Text("Follow"),
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: HexColor("#3c1e08"), width: 1)),
+                    backgroundColor: MaterialStateProperty.all<HexColor>(
+                        HexColor("#ecd9c9")),
+                    foregroundColor: MaterialStateProperty.all<HexColor>(
+                        HexColor("#3c1e08")),
+                  ),
                 ),
               ),
             ),
@@ -416,13 +450,17 @@ class _ProfileViewState extends State<ProfileView> {
               child: Container(
                 padding: EdgeInsets.all(5),
                 child: ElevatedButton(
-                    onPressed: (){},
-                    child: Text("Message"),
-                    style: ButtonStyle(
-                      side: MaterialStateProperty.all(BorderSide(color: HexColor("#3c1e08"), width: 1)),
-                      backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#ecd9c9")),
-                      foregroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                    ),),
+                  onPressed: () {},
+                  child: Text("Message"),
+                  style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: HexColor("#3c1e08"), width: 1)),
+                    backgroundColor: MaterialStateProperty.all<HexColor>(
+                        HexColor("#ecd9c9")),
+                    foregroundColor: MaterialStateProperty.all<HexColor>(
+                        HexColor("#3c1e08")),
+                  ),
+                ),
               ),
             ),
           ),
@@ -431,7 +469,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _getAllCats(){
+  Widget _getAllCats() {
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, top: 10.0),
       child: Container(
@@ -439,7 +477,7 @@ class _ProfileViewState extends State<ProfileView> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: ListView.builder(
-            itemCount:cats.length,
+            itemCount: cats.length,
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
@@ -451,13 +489,16 @@ class _ProfileViewState extends State<ProfileView> {
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: InkWell(
-                          onTap: (){
+                          onTap: () {
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => CatProfileView(currentcat: cats[index],fromOwner: true,)))
-                                .then((value) {
-                                    catBloc.add(StartLoadCat());
-                                    postBloc.add(StartLoadOwnPost());
+                                MaterialPageRoute(
+                                    builder: (context) => CatProfileView(
+                                          currentcat: cats[index],
+                                          fromOwner: true,
+                                        ))).then((value) {
+                              catBloc.add(StartLoadCat());
+                              postBloc.add(StartLoadOwnPost());
                             });
                           },
                           child: CircleAvatar(
@@ -466,7 +507,9 @@ class _ProfileViewState extends State<ProfileView> {
                             child: CircleAvatar(
                               radius: 35,
                               backgroundImage: cats[index].profileImage != ""
-                                  ? MemoryImage(base64Decode(cats[index].profileImage))  as ImageProvider<Object>
+                                  ? MemoryImage(base64Decode(
+                                          cats[index].profileImage))
+                                      as ImageProvider<Object>
                                   : AssetImage('assets/profileimage.png'),
                             ),
                           ),
@@ -478,7 +521,6 @@ class _ProfileViewState extends State<ProfileView> {
                 ],
               );
             },
-
           ),
         ),
       ),
@@ -491,7 +533,7 @@ class _ProfileViewState extends State<ProfileView> {
       child: ListView.builder(
         shrinkWrap: true, // Added shrinkWrap
         physics:
-        const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+            const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
         itemCount: listPost.length,
         itemBuilder: (context, index) {
           final Post post = listPost[index];
@@ -502,147 +544,199 @@ class _ProfileViewState extends State<ProfileView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 16,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: user.profileImage != ""
-                              ? Image.memory(base64Decode(user.profileImage!)).image
-                              : const AssetImage('assets/profileimage.png'),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Text(user.fullname,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        post.postTypeId == 1
-                            ? Container(
-                          color: Colors.brown,
-                          padding: const EdgeInsets.all(
-                              4.0), // Adjust the padding as needed
-                          child: const Text(
-                            "Daily Sharing",
-                            style: TextStyle(
-                                color: Colors.white),
-                          ),
-                        )
-                            : Container(
-                          color: Colors.brown,
-                          padding: const EdgeInsets.all(
-                              4.0), // Adjust the padding as needed
-                          child: const Text(
-                            "Expert Tips",
-                            style: TextStyle(
-                                color: Colors.white),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => Dialog(
-                                child: ListView(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  shrinkWrap: true,
-                                  children: [
-                                    'Edit',
-                                    'Delete'
-                                  ]
-                                      .map(
-                                        (e) => InkWell(
-                                      onTap: () async {
-                                        if (e == 'Edit') {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => EditPost(currentPost: post))
-                                          ).then((result) {
-                                            if (result == true){
-                                              postBloc.add(StartLoadOwnPost());
-                                            }
-                                            Navigator.pop(context, true);
-                                          });
-                                        } else if (e == 'Delete') {
-                                          showDialog<String>(
-                                            context: context,
-                                            builder: (BuildContext context) => AlertDialog(
-                                              title: const Text('Delete Post'),
-                                              content: const Text('Are you sure to delete this post? This action cannot be undone'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () => Navigator.pop(context, 'Cancel'),
-                                                  child: Text('Cancel',style: TextStyle(color: HexColor('#3c1e08'))),
-                                                  style: ButtonStyle(
-                                                    backgroundColor: MaterialStateProperty.resolveWith<HexColor>(
-                                                            (Set<MaterialState> states){
-                                                          if(states.contains(MaterialState.pressed))
-                                                            return HexColor("#ecd9c9");
-                                                          return HexColor("#F2EFEA");
-                                                        }
-                                                    ),
-                                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
-                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                        RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(10.0)
-                                                        )
-                                                    ),
-                                                  ),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    deleteBloc.add(DeleteButtonPressed(postId: post.id!));
-                                                    await Future.delayed(Duration(milliseconds: 100));
-                                                    Navigator.pop(context);
-                                                    Navigator.pop(context);
-                                                    refreshPage();
-                                                    },
-                                                  child:  Text('Yes',style: TextStyle(color: Colors.white)),
-                                                  style: ButtonStyle(
-                                                    backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-                                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10.0)),
-                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                        RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(10.0)
-                                                        )
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 12, horizontal: 16),
-                                        child: Text(e),
-                                      ),
-                                    ),
-                                  )
-                                      .toList(),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: user.profileImage != ""
+                            ? Image.memory(base64Decode(user.profileImage!))
+                                .image
+                            : const AssetImage('assets/profileimage.png'),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.fullname,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            );
-                          },
-                          icon: const Icon(Icons.more_vert),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                      post.postTypeId == 1
+                          ? Container(
+                              color: Colors.brown,
+                              padding: const EdgeInsets.all(
+                                  4.0), // Adjust the padding as needed
+                              child: const Text(
+                                "Daily Sharing",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )
+                          : Container(
+                              color: Colors.brown,
+                              padding: const EdgeInsets.all(
+                                  4.0), // Adjust the padding as needed
+                              child: const Text(
+                                "Expert Tips",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => Dialog(
+                              child: ListView(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                shrinkWrap: true,
+                                children: ['Edit', 'Delete']
+                                    .map(
+                                      (e) => InkWell(
+                                        onTap: () async {
+                                          if (e == 'Edit') {
+                                            Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            EditPost(
+                                                                currentPost:
+                                                                    post)))
+                                                .then((result) {
+                                              if (result == true) {
+                                                final snackBar = SnackBarDesign
+                                                    .customSnackBar(
+                                                        'Post is edited!');
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                                refreshPage();
+                                              }
+                                              Navigator.pop(context, true);
+                                            });
+                                          } else if (e == 'Delete') {
+                                            showDialog<String>(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                title:
+                                                    const Text('Delete Post'),
+                                                content: const Text(
+                                                    'Are you sure to delete this post? This action cannot be undone'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            context, 'Cancel'),
+                                                    child: Text('Cancel',
+                                                        style: TextStyle(
+                                                            color: HexColor(
+                                                                '#3c1e08'))),
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .resolveWith<
+                                                                      HexColor>(
+                                                                  (Set<MaterialState>
+                                                                      states) {
+                                                        if (states.contains(
+                                                            MaterialState
+                                                                .pressed))
+                                                          return HexColor(
+                                                              "#ecd9c9");
+                                                        return HexColor(
+                                                            "#F2EFEA");
+                                                      }),
+                                                      padding:
+                                                          MaterialStateProperty
+                                                              .all<
+                                                                      EdgeInsets>(
+                                                                  EdgeInsets.all(
+                                                                      10.0)),
+                                                      shape: MaterialStateProperty.all<
+                                                              RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10.0))),
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () async {
+                                                      deleteBloc.add(
+                                                          DeleteButtonPressed(
+                                                              postId:
+                                                                  post.id!));
+                                                      await Future.delayed(
+                                                          Duration(
+                                                              milliseconds:
+                                                                  100));
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                      final snackBar = SnackBarDesign
+                                                    .customSnackBar(
+                                                        'Post is deleted!');
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                                      refreshPage();
+                                                    },
+                                                    child: Text('Yes',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<
+                                                                      HexColor>(
+                                                                  HexColor(
+                                                                      "#3c1e08")),
+                                                      padding:
+                                                          MaterialStateProperty
+                                                              .all<
+                                                                      EdgeInsets>(
+                                                                  EdgeInsets.all(
+                                                                      10.0)),
+                                                      shape: MaterialStateProperty.all<
+                                                              RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10.0))),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 16),
+                                          child: Text(e),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.more_vert),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 4.0),
                   Container(
                     width: double.infinity,
@@ -673,16 +767,11 @@ class _ProfileViewState extends State<ProfileView> {
                       _FavoriteButton(
                         postId: post.id!,
                         actionTypeId: post.currentUserAction!,
-                        onFavoriteChanged:
-                            (bool isThumbsUpSelected) {
-                          if (post.likeCount != 0 ||
-                              isThumbsUpSelected) {
+                        onFavoriteChanged: (bool isThumbsUpSelected) {
+                          if (post.likeCount != 0 || isThumbsUpSelected) {
                             setState(() {
-                              post.likeCount =
-                                  post.likeCount! +
-                                      (isThumbsUpSelected
-                                          ? 1
-                                          : -1);
+                              post.likeCount = post.likeCount! +
+                                  (isThumbsUpSelected ? 1 : -1);
                               hasBeenLiked = true;
                             });
                           } else {
@@ -695,8 +784,7 @@ class _ProfileViewState extends State<ProfileView> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                Comments(postId: post.id!),
+                            builder: (context) => Comments(postId: post.id!),
                           ),
                         ),
                         icon: const Icon(
@@ -713,8 +801,7 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "${post.likeCount.toString()} likes",
@@ -729,34 +816,27 @@ class _ProfileViewState extends State<ProfileView> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    Comments(
-                                        postId: post.id!),
+                                    Comments(postId: post.id!),
                               ),
                             );
                           },
                           child: Container(
-                            padding:
-                            const EdgeInsets.symmetric(
-                                vertical: 4),
+                            padding: const EdgeInsets.symmetric(vertical: 4),
                             child: post.commentCount! > 0
                                 ? Text(
-                              'View all ${post.commentCount} comments',
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black),
-                            )
+                                    'View all ${post.commentCount} comments',
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  )
                                 : const SizedBox.shrink(),
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4),
+                          padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Text(
-                            func.getFormattedDate(
-                                post.dateTime!),
+                            func.getFormattedDate(post.dateTime!),
                             style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.black),
+                                fontSize: 12, color: Colors.black),
                           ),
                         ),
                       ],
@@ -771,60 +851,58 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-
   Widget displayImage(Post post, int i) {
-
     return Container(
       height: post.postImages != null && post.postImages!.isNotEmpty
           ? MediaQuery.of(context).size.width
           : 0,
       child: post.postImages != null && post.postImages!.isNotEmpty
           ? Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: post.postImages!.length,
-              itemBuilder: (context, index) {
-                return AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Image.memory(
-                    base64Decode(post.postImages![index].image!),
-                    fit: BoxFit.cover,
-                  ),
-                );
-              },
-              onPageChanged: (int page) {
-                setState(() {
-                  _currentPage[i] = page;
-                });
-              },
-            ),
-          ),
-          post.postImages!.length > 1
-              ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              post.postImages!.length,
-                  (index) => Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentPage[i] == index
-                        ? HexColor(
-                        "#3c1e08") // Highlight the current page indicator
-                        : Colors.grey,
+              children: [
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: post.postImages!.length,
+                    itemBuilder: (context, index) {
+                      return AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Image.memory(
+                          base64Decode(post.postImages![index].image!),
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                    onPageChanged: (int page) {
+                      setState(() {
+                        _currentPage[i] = page;
+                      });
+                    },
                   ),
                 ),
-              ),
-            ),
-          )
-              : Container(),
-        ],
-      )
+                post.postImages!.length > 1
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          post.postImages!.length,
+                          (index) => Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _currentPage[i] == index
+                                    ? HexColor(
+                                        "#3c1e08") // Highlight the current page indicator
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
+              ],
+            )
           : Container(), // Show an empty container if postImages is null or empty
     );
   }
@@ -834,7 +912,6 @@ class _ProfileViewState extends State<ProfileView> {
     _pageController.dispose();
     super.dispose();
   }
-
 }
 
 class _FavoriteButton extends StatefulWidget {
@@ -851,10 +928,10 @@ class _FavoriteButton extends StatefulWidget {
 
   @override
   _FavoriteButtonState createState() => _FavoriteButtonState(
-    postId: postId,
-    actionTypeId: actionTypeId,
-    onFavoriteChanged: onFavoriteChanged,
-  );
+        postId: postId,
+        actionTypeId: actionTypeId,
+        onFavoriteChanged: onFavoriteChanged,
+      );
 }
 
 class _FavoriteButtonState extends State<_FavoriteButton> {
@@ -897,14 +974,14 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
             });
 
             // Update the action type for the specific post
-            if(thumbsUpSelected == true) {
+            if (thumbsUpSelected == true) {
               int newActionTypeId = 1;
               _postBloc.add(UpdateActionPost(
                 postId: postId,
                 actionTypeId: newActionTypeId,
               ));
               onFavoriteChanged(thumbsUpSelected);
-            } else if(thumbsUpSelected == false) {
+            } else if (thumbsUpSelected == false) {
               int newActionTypeId = 2;
               _postBloc.add(UpdateActionPost(
                 postId: postId,
@@ -929,7 +1006,7 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
             });
 
             // Update the action type for the specific post
-            if(thumbsDownSelected == true) {
+            if (thumbsDownSelected == true) {
               _postBloc.add(UpdateActionPost(
                 postId: postId,
                 actionTypeId: 2,
@@ -938,7 +1015,9 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
             }
           },
           icon: Icon(
-            thumbsDownSelected ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
+            thumbsDownSelected
+                ? Icons.thumb_down
+                : Icons.thumb_down_alt_outlined,
             color: thumbsDownSelected ? HexColor("#3c1e08") : Colors.black,
             size: 24.0,
           ),
@@ -947,4 +1026,3 @@ class _FavoriteButtonState extends State<_FavoriteButton> {
     );
   }
 }
-
