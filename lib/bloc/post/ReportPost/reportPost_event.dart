@@ -16,5 +16,4 @@ class ReportButtonPressed extends ReportPostEvents{
     required this.postId,
     required this.description,
   });
-
 }

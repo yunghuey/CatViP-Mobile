@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   bool _isVisible = false;
   double startOffset = 0;
   late List<int> _currentPage;
-  late bool _isFirstLoaded;
+  bool _isFirstLoaded = true;
 
   @override
   void initState() {
@@ -455,7 +455,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget report(Post post) {
-    reportBloc = BlocProvider.of<ReportPostBloc>(context);
     return BlocProvider.value(
       value: reportBloc,
       child: BlocListener<ReportPostBloc, ReportPostState>(
@@ -471,6 +470,8 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
               });
             }
+             refreshPosts();
+             reportBloc.add(StartReportPost()); 
           } else if (state is ReportPostFailState) {
             final snackBar = SnackBarDesign.customSnackBar(state.message);
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
