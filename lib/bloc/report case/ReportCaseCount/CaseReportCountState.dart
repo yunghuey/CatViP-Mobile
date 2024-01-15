@@ -7,6 +7,8 @@ class CaseReportCountState extends Equatable{
 
 class CaseReportInitState extends CaseReportCountState {}
 
+class CaseReportResetState extends CaseReportCountState {}
+
 class EmptyCaseState extends CaseReportCountState{ }
 
 class CaseExistState extends CaseReportCountState{
