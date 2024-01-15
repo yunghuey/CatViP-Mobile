@@ -46,12 +46,13 @@ class _HomePageState extends State<HomePage> {
   TextEditingController reportController = TextEditingController();
   Set<int> reportedPostIds = {};
   PageController _pageController = PageController();
-  int _currentPage = 0;
   late List<Post> postList;
   final ScrollController _scrollController =
       ScrollController(initialScrollOffset: 0);
   bool _isVisible = false;
   double startOffset = 0;
+  late List<int> _currentPage;
+  late bool _isFirstLoaded;
 
   @override
   void initState() {
@@ -137,15 +138,15 @@ class _HomePageState extends State<HomePage> {
     caseCountBloc.add(CaseCountInitEvent());
     _postBloc.add(GetPostList());
     await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
-
+    _isFirstLoaded = true;
     // Retrieve the updated post list
-    final updatedState = _postBloc.state;
-    if (updatedState is GetPostLoaded) {
-      setState(() {
-        postList = updatedState.postList;
-        _isVisible = false;
-      });
-    }
+    // final updatedState = _postBloc.state;
+    // if (updatedState is GetPostLoaded) {
+    //   setState(() {
+    //     postList = updatedState.postList;
+    //     _isVisible = false;
+    //   });
+    // }
   }
 
   void showToTopButton() {
@@ -190,7 +191,12 @@ class _HomePageState extends State<HomePage> {
             }
             else if (state is GetPostLoaded) {
 
-              postList = state.postList;
+              if (_isFirstLoaded)
+              {
+                postList = state.postList;
+                _currentPage = List<int>.filled(postList.length, 0);
+                _isFirstLoaded = false;
+              }
 
               return Theme(
                 data: Theme.of(context).copyWith(
@@ -465,9 +471,6 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
               });
             }
-
-            refreshPosts();
-
           } else if (state is ReportPostFailState) {
             final snackBar = SnackBarDesign.customSnackBar(state.message);
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -581,7 +584,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         onPageChanged: (int page) {
                           setState(() {
-                            _currentPage = page;
+                            _currentPage[i] = page;
                           });
                         },
                       ),
@@ -598,7 +601,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 8,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _currentPage == index
+                                    color: _currentPage[i] == index
                                         ? HexColor(
                                             "#3c1e08") // Highlight the current page indicator
                                         : Colors.grey,
