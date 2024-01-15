@@ -57,7 +57,7 @@ class _ProfileViewState extends State<ProfileView> {
   String expertMsg = "Apply as Expert";
   PageController _pageController = PageController();
   late List<int> _currentPage;
-  late bool _isFristLoaded;
+  late bool _isFirstLoaded;
   bool hasBeenLiked = false;
 
   @override
@@ -67,7 +67,6 @@ class _ProfileViewState extends State<ProfileView> {
     catBloc = BlocProvider.of<CatProfileBloc>(context);
     postBloc = BlocProvider.of<GetPostBloc>(context);
     deleteBloc = BlocProvider.of<DeletePostBloc>(context);
-    _isFristLoaded = true;
     refreshPage();
     _pageController = PageController();
     super.initState();
@@ -78,6 +77,7 @@ class _ProfileViewState extends State<ProfileView> {
     userBloc.add(StartLoadProfile());
     catBloc.add(StartLoadCat());
     postBloc.add(StartLoadOwnPost());
+    _isFirstLoaded = true;
   }
 
   late final msg = BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -188,16 +188,11 @@ class _ProfileViewState extends State<ProfileView> {
                             return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                           } else if (state is GetPostLoaded) {
                             
-                            if(!_isFristLoaded)
+                            if(_isFirstLoaded)
                             {
                               listPost = state.postList.reversed.toList();
                               _currentPage = List<int>.filled(listPost.length, 0);
-                              _isFristLoaded = false;
-                            }
-                            else
-                            {
-                              listPost = state.postList.reversed.toList();
-                              _currentPage = List<int>.filled(listPost.length, 0);
+                              _isFirstLoaded = false;
                             }
 
                             return _getAllPosts();
@@ -271,6 +266,7 @@ class _ProfileViewState extends State<ProfileView> {
                   userBloc.add(StartLoadProfile());
                   catBloc.add(StartLoadCat());
                   postBloc.add(StartLoadOwnPost());
+                  refreshPage();
                 } else{
                   Navigator.pop(context);
                 }
