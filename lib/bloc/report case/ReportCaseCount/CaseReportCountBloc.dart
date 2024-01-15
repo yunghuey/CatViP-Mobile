@@ -7,6 +7,7 @@ class CaseReportCountBloc extends Bloc<CaseReportCountEvent, CaseReportCountStat
   ReportCaseRepository repo;
   CaseReportCountBloc(CaseReportCountState initialState, this.repo):super(initialState){
     on<CaseCountInitEvent>((event, emit) async {
+      emit(CaseReportResetState());
       int num = await repo.getNearByCaseCount();
       if(num == 0){
         emit(EmptyCaseState());
