@@ -254,10 +254,12 @@ class EditProfileViewState extends State<EditProfileView> {
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => MapScreen())
                 ).then((value) => {
-                  lat = value['lat'],
-                  long = value['lng'],
-                  addressController.text = value['address']
-
+                  if (value != null)
+                  {
+                    lat = value['lat'],
+                    long = value['lng'],
+                    addressController.text = value['address']
+                  }
                 });
                 },
             ),

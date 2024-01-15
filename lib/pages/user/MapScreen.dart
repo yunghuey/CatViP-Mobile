@@ -177,12 +177,19 @@ class _MapScreenState extends State<MapScreen> {
     return await Geolocator.getCurrentPosition();
   }
 
-  void _updateMarkerPosition(LatLng latLng) {
+  void _updateMarkerPosition(LatLng latLng) async {
     markerList.clear();
+
+    final logoIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(6, 6)),
+      'assets/current-pin.png',
+    );
+
     markerList.add(
       Marker(
         markerId: const MarkerId('currentLocation'),
         position: latLng,
+        icon: logoIcon
       ),
     );
     _getAddressFromLatLng(latLng);
@@ -257,6 +264,10 @@ class _MapScreenState extends State<MapScreen> {
       apiHeaders: await const GoogleApiHeaders().getHeaders()
     );
 
+    final logoIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(6, 6)),
+      'assets/current-pin.png',
+    );
     PlacesDetailsResponse detail = await places.getDetailsByPlaceId(p.placeId!);
 
     final lat = userLat = detail.result.geometry!.location.lat;
@@ -269,7 +280,7 @@ class _MapScreenState extends State<MapScreen> {
       markerId: const MarkerId("0"),
       position: LatLng(lat, lng),
       infoWindow: InfoWindow(title: detail.result.name),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      icon: logoIcon,
     ));
 
     setState(() { });

@@ -304,39 +304,41 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Widget _signupButton() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: SizedBox(
-        width: 400.0,
-        height: 55.0,
-        child: ElevatedButton(
-          onPressed: () {
-            if(_formKey.currentState!.validate()){
-              // success validation
-                registerBloc.add(SignUpButtonPressed(
-                  username: usernameController.text.trim(),
-                  fullname: fullnameController.text.trim(),
-                  email: emailController.text.trim(),
-                  gender: int.parse(_gender.toString()),
-                  password: pwdController.text.trim(),
-                  bdayDate: dateController.text.trim(),
-                  address: addressController.text,
-                  latitude: lat,
-                  longitude: long,
-              ));
-            }
-
-          },
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder( borderRadius: BorderRadius.circular(24.0),)
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: SizedBox(
+          width: 400.0,
+          height: 55.0,
+          child: ElevatedButton(
+            onPressed: () {
+              if(_formKey.currentState!.validate()){
+                // success validation
+                  registerBloc.add(SignUpButtonPressed(
+                    username: usernameController.text.trim(),
+                    fullname: fullnameController.text.trim(),
+                    email: emailController.text.trim(),
+                    gender: int.parse(_gender.toString()),
+                    password: pwdController.text.trim(),
+                    bdayDate: dateController.text.trim(),
+                    address: addressController.text,
+                    latitude: lat,
+                    longitude: long,
+                ));
+              }
+    
+            },
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder( borderRadius: BorderRadius.circular(24.0),)
+              ),
+              backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
+    
             ),
-            backgroundColor: MaterialStateProperty.all<HexColor>(HexColor("#3c1e08")),
-
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Text('SIGN UP', style: TextStyle(fontSize: 16),),
+            child: const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text('SIGN UP', style: TextStyle(fontSize: 16),),
+            ),
           ),
         ),
       ),
@@ -421,9 +423,12 @@ class _SignUpViewState extends State<SignUpView> {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => const MapScreen())
               ).then((value) => {
-                lat = value['lat'],
-                long = value['lng'],
-                addressController.text = value['address']
+                if (value != null)
+                {
+                  lat = value['lat'],
+                  long = value['lng'],
+                  addressController.text = value['address']
+                }
               });
             },
           ),

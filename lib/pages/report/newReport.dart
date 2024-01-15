@@ -480,9 +480,12 @@ class _NewReportState extends State<NewReport> {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => CurrentLocation()))
                 .then((value) => {
-              latitude = value['latitude'],
-              longitude = value['longitude'],
-              addressController.text = value['address'],
+                  if(value != null)
+                  {
+                    latitude = value['latitude'],
+                    longitude = value['longitude'],
+                    addressController.text = value['address'],
+                  }
             });
             print('Location icon pressed');
           },

@@ -191,12 +191,17 @@ class _CurrentLocationState extends State<CurrentLocation> {
     address = "${detail.result.name!} ${detail.result.formattedAddress!}";
 
     markers.clear();
+
+    final catIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(6, 6)),
+      'assets/cat-pin.png',
+    );
     //  put new marker
     markers.add(Marker(
       markerId: const MarkerId("0"),
       position: LatLng(lat, lng),
       infoWindow: InfoWindow(title: detail.result.name),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      icon: catIcon,
     ));
 
     setState(() { });
@@ -239,12 +244,19 @@ class _CurrentLocationState extends State<CurrentLocation> {
     return await Geolocator.getCurrentPosition();
   }
 
-  void _updateMarkerPosition(LatLng latLng) {
+  void _updateMarkerPosition(LatLng latLng) async {
     markers.clear();
+
+    final catIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(6, 6)),
+      'assets/cat-pin.png',
+    );
+
     markers.add(
       Marker(
         markerId: const MarkerId('currentLocation'),
         position: latLng,
+        icon: catIcon
       ),
     );
 
