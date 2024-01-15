@@ -12,7 +12,6 @@ import '../../bloc/report case/GetOwnCase/getOwnCase_state.dart';
 import '../../model/caseReport/caseReport.dart';
 import 'ReportDetails.dart';
 
-
 class MapCaseReports extends StatefulWidget {
   const MapCaseReports({super.key});
 
@@ -23,7 +22,7 @@ class MapCaseReports extends StatefulWidget {
 class _MapCaseReportsState extends State<MapCaseReports> {
   late GoogleMapController googleMapController;
   static CameraPosition initialCameraPosition =
-  CameraPosition(target: LatLng(0.0, 0.0), zoom: 14);
+      CameraPosition(target: LatLng(0.0, 0.0), zoom: 14);
   final GetCaseBloc caseBloc = GetCaseBloc();
 
   Set<Marker> markers = {};
@@ -51,14 +50,24 @@ class _MapCaseReportsState extends State<MapCaseReports> {
         zoom: 14,
       );
 
-      circle = {Circle(
-        circleId: CircleId("current_position"),
-        center: LatLng(position.latitude, position.longitude),
-        radius: 80,
-        fillColor: HexColor("#f6ba00").withOpacity(0.6),
-        strokeColor:HexColor("#3c1e08"),
-        strokeWidth: 3,
-      )};
+      circle = {
+        Circle(
+          circleId: CircleId("current_3km_locus"),
+          center: LatLng(position.latitude, position.longitude),
+          radius: 3000,
+          fillColor: HexColor("#f6ba00").withOpacity(0.15),
+          strokeColor: HexColor("#3c1e08"),
+          strokeWidth: 1,
+        ),
+        Circle(
+          circleId: CircleId("current_position"),
+          center: LatLng(position.latitude, position.longitude),
+          radius: 80,
+          fillColor: HexColor("#f6ba00").withOpacity(0.8),
+          strokeColor: HexColor("#3c1e08"),
+          strokeWidth: 1,
+        ),
+      };
 
       googleMapController.animateCamera(
         CameraUpdate.newCameraPosition(
@@ -73,9 +82,10 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       setState(() {});
     } catch (e) {
       print('Error setting initial location: $e');
-      if (e == "Location services are disabled."){
+      if (e == "Location services are disabled.") {
         Navigator.pop(context);
-        final snackBar = SnackBarDesign.customSnackBar('You must allow location access to view missing case report');
+        final snackBar = SnackBarDesign.customSnackBar(
+            'You must allow location access to view missing case report');
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
@@ -87,7 +97,8 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       create: (context) => caseBloc,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Cases Around You', style: TextStyle(color: HexColor("#3c1e08"))),
+          title: Text('Cases Around You',
+              style: TextStyle(color: HexColor("#3c1e08"))),
           backgroundColor: HexColor("#ecd9c9"),
           bottomOpacity: 0.0,
           elevation: 0.0,
@@ -105,7 +116,8 @@ class _MapCaseReportsState extends State<MapCaseReports> {
               // Set the initial camera position to the first nearby report
               if (nearbyReports.isNotEmpty) {
                 initialCameraPosition = CameraPosition(
-                  target: LatLng(nearbyReports[0].latitude!, nearbyReports[0].longitude!),
+                  target: LatLng(
+                      nearbyReports[0].latitude!, nearbyReports[0].longitude!),
                   zoom: 14,
                 );
               }
@@ -152,7 +164,8 @@ class _MapCaseReportsState extends State<MapCaseReports> {
               ),
             );
 
-            _updateMarkerPosition(LatLng(position.latitude, position.longitude));
+            _updateMarkerPosition(
+                LatLng(position.latitude, position.longitude));
 
             setState(() {});
           },
@@ -163,7 +176,6 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       ),
     );
   }
-
 
   Future<Position> determinePosition() async {
     bool serviceEnabled;
@@ -180,7 +192,6 @@ class _MapCaseReportsState extends State<MapCaseReports> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-
         return Future.error('Location permissions are denied');
       }
     }
@@ -193,24 +204,37 @@ class _MapCaseReportsState extends State<MapCaseReports> {
     return await Geolocator.getCurrentPosition();
   }
 
-  void _updateMarkerPosition(LatLng latLng) {
+  void _updateMarkerPosition(LatLng latLng) async {
     markers.clear();
-    // markers.add(
-    //   Marker(
-    //     markerId: const MarkerId('currentLocation'),
-    //     position: latLng,
-    //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-    //   ),
+
+    // final currentIcon = await BitmapDescriptor.fromAssetImage(
+    //   ImageConfiguration(size: Size(6, 6)),
+    //   'assets/current-pin.png',
     // );
 
-    // Add other markers (nearbyReports markers)
+    final catIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(6, 6)),
+      'assets/cat-pin.png',
+    );
+
+    // final marker = Marker(
+    //   markerId: MarkerId('current_position'),
+    //   position: latLng,
+    //   icon: currentIcon,
+    // );
+
+    // setState(() {
+    //   markers.add(marker);
+    // });
+
     markers.addAll(nearbyReports.map((report) {
       return Marker(
         markerId: MarkerId(report.id.toString()),
         position: LatLng(report.latitude!, report.longitude!),
+        icon: catIcon, // Use the same custom icon for these markers
         onTap: () {
           _onMarkerTapped(report);
-        }
+        },
       );
     }).toSet());
 
@@ -225,5 +249,4 @@ class _MapCaseReportsState extends State<MapCaseReports> {
       ),
     );
   }
-
 }
