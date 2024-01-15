@@ -29,7 +29,7 @@ import 'package:hexcolor/hexcolor.dart';
 
 class SearchView extends StatefulWidget {
   int userid;
-  SearchView({required this.userid, super.key});
+  SearchView({ required this.userid, super.key});
 
   @override
   State<SearchView> createState() => _SearchViewState();
@@ -49,9 +49,8 @@ class _SearchViewState extends State<SearchView> {
   final Widgets func = Widgets();
   bool isSet = false;
   PageController _pageController = PageController();
-  late List<int> _currentPage = [];
+  int _currentPage = 0;
   bool hasBeenLiked = false;
-  bool firstLoaded = true;
 
   @override
   void initState() {
@@ -71,13 +70,6 @@ class _SearchViewState extends State<SearchView> {
     searchBloc.add(SearchUserProfileEvent(userid: userid));
     catBloc.add(SearchReloadAllCatEvent(userID: userid));
     postBloc.add(LoadSearchAllPostEvent(userid: userid));
-
-    if(!firstLoaded)
-    {
-      setState(() {
-        _currentPage = List<int>.filled(postList.length, 0);
-      });
-    }
   }
 
   @override
@@ -123,17 +115,18 @@ class _SearchViewState extends State<SearchView> {
                     color: HexColor("#3c1e08"),
                   ),
                 );
-              } else if (state is SearchUserProfileError) {
+              }
+              else if (state is SearchUserProfileError) {
                 return Container(
                   margin: const EdgeInsets.all(18.0),
                   padding: const EdgeInsets.all(5.0),
                   child: Text(
                     state.message,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 17),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                   ),
                 );
-              } else if (state is SearchUserProfileLoaded) {
+              }
+              else if (state is SearchUserProfileLoaded) {
                 print("Load");
                 user = state.user;
                 if (!isSet) {
@@ -168,7 +161,7 @@ class _SearchViewState extends State<SearchView> {
                             }
                           },
                         ),
-                        BlocBuilder<SearchPostBloc, SearchGetPostState>(
+                        BlocBuilder<SearchPostBloc,SearchGetPostState >(
                           builder: (context, state) {
                             if (state is SearchPostLoadingState) {
                               return Center(
@@ -177,13 +170,7 @@ class _SearchViewState extends State<SearchView> {
                                 ),
                               );
                             } else if (state is SearchGetPostSuccessState) {
-                              
-                              if (firstLoaded) {
-                                postList = state.posts.reversed.toList();
-                                _currentPage = List<int>.filled(postList.length, 0);
-                                firstLoaded = false;
-                              }
-
+                              postList = state.posts.reversed.toList();
                               return _getAllPosts();
                             } else {
                               return Center(
@@ -201,9 +188,9 @@ class _SearchViewState extends State<SearchView> {
                     ),
                   ),
                 );
-              } else {
-                return RefreshIndicator(
-                  onRefresh: refreshPage,
+              }
+              else{
+                return RefreshIndicator(onRefresh: refreshPage,
                   child: Center(
                     child: Column(
                       children: [
@@ -231,7 +218,7 @@ class _SearchViewState extends State<SearchView> {
           image: DecorationImage(
             image: user.profileImage != ""
                 ? MemoryImage(base64Decode(user.profileImage!))
-                    as ImageProvider<Object>
+            as ImageProvider<Object>
                 : const AssetImage('assets/profileimage.png'),
             fit: BoxFit.cover,
           ),
@@ -278,7 +265,7 @@ class _SearchViewState extends State<SearchView> {
     }
   }
 
-  Widget _userDetails() {
+  Widget _userDetails(){
     return RefreshIndicator(
       onRefresh: refreshPage,
       color: HexColor("#3c1e08"),
@@ -309,7 +296,7 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
-  Widget _buttons() {
+  Widget _buttons(){
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Column(
@@ -328,7 +315,7 @@ class _SearchViewState extends State<SearchView> {
                           setState(() {
                             user.follower = user.follower! + 1;
                             btntext =
-                                (btntext == "Follow") ? "Following" : "Follow";
+                            (btntext == "Follow") ? "Following" : "Follow";
                           });
                         } else {
                           showDialog<String>(
@@ -348,19 +335,19 @@ class _SearchViewState extends State<SearchView> {
                                     backgroundColor: MaterialStateProperty
                                         .resolveWith<HexColor>(
                                             (Set<MaterialState> states) {
-                                      if (states
-                                          .contains(MaterialState.pressed))
-                                        return HexColor("#ecd9c9");
-                                      return HexColor("#F2EFEA");
-                                    }),
+                                          if (states
+                                              .contains(MaterialState.pressed))
+                                            return HexColor("#ecd9c9");
+                                          return HexColor("#F2EFEA");
+                                        }),
                                     padding:
-                                        MaterialStateProperty.all<EdgeInsets>(
-                                            const EdgeInsets.all(10.0)),
+                                    MaterialStateProperty.all<EdgeInsets>(
+                                        const EdgeInsets.all(10.0)),
                                     shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10.0))),
+                                            BorderRadius.circular(10.0))),
                                   ),
                                 ),
                                 TextButton(
@@ -379,16 +366,16 @@ class _SearchViewState extends State<SearchView> {
                                       style: TextStyle(color: Colors.white)),
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<HexColor>(
-                                            HexColor("#3c1e08")),
+                                    MaterialStateProperty.all<HexColor>(
+                                        HexColor("#3c1e08")),
                                     padding:
-                                        MaterialStateProperty.all<EdgeInsets>(
-                                            const EdgeInsets.all(10.0)),
+                                    MaterialStateProperty.all<EdgeInsets>(
+                                        const EdgeInsets.all(10.0)),
                                     shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10.0))),
+                                            BorderRadius.circular(10.0))),
                                   ),
                                 ),
                               ],
@@ -415,19 +402,20 @@ class _SearchViewState extends State<SearchView> {
                     child: ElevatedButton(
                       onPressed: () {
                         ChatListModel chatlist = ChatListModel(
-                            userid: widget.userid ?? 0,
-                            username: user.username,
-                            fullname: user.fullname,
-                            profileImage: user.profileImage,
-                            latestMsg: "",
-                            unreadMessage: 0);
+                          userid: widget.userid ?? 0,
+                          username: user.username,
+                          fullname: user.fullname,
+                          profileImage: user.profileImage,
+                          latestMsg: "",
+                          unreadMessage: 0
+                        );
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => SingleChatView(
-                                      user: chatlist,
-                                      existChat: false,
-                                    )));
+                                  user: chatlist,
+                                  existChat: false,
+                                )));
                       },
                       child: const Text("Message"),
                       style: ButtonStyle(
@@ -447,7 +435,7 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
-  Widget _getAllCats() {
+  Widget _getAllCats(){
     return Padding(
       padding: const EdgeInsets.only(left: 15.0),
       child: Container(
@@ -472,11 +460,9 @@ class _SearchViewState extends State<SearchView> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => CatProfileView(
-                                          currentcat: cats[index],
-                                          fromOwner: false,
-                                        ))).then((value) {
-                              refreshPage();
-                            });
+                                      currentcat: cats[index],
+                                      fromOwner: false,
+                                    ))).then((value) { refreshPage(); });
                           },
                           child: CircleAvatar(
                             backgroundColor: HexColor("#3c1e08"),
@@ -484,8 +470,9 @@ class _SearchViewState extends State<SearchView> {
                             child: CircleAvatar(
                               radius: 38,
                               backgroundImage: cat.profileImage != ""
-                                  ? MemoryImage(base64Decode(cat.profileImage))
-                                      as ImageProvider<Object>
+                                  ? MemoryImage(base64Decode(
+                                  cat.profileImage))
+                              as ImageProvider<Object>
                                   : const AssetImage('assets/profileimage.png'),
                             ),
                           ),
@@ -509,7 +496,7 @@ class _SearchViewState extends State<SearchView> {
       child: ListView.builder(
         shrinkWrap: true, // Added shrinkWrap
         physics:
-            const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
+        const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
         itemCount: postList.length,
         itemBuilder: (context, index) {
           final Post post = postList[index];
@@ -520,54 +507,56 @@ class _SearchViewState extends State<SearchView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: user.profileImage != ""
-                            ? Image.memory(base64Decode(user.profileImage!))
-                                .image
-                            : const AssetImage('assets/profileimage.png'),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.fullname,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: user.profileImage != ""
+                              ? Image.memory(base64Decode(user.profileImage!)).image
+                              : const AssetImage('assets/profileimage.png'),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(user.fullname,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      post.postTypeId == 1
-                          ? Container(
-                              color: Colors.brown,
-                              padding: const EdgeInsets.all(
-                                  4.0), // Adjust the padding as needed
-                              child: const Text(
-                                "Daily Sharing",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )
-                          : Container(
-                              color: Colors.brown,
-                              padding: const EdgeInsets.all(
-                                  4.0), // Adjust the padding as needed
-                              child: const Text(
-                                "Expert Tips",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                    ],
-                  ),
+                        post.postTypeId == 1
+                            ? Container(
+                          color: Colors.brown,
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust the padding as needed
+                          child: const Text(
+                            "Daily Sharing",
+                            style: TextStyle(
+                                color: Colors.white),
+                          ),
+                        )
+                            : Container(
+                          color: Colors.brown,
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust the padding as needed
+                          child: const Text(
+                            "Expert Tips",
+                            style: TextStyle(
+                                color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
                   const SizedBox(height: 4.0),
                   Container(
                     width: double.infinity,
@@ -577,9 +566,7 @@ class _SearchViewState extends State<SearchView> {
                     child: RichText(
                       text: TextSpan(
                         children: [
-                          const TextSpan(
-                            text: ' ',
-                          ),
+                          const TextSpan(text: ' ',),
                           TextSpan(
                             text: post.description.toString(),
                             style: const TextStyle(
@@ -592,21 +579,27 @@ class _SearchViewState extends State<SearchView> {
                     ),
                   ),
                   const SizedBox(height: 4.0),
-                  displayImage(post, index),
+                  displayImage(post),
                   Row(
                     children: [
                       _FavoriteButton(
                         postId: post.id!,
                         actionTypeId: post.currentUserAction!,
-                        onFavoriteChanged: (bool isThumbsUpSelected) {
-                          if (post.likeCount != 0 || isThumbsUpSelected) {
+                        onFavoriteChanged:
+                            (bool isThumbsUpSelected) {
+                          if (post.likeCount != 0 ||
+                              isThumbsUpSelected) {
                             setState(() {
-                              post.likeCount = post.likeCount! +
-                                  (isThumbsUpSelected ? 1 : -1);
+                              post.likeCount =
+                                  post.likeCount! +
+                                      (isThumbsUpSelected
+                                          ? 1
+                                          : -1);
                               hasBeenLiked = true;
                             });
                           } else {
-                            print('Is Thumbs Up Selected: $isThumbsUpSelected');
+                            print(
+                                'Is Thumbs Up Selected: $isThumbsUpSelected');
                           }
                         },
                       ),
@@ -615,7 +608,8 @@ class _SearchViewState extends State<SearchView> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Comments(postId: post.id!),
+                            builder: (context) =>
+                                Comments(postId: post.id!),
                           ),
                         ),
                         icon: const Icon(
@@ -632,7 +626,8 @@ class _SearchViewState extends State<SearchView> {
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
                       children: [
                         Text(
                           "${post.likeCount.toString()} likes",
@@ -647,27 +642,34 @@ class _SearchViewState extends State<SearchView> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    Comments(postId: post.id!),
+                                    Comments(
+                                        postId: post.id!),
                               ),
                             );
                           },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            padding:
+                            const EdgeInsets.symmetric(
+                                vertical: 4),
                             child: post.commentCount! > 0
                                 ? Text(
-                                    'View all ${post.commentCount} comments',
-                                    style: const TextStyle(
-                                        fontSize: 14, color: Colors.black),
-                                  )
+                              'View all ${post.commentCount} comments',
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black),
+                            )
                                 : const SizedBox.shrink(),
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4),
                           child: Text(
-                            func.getFormattedDate(post.dateTime!),
+                            func.getFormattedDate(
+                                post.dateTime!),
                             style: const TextStyle(
-                                fontSize: 12, color: Colors.black),
+                                fontSize: 12,
+                                color: Colors.black),
                           ),
                         ),
                       ],
@@ -682,7 +684,7 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
-  Widget displayImage(Post post, int i) {
+  Widget displayImage(Post post) {
     return Stack(
       children: [
         Container(
@@ -691,51 +693,51 @@ class _SearchViewState extends State<SearchView> {
               : 0,
           child: post.postImages != null && post.postImages!.isNotEmpty
               ? Column(
-                  children: [
-                    Expanded(
-                      child: PageView.builder(
-                        controller: _pageController,
-                        itemCount: post.postImages!.length,
-                        itemBuilder: (context, index) {
-                          return AspectRatio(
-                            aspectRatio: 1.0,
-                            child: Image.memory(
-                              base64Decode(post.postImages![index].image!),
-                              fit: BoxFit.cover,
-                            ),
-                          );
-                        },
-                        onPageChanged: (int page) {
-                          setState(() {
-                            _currentPage[i] = page;
-                          });
-                        },
+                children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: post.postImages!.length,
+                  itemBuilder: (context, index) {
+                    return AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Image.memory(
+                        base64Decode(post.postImages![index].image!),
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                ),
+              ),
+              post.postImages!.length > 1
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  post.postImages!.length,
+                      (index) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentPage == index
+                            ? HexColor(
+                            "#3c1e08") // Highlight the current page indicator
+                            : Colors.grey,
                       ),
                     ),
-                    post.postImages!.length > 1
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              post.postImages!.length,
-                              (index) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: _currentPage[i] == index
-                                        ? HexColor(
-                                            "#3c1e08") // Highlight the current page indicator
-                                        : Colors.grey,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(),
-                  ],
-                )
+                  ),
+                ),
+              )
+                  : Container(),
+            ],
+          )
               : Container(), // Show an empty container if postImages is null or empty
         ),
       ],
@@ -757,10 +759,10 @@ class _FavoriteButton extends StatefulWidget {
 
   @override
   _FavoriteButtonState createState() => _FavoriteButtonState(
-        postId: postId,
-        actionTypeId: actionTypeId,
-        onFavoriteChanged: onFavoriteChanged,
-      );
+    postId: postId,
+    actionTypeId: actionTypeId,
+    onFavoriteChanged: onFavoriteChanged,
+  );
 }
 
 class _FavoriteButtonState extends State<_FavoriteButton> {

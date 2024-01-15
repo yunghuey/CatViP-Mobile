@@ -56,9 +56,8 @@ class _ProfileViewState extends State<ProfileView> {
   final String viewExpert = "You are an expert!";
   String expertMsg = "Apply as Expert";
   PageController _pageController = PageController();
-  late List<int> _currentPage = [];
+  int _currentPage = 0;
   bool hasBeenLiked = false;
-  bool firstLoaded = true;
 
   @override
   void initState() {
@@ -77,13 +76,6 @@ class _ProfileViewState extends State<ProfileView> {
     userBloc.add(StartLoadProfile());
     catBloc.add(StartLoadCat());
     postBloc.add(StartLoadOwnPost());
-
-    if(!firstLoaded)
-    {
-      setState(() {
-        _currentPage = List<int>.filled(listPost.length, 0);
-      });
-    }
   }
 
   late final msg = BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -193,13 +185,7 @@ class _ProfileViewState extends State<ProfileView> {
                           if (state is GetPostLoading) {
                             return Center(child: CircularProgressIndicator(color: HexColor("#3c1e08")));
                           } else if (state is GetPostLoaded) {
-
-                            if (firstLoaded) {
-                                listPost = state.postList.reversed.toList();
-                                _currentPage = List<int>.filled(listPost.length, 0);
-                                firstLoaded = false;
-                              }
-
+                            listPost = state.postList.reversed.toList();
                             return _getAllPosts();
                           } else {
                             return Center(
@@ -672,7 +658,7 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                   ),
                   const SizedBox(height: 4.0),
-                  displayImage(post, index),
+                  displayImage(post),
                   Row(
                     children: [
                       _FavoriteButton(
@@ -777,7 +763,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
 
-  Widget displayImage(Post post, int i) {
+  Widget displayImage(Post post) {
 
     return Container(
       height: post.postImages != null && post.postImages!.isNotEmpty
@@ -801,7 +787,7 @@ class _ProfileViewState extends State<ProfileView> {
               },
               onPageChanged: (int page) {
                 setState(() {
-                  _currentPage[i] = page;
+                  _currentPage = page;
                 });
               },
             ),
@@ -818,7 +804,7 @@ class _ProfileViewState extends State<ProfileView> {
                   height: 8,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentPage[i] == index
+                    color: _currentPage == index
                         ? HexColor(
                         "#3c1e08") // Highlight the current page indicator
                         : Colors.grey,
