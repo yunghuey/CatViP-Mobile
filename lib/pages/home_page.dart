@@ -46,11 +46,8 @@ class _HomePageState extends State<HomePage> {
   TextEditingController reportController = TextEditingController();
   Set<int> reportedPostIds = {};
   PageController _pageController = PageController();
-  late List<int> _currentPage = [];
+  int _currentPage = 0;
   late List<Post> postList;
-
-  bool firstLoaded = true; 
-
   final ScrollController _scrollController =
       ScrollController(initialScrollOffset: 0);
   bool _isVisible = false;
@@ -143,17 +140,10 @@ class _HomePageState extends State<HomePage> {
 
     // Retrieve the updated post list
     final updatedState = _postBloc.state;
-    if (updatedState is GetPostLoaded && firstLoaded) {
+    if (updatedState is GetPostLoaded) {
       setState(() {
         postList = updatedState.postList;
-        _currentPage = List<int>.filled(postList.length, 0);
         _isVisible = false;
-      });
-    }
-    else if(!firstLoaded)
-    {
-      setState(() {
-        _currentPage = List<int>.filled(postList.length, 0);
       });
     }
   }
@@ -200,12 +190,7 @@ class _HomePageState extends State<HomePage> {
             }
             else if (state is GetPostLoaded) {
 
-              if (firstLoaded)
-              {
-                postList = state.postList;
-                _currentPage = List<int>.filled(postList.length, 0);
-                firstLoaded = false;
-              }
+              postList = state.postList;
 
               return Theme(
                 data: Theme.of(context).copyWith(
@@ -480,6 +465,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
               });
             }
+
+            refreshPosts();
+
           } else if (state is ReportPostFailState) {
             final snackBar = SnackBarDesign.customSnackBar(state.message);
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -593,7 +581,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         onPageChanged: (int page) {
                           setState(() {
-                            _currentPage[i]= page;
+                            _currentPage = page;
                           });
                         },
                       ),
@@ -610,7 +598,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 8,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _currentPage[i] == index
+                                    color: _currentPage == index
                                         ? HexColor(
                                             "#3c1e08") // Highlight the current page indicator
                                         : Colors.grey,
