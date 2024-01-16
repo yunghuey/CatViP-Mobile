@@ -535,7 +535,7 @@ class _SearchViewState extends State<SearchView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user.fullname,
+                                user.username,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),

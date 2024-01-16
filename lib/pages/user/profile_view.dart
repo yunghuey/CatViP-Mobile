@@ -562,7 +562,7 @@ class _ProfileViewState extends State<ProfileView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user.fullname,
+                                user.username,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
