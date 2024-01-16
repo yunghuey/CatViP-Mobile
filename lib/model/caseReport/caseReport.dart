@@ -19,6 +19,7 @@ class CaseReport {
     required this.catName,
     required this.caseReportImages,
     required this.error,
+    required this.userId,
   });
 
 
@@ -39,6 +40,7 @@ class CaseReport {
   double? latitude;
   double? longitude;
   String? catName;
+  int? userId;
   List<CaseReportImage>? caseReportImages;
 
 
@@ -66,7 +68,7 @@ class CaseReport {
       longitude: json["longitude"],
       catName: json["catName"],
       caseReportImages: images,
-
+      userId: json["userId"],
     );
   }
 

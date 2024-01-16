@@ -4,6 +4,7 @@ import 'package:CatViP/bloc/report%20case/EditCaseReport/editCaseReport_bloc.dar
 import 'package:CatViP/model/caseReport/caseReport.dart';
 import 'package:CatViP/model/caseReport/caseReportImages.dart';
 import 'package:CatViP/pages/report/CaseReportComment.dart';
+import 'package:CatViP/pages/search/searchuser_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -82,6 +83,50 @@ class _ReportDetailState extends State<ReportDetail> {
             padding: const EdgeInsets.all(18.0),
             child: Column(
               children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchView(
+                          userid: caseReport.userId!,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: caseReport.profileImage != ""
+                            ? Image.memory(
+                                    base64Decode(caseReport.profileImage!))
+                                .image
+                            : const AssetImage('assets/profileimage.png'),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                caseReport.username!,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 16.0),
                 caseReportImage(),
                 SizedBox(height: 4.0),
                 descriptionText(),
