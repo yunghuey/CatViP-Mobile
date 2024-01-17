@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
     chatBloc.add(UnreadInitEvent());
     caseCountBloc.add(CaseCountInitEvent());
     _postBloc.add(GetPostList());
-    await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
+    // await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
     _isFirstLoaded = true;
     // Retrieve the updated post list
     // final updatedState = _postBloc.state;
