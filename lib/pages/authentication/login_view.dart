@@ -192,7 +192,7 @@ class _LoginViewState extends State<LoginView> {
             ),
             child: const Padding(
               padding: EdgeInsets.all(12.0),
-              child: Text('SIGN IN', style: TextStyle(fontSize: 16, color: Colors.white),),
+              child: Text('SIGN IN', style: TextStyle(fontSize: 16),),
             ),
         ),
       ),
